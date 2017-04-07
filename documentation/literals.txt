@@ -1,0 +1,96 @@
+# Boolean literals:
+    true        # : bool
+    false       # : bool
+
+# Number literals:
+    42          # : i64
+    42`i8       # : i8
+    42`i16      # : i16
+    42`i32      # : i32
+    42`i64      # : i64
+
+    42`u        # : u64
+    42`u8       # : u8
+    42`u16      # : u16
+    42`u32      # : u32
+    42`u64      # : u64
+
+    42.0        # : f64
+    42e10       # : f64
+    42`f        # : f64
+    42`f32      # : f32
+    42`f64      # : f64
+
+    0xFF        # : i64
+    0b11        # : i64
+    0xFF`u16    # : u16
+    0b11`i32    # : i32
+
+# Note: the ` character can be used anywhere inside a number literal for
+# better readability:
+    42`000
+    1`000`000`i32
+    1`000`123`456
+    0b1011`0011`0100`1101
+
+# Number literals can be signed:
+    +42
+    -42
+
+# Characters literals represent unicode code points:
+    'a'         # : char
+    '❤'         # : char
+    '\''        # single-quote
+    '\\'        # backslash
+    '\n'        # newline
+    '\u0041'    # == 'A'
+
+# Strings (also unicode):
+    "hello"     # : string
+
+# Anything between `{...}` inside a string is an expression to be evaluated:
+    "1 + 1 is {1 + 1}"   # == "1 + 1 is 2"
+
+# Multi-line strings can be created using `"""`:
+    let text = """
+        | hello,
+        | world
+    """
+    # each newline begin after `| `, so this is equivalent to "hello,\nworld"
+
+# Lists:
+    [1, 2, 3]   # : [i64] == list<i64>
+    [] of char  # : [char] == list<char>
+
+# Tuples:
+    (1, 'a', 42.0)  # : (i64, char, f64) == tuple<i64, char, f64>
+    1, 'a', 42.0    # equivalent to above literal
+    (1)             # : i64
+    (1,)            # : tuple<i64> == (i64,)
+
+# Named Tuples:
+    ( name: "Bob", age: 42 )    # : ( name: string, age: i64 )
+                                # == named_tuple<("name", string), ("age", i64)>
+
+# Sets:
+    { 1, 2, 3 }     # : { i64 } == set<i64>
+    {} of string    # : { string }
+
+# Maps:
+    { 1: "hello", 2: "world" }  # : { i64: string } == map<i64, string>
+    {} of char: f64             # : { char: f64 }
+
+# Ranges:
+    1..4        # : range<i64>  (inclusive: [1, 2, 3, 4])
+    1...4       # : range<i64>  (exclusive: [1, 2, 3])
+    'a'..'z'    # : range<char>
+
+# Regex (equivalent to ECMAScript):
+    /h(e+)llo/      # : regex
+    /(a|i|e|o|u)/g  # : regex
+
+# Functions (lambdas):
+    (x: i64, y: i64) => x + y   # : (i64, i64) -> i64
+    (x, y) => x + y             # : generic
+
+let x, y = y, x;
