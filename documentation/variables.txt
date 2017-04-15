@@ -1,0 +1,46 @@
+# define an immutable variable "x" that owns the object `42`:
+let x = 42;
+
+# on the left-hand side is a `pattern`:
+let a, b = 1, 2;
+let [x, xs...] = [1, 2, 3, 4, 5];
+
+# a variable has a type (usually omitted due to type-inference):
+let x: string = "hello";
+
+# by default, variables are immutable:
+let x = 5;
+x = 10; # error: assignment to immutable variable `x`
+
+# variables can be defined as mutable:
+mut x = 5;
+x = 10; # ok
+
+# the compiler warns when encountering an unused variable:
+let main() {
+    let x = 5; # warning: unused variable `x`
+    return 0;
+}
+
+# it's an error to use an uninitialized variable
+let x: int;
+print(x); # error: usage of uninitialized variable `x`
+
+# a variable lives in a scope:
+{
+    let x = 5;
+}
+print(x); # error: `x` is not in scope
+
+# variables may be shadowed:
+let x = 5;
+{
+    print(x); # x = 5
+    let x = 10; # shadows previous definition
+    print(x); # x = 10
+}
+print(x); # x = 5
+
+# but, redefinition of a variable in the same scope is an error:
+let x = 5;
+let x = 10; # error: `x` is already defined.
