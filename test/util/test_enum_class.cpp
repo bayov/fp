@@ -34,9 +34,10 @@ TEST(compile_time_traits) {
 }
 
 TEST(run_time_traits) {
-    ASSERT_EQ(1, enumerator(suit::CLUBS).index());
-    ASSERT_EQ("CLUBS", enumerator(suit::CLUBS).name());
-    ASSERT_EQ(suit::CLUBS, enumerator(suit::CLUBS).value());
+    suit clubs = suit::CLUBS;
+    ASSERT_EQ(1, enumerator(clubs).index());
+    ASSERT_EQ("CLUBS", enumerator(clubs).name());
+    ASSERT_EQ(suit::CLUBS, enumerator(clubs).value());
 }
 
 } // fp::util
