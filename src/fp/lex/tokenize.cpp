@@ -13,6 +13,7 @@ struct symbol_range {
     /// @return `true` if the given symbol is inside the range.
     static bool contain(symbol_t s) { return FROM <= s && s <= TO; }
 
+    /// @return A string representation of the range.
     static std::string as_string() { return FROM + std::string("-") + TO; }
 
 };
@@ -26,6 +27,7 @@ struct composite_symbol_range {
         return (... || SymbolRanges::contain(s));
     }
 
+    /// @return A string representation of the range.
     static std::string as_string() {
         auto result = (... + (SymbolRanges::as_string() + ' '));
         result.pop_back();
@@ -96,24 +98,18 @@ private:
         ++m_line_number;
     }
 
-    /**
-     * `is<S_1, S_2, ..., S_k>` is `true` if the current symbol is `S_1`,
-     * followed immediately by `S2`, ..., `S_k`.
-     */
     template <symbol_t... SYMBOLS, size_t... INDICES>
     bool next_is_impl(std::index_sequence<INDICES...>) const {
         if (m_it + sizeof...(SYMBOLS) >= m_end) { return false; }
         return (... && (*(m_it + 1 + INDICES) == SYMBOLS));
     }
 
+    /// @return `true` if the upcoming symbols are `SYMBOLS...`.
     template <symbol_t... SYMBOLS>
     bool next_is() const {
         using INDICES = std::make_index_sequence<sizeof...(SYMBOLS)>;
         return next_is_impl<SYMBOLS...>(INDICES{});
     }
-
-    /// Implementation detail: End of recursion.
-    //template <size_t N> bool next_is() const { return true; }
 
     /// Push a new token to the list, with `args` forwarded to its attribute.
     template <token TOKEN, class... Args>
@@ -128,9 +124,9 @@ private:
         );
     }
 
-    /// Consume the current symbol as `TOKEN`.
+    /// Tokenize the current symbol as `TOKEN`.
     template <token TOKEN>
-    void consume_as() {
+    void tokenize_as() {
         ++m_it;
         push<TOKEN>();
     }
@@ -141,11 +137,11 @@ private:
     }
 
     /**
-     * Consume the current symbol as an arithmetic `TOKEN`, or as the assignment
-     * version of it (`TOKEN_ASSIGN`).
+     * Tokenize the current symbol as an arithmetic `TOKEN`, or as the
+     * assignment version of it (`TOKEN_ASSIGN`).
      */
     template <token TOKEN, token TOKEN_ASSIGN>
-    void consume_arithmetic() {
+    void tokenize_arithmetic() {
         if (next_is<'='>()) {
             m_it += 2;
             push<TOKEN_ASSIGN>();
@@ -156,7 +152,7 @@ private:
     };
 
     template <class Digits, class ParseDigit>
-    void consume_number_literal(ParseDigit parse_digit) {
+    void tokenize_number_literal(ParseDigit parse_digit) {
         integer_type value = 0;
         bool expecting_digit = true;
         bool overflow = false;
@@ -188,14 +184,14 @@ private:
         }
     }
 
-    void consume_hex_literal() {
+    void tokenize_hex_literal() {
         m_it += 2; // skip over `0x` prefix
         using digits = composite_symbol_range<
             symbol_range<'0', '9'>,
             symbol_range<'a', 'f'>,
             symbol_range<'A', 'F'>
         >;
-        consume_number_literal<digits>([](symbol_t s, integer_type& v) {
+        tokenize_number_literal<digits>([](symbol_t s, integer_type& v) {
             integer_type d;
             if (s <= '9') {
                 d = integer_type(s - '0');          // 0-9
@@ -208,35 +204,35 @@ private:
         });
     }
 
-    void consume_octal_literal() {
+    void tokenize_octal_literal() {
         m_it += 2; // skip over `0o` prefix
         using digits = symbol_range<'0', '7'>;
-        consume_number_literal<digits>([](symbol_t s, integer_type& v) {
+        tokenize_number_literal<digits>([](symbol_t s, integer_type& v) {
             v = (v << 3) | (s - '0');
         });
     }
 
-    void consume_binary_literal() {
+    void tokenize_binary_literal() {
         m_it += 2; // skip over `0b` prefix
         using digits = symbol_range<'0', '1'>;
-        consume_number_literal<digits>([](symbol_t s, integer_type& v) {
+        tokenize_number_literal<digits>([](symbol_t s, integer_type& v) {
             v = (v << 1) | (s - '0');
         });
     }
 
-    void consume_decimal_literal() {
+    void tokenize_decimal_literal() {
         using digits = symbol_range<'0', '9'>;
-        consume_number_literal<digits>([](symbol_t s, integer_type& v) {
+        tokenize_number_literal<digits>([](symbol_t s, integer_type& v) {
             v = (v * 10) + (s - '0');
         });
     }
 
     /**
-     * Consume the upcoming symbols as a floating-type literal (token::FLOAT).
+     * Tokenize the upcoming symbols as a floating-type literal (token::FLOAT).
      *
      * @todo Parse manually, instead of using std::strtod. (not easy...)
      */
-    void consume_floating_literal() {
+    void tokenize_floating_literal() {
         using digits = symbol_range<'0', '9'>;
 
         // first, ensure that the floating literal is well-formed.
@@ -309,7 +305,7 @@ private:
         push<token::FLOAT>(value);
     }
 
-    void consume_decimal_or_floating() {
+    void tokenize_decimal_or_floating() {
         using decimal_symbols = composite_symbol_range<
             symbol_range<'0', '9'>,
             symbol_range<'`', '`'>
@@ -320,29 +316,29 @@ private:
         while (it != m_end && decimal_symbols::contain(*it)) { ++it; }
 
         if (it != m_end && (*it == '.' || *it == 'e' || *it == 'E')) {
-            consume_floating_literal();
+            tokenize_floating_literal();
         } else {
-            consume_decimal_literal();
+            tokenize_decimal_literal();
         }
     }
 
-    void consume_number() {
+    void tokenize_number() {
         if (*m_it != '0' || m_it + 1 == m_end) {
-            consume_decimal_or_floating();
+            tokenize_decimal_or_floating();
             return;
         }
         switch (*(m_it + 1)) {
             case 'x':
-                consume_hex_literal();
+                tokenize_hex_literal();
                 break;
             case 'o':
-                consume_octal_literal();
+                tokenize_octal_literal();
                 break;
             case 'b':
-                consume_binary_literal();
+                tokenize_binary_literal();
                 break;
             default:
-                consume_decimal_or_floating();
+                tokenize_decimal_or_floating();
                 break;
         }
     };
@@ -406,7 +402,7 @@ private:
                 push<token::NE>();
                 break;
             case '"':  // 0x22
-                consume_as<token::QUOTE>();
+                tokenize_as<token::QUOTE>();
                 break;
             case '#':  // 0x23
                 skip_to_end_of_line();
@@ -416,47 +412,47 @@ private:
                 throw_error();
                 break;
             case '%':  // 0x25
-                consume_arithmetic<token::MOD, token::MOD_ASSIGN>();
+                tokenize_arithmetic<token::MOD, token::MOD_ASSIGN>();
                 break;
             case '&':  // 0x26
-                consume_arithmetic<token::BIT_AND, token::BIT_AND_ASSIGN>();
+                tokenize_arithmetic<token::BIT_AND, token::BIT_AND_ASSIGN>();
                 break;
             case '\'': // 0x27
                 throw_error();
                 break;
             case '(':  // 0x28
-                consume_as<token::L_PAREN>();
+                tokenize_as<token::L_PAREN>();
                 break;
             case ')':  // 0x29
-                consume_as<token::R_PAREN>();
+                tokenize_as<token::R_PAREN>();
                 break;
             case '*':  // 0x2a
-                consume_arithmetic<token::MUL, token::MUL_ASSIGN>();
+                tokenize_arithmetic<token::MUL, token::MUL_ASSIGN>();
                 break;
             case '+':  // 0x2b
-                consume_arithmetic<token::PLUS, token::PLUS_ASSIGN>();
+                tokenize_arithmetic<token::PLUS, token::PLUS_ASSIGN>();
                 break;
             case ',':  // 0x2c
-                consume_as<token::COMMA>();
+                tokenize_as<token::COMMA>();
                 break;
             case '-':  // 0x2d
-                consume_arithmetic<token::MINUS, token::MINUS_ASSIGN>();
+                tokenize_arithmetic<token::MINUS, token::MINUS_ASSIGN>();
                 break;
             case '.':  // 0x2e
                 if (next_is<'.'>()) {
                     ++m_it;
                     if (next_is<'.'>()) {
                         ++m_it;
-                        consume_as<token::CLOSED_RANGE>();
+                        tokenize_as<token::CLOSED_RANGE>();
                     } else {
-                        consume_as<token::RANGE>();
+                        tokenize_as<token::RANGE>();
                     }
                 } else {
-                    consume_as<token::PERIOD>();
+                    tokenize_as<token::PERIOD>();
                 }
                 break;
             case '/':  // 0x2f
-                consume_arithmetic<token::DIV, token::DIV_ASSIGN>();
+                tokenize_arithmetic<token::DIV, token::DIV_ASSIGN>();
                 break;
             case '0':  // 0x30
             case '1':  // 0x31
@@ -468,7 +464,7 @@ private:
             case '7':  // 0x37
             case '8':  // 0x38
             case '9':  // 0x39
-                consume_number();
+                tokenize_number();
                 break;
             case ':':  // 0x3a
             case ';':  // 0x3b
