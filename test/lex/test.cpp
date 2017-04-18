@@ -18,7 +18,7 @@ TEST(fiddle, test) {
     std::string symbols =
 R"fp(
 # test, test, 1, 2, 3...
-"one plus one plus million is {1 + 1 + 1`000`000}"
+'"'
 "hello, {"from the other {"side of the plant"}..."}"
 "look, {"a wild brace:" { 3 { 4 } 1 + 1 } "bla" }"
 )fp";
@@ -60,6 +60,9 @@ R"fp(
                 case token::FLOAT:
                     token_str += "(" + std::to_string(t.attribute.as<token::FLOAT>()) + ")";
                     break;
+                case token::CHAR:
+                    token_str += "(" + std::string(1, t.attribute.as<token::CHAR>()) + ")";
+                    break;
                 case token::STRING:
                     token_str += "(" + std::string(t.attribute.as<token::STRING>()) + ")";
                     break;
@@ -90,20 +93,22 @@ R"fp(
         input_view_t error_line(e.line + from_col, e.line + to_col);
         std::cout << prefix_line;
         if (error_line.size() != 0) {
-            std::cout << "\033[41m" << error_line << "\033[0m";
+            std::cout << "\033[31m" << error_line << "\033[0m";
         }
         auto it = e.line + to_col;
         while (it != symbols.end() && *it != '\n' && *it != '\r') { ++it; }
         input_view_t suffix_line(e.line + to_col, it);
         std::cout << suffix_line << std::endl;
 
-        for (size_t i = 0; i < from_col - 1; ++i) { std::cout << " "; }
-        std::cout << " \033[31m" << "^";
-        for (size_t i = from_col; i < to_col - 1; ++i) { std::cout << "~"; }
+        for (size_t i = 0; i < from_col; ++i) { std::cout << " "; }
+        std::cout << "\033[31m" << "^";
+        if (from_col != to_col) {
+            for (size_t i = from_col; i < to_col - 1; ++i) { std::cout << "~"; }
+        }
         std::cout << "\033[0m" << std::endl;
 
-        for (size_t i = 0; i < from_col - 1; ++i) { std::cout << " "; }
-        std::cout << " \033[1m" << e.what() << "\033[0m" << std::endl;
+        for (size_t i = 0; i < from_col; ++i) { std::cout << " "; }
+        std::cout << "\033[1m" << e.what() << "\033[0m" << std::endl;
         std::cout << std::endl;
     }
 }

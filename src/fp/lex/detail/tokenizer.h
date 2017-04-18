@@ -158,7 +158,7 @@ private:
                 tokenize_arithmetic<token::BIT_AND, token::BIT_AND_ASSIGN>();
                 break;
             case '\'': // 0x27
-                m_state.error();
+                tokenize_char(m_state);
                 break;
             case '(':  // 0x28
                 m_state.tokenize_as<token::L_PAREN>();
