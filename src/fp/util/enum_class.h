@@ -76,7 +76,7 @@ using enum_class_traits =
                 1, ENUM_CLASS_ENUMERATOR_STRING, _, enumerators\
             ))\
         };\
-        using sequence = fp::util::enumerator_sequence<\
+        using sequence = ::fp::util::enumerator_sequence<\
             enum_name,\
             BOOST_PP_SEQ_ENUM(BOOST_PP_SEQ_TRANSFORM_S(\
                 1, ENUM_CLASS_ENUMERATOR_QUALIFIED, enum_name, enumerators\
@@ -132,7 +132,7 @@ public:
 
 /// Access compile-time traits of enumerator defined with ENUM_CLASS.
 #define ENUMERATOR(enumerator)\
-    fp::util::enum_class<decltype(enumerator)>::enumerator_traits<enumerator>
+    ::fp::util::enum_class<decltype(enumerator)>::enumerator_traits<enumerator>
 
 /// Access run-time traits of enumerator defined with ENUM_CLASS.
 template <class Enum>

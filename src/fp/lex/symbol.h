@@ -19,11 +19,12 @@ using symbol_iterator = input_t::const_iterator;
 /// A view to a slice of @ref input_t.
 struct input_view_t : boost::iterator_range<symbol_iterator> {
     using boost::iterator_range<symbol_iterator>::iterator_range;
-    operator input_t() const { return input_t(begin(), end()); };
+    operator input_t() const { return { begin(), end() }; };
+    std::string_view view() const { return { &*begin(), size() }; }
 };
 
 inline input_view_t make_input_view(const input_t& input) {
-    return input_view_t(input.begin(), input.end());
+    return { input.begin(), input.end() };
 }
 
 } // namespace fp::lex

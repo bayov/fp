@@ -1,7 +1,15 @@
 set(
     SOURCES
+    lex/detail/identifier_symbols.h
+    lex/detail/symbol_range.h
+    lex/detail/tokenize_keyword_or_identifier.h
+    lex/detail/tokenize_number.h
+    lex/detail/tokenize_string.h
+    lex/detail/tokenizer.h
+    lex/detail/tokenizer_state.h
     lex/attribute.h
     lex/error.h
+    lex/keywords.h
     lex/symbol.h
     lex/token.h
     lex/token_list.h
@@ -10,7 +18,6 @@ set(
     lex/tokenize.h
     util/as_string.h
     util/enum_class.h
-    util/fundamental.h
     util/named_tuple.h
     util/type_name.cpp
     util/type_name.h

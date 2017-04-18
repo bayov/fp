@@ -4,7 +4,11 @@
 
 #include <fp/util/enum_class.h>
 
+#include "keywords.h"
+
 namespace fp::lex {
+
+#define KEYWORD_ENUMERATOR(enumerator, _) enumerator,
 
 /// The actual type used to represent a @ref token.
 using token_type = uint8_t;
@@ -31,35 +35,7 @@ ENUM_CLASS(token, token_type,
     R_BRACE,        ///< }
 
     // keywords
-    AND,            ///< and
-    AS,             ///< as
-    BREAK,          ///< break
-    CASE,           ///< case
-    CATCH,          ///< catch
-    CLASS,          ///< class
-    CONCEPT,        ///< concept
-    CONTINUE,       ///< continue
-    DEFAULT,        ///< default
-    DO,             ///< do
-    ELSE,           ///< else
-    ENUM,           ///< enum
-    EXPORT,         ///< export
-    FOR,            ///< for
-    IF,             ///< if
-    IMPLICIT,       ///< implicit
-    IMPORT,         ///< import
-    IN,             ///< in
-    MUT,            ///< mut
-    NOT,            ///< not
-    OF,             ///< of
-    OR,             ///< or
-    OVERRIDE,       ///< override
-    RETURN,         ///< return
-    SELF,           ///< self
-    SWITCH,         ///< switch
-    THROW,          ///< throw
-    TRY,            ///< try
-    WHILE,          ///< while
+    FP_KEYWORDS_FOR_EACH(KEYWORD_ENUMERATOR)
 
     // functions
     TYPE_ARROW,     ///< ->
