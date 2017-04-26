@@ -23,8 +23,4 @@ struct input_view_t : boost::iterator_range<symbol_iterator> {
     std::string_view view() const { return { &*begin(), size() }; }
 };
 
-inline input_view_t make_input_view(const input_t& input) {
-    return { input.begin(), input.end() };
-}
-
 } // namespace fp::lex

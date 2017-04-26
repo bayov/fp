@@ -63,8 +63,8 @@ public:
     /// @return `true` if the upcoming symbols are `SYMBOLS...`.
     template <symbol_t... SYMBOLS>
     bool next_is() const {
-        using INDICES = std::make_index_sequence<sizeof...(SYMBOLS)>;
-        return next_is_impl<SYMBOLS...>(INDICES{});
+        using indices = std::make_index_sequence<sizeof...(SYMBOLS)>;
+        return next_is_impl<SYMBOLS...>(indices{});
     }
 
     /// Push a new token to the list, with `args` forwarded to its attribute.

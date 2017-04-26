@@ -6,7 +6,7 @@
 namespace fp::lex {
 
 token_list tokenize(const input_t& input) {
-    return detail::tokenizer().tokenize(make_input_view(input));
+    return detail::tokenizer().tokenize(input_view_t(input));
 }
 
 token_list tokenize(const input_view_t& input) {

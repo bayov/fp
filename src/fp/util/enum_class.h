@@ -11,7 +11,7 @@
 namespace fp::util {
 
 /**
- * Define an `enum class` with additional reflective utilities (for both
+ * Define an `enum class` with additional reflective utilities (with both
  * run-time and compile-time information).
  *
  * The `enum class` definition is:

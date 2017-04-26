@@ -25,58 +25,34 @@ template <> struct attribute<token::STRING> { using type = std::string; };
 
 namespace detail {
 
-template<class... Types> struct type_set;
+template<class... Ts>
+struct type_set {
 
-/// `::value` is true if `TypeSet` contains `T`.
-template <class TypeSet, class T> struct type_set_has;
+    template<class T>
+    static constexpr bool has() { return (... || std::is_same_v<Ts, T>); }
 
-template <class... Types, class T>
-struct type_set_has<type_set<Types...>, T> {
-    static constexpr bool value = (... || std::is_same_v<Types, T>);
+    template<class T>
+    constexpr auto operator+(T) {
+        if constexpr (has<T>()) {
+            return type_set<Ts...>{};
+        } else {
+            return type_set<Ts..., T>{};
+        }
+    }
+
+    static constexpr auto dedupe() { return (type_set<>{} + ... + Ts{}); }
+
+    using variant_t = std::variant<Ts...>;
+
 };
-
-/// Pushes `T` to the given `TypeSet` (if it is not already in it).
-template <class TypeSet, class T, bool IN = type_set_has<TypeSet, T>::value>
-struct type_set_push;
-
-template <class... Types, class T>
-struct type_set_push<type_set<Types...>, T, false> {
-    using type = type_set<Types..., T>;
-};
-
-template <class TypeSet, class T>
-struct type_set_push<TypeSet, T, true> { using type = TypeSet; };
-
-/// Given a list of types, return a @ref type_set with no duplicates.
-template <class... Types> struct make_type_set;
-
-template <class T, class... Types>
-struct make_type_set<T, Types...> {
-    using type = typename type_set_push<
-        typename make_type_set<Types...>::type, T
-    >::type;
-};
-
-template <class T>
-struct make_type_set<T> { using type = type_set<T>; };
-
-template <class TokenSequence>
-struct variant_attribute;
 
 template <token... TOKENS>
-struct variant_attribute<util::enumerator_sequence<token, TOKENS...>> {
-    using type = typename variant_attribute<
-        typename make_type_set<attribute_t<TOKENS>...>::type
-    >::type;
-};
-
-template <class... AttributeTypes>
-struct variant_attribute<type_set<AttributeTypes...>> {
-    using type = std::variant<AttributeTypes...>;
-};
+constexpr auto attribute_set(util::enumerator_sequence<token, TOKENS...>) {
+    return type_set<attribute_t<TOKENS>...>::dedupe();
+}
 
 using variant_attribute_t =
-    typename variant_attribute<util::enum_class<token>::sequence>::type;
+    decltype(attribute_set(util::enum_class<token>::sequence{}))::variant_t;
 
 } // detail
 
