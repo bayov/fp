@@ -5,6 +5,7 @@ set(
     include/assert_same.h
     include/catergorized_test.h
     lex/test.cpp
+    parse/test.cpp
     util/test_box.cpp
     util/test_enum_class.cpp
     util/test_match.cpp

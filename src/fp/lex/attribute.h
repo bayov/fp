@@ -4,7 +4,8 @@
 #include <string>
 #include <variant>
 
-#include "symbol.h"
+#include <fp/common/symbol.h>
+
 #include "token.h"
 
 namespace fp::lex {

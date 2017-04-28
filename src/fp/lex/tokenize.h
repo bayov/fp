@@ -1,7 +1,8 @@
 #pragma once
 
+#include <fp/common/symbol.h>
+
 #include "error.h"
-#include "symbol.h"
 #include "token_list.h"
 
 namespace fp::lex {

@@ -9,6 +9,8 @@
 #include <boost/preprocessor/seq/transform.hpp>
 #include <boost/preprocessor/seq/enum.hpp>
 
+#include "pp_seq.h"
+
 /**
  * Define a named-tuple.
  *
@@ -40,16 +42,6 @@
 #define NAMED_TUPLE(cls, fields)\
     NAMED_TUPLE_I(cls, BOOST_PP_VARIADIC_SEQ_TO_SEQ(fields))
 
-#define NT_APPLY_ON_FIELD(_, MACRO, type_and_name) MACRO type_and_name
-
-#define NT_FOR_EACH_FIELD(fields, MACRO)\
-    BOOST_PP_SEQ_FOR_EACH_R(1, NT_APPLY_ON_FIELD, MACRO, fields)
-
-#define NT_ENUM_FIELDS(fields, MACRO)\
-    BOOST_PP_SEQ_ENUM(\
-        BOOST_PP_SEQ_TRANSFORM_S(1, NT_APPLY_ON_FIELD, MACRO, fields)\
-    )
-
 #define NT_DEFINE_FIELD(type, name) type name;
 #define NT_DEFINE_FIELD_TYPE(type, name) using BOOST_PP_CAT(name, _t) = type;
 #define NT_PARAMETER(type, name) type name
@@ -73,22 +65,22 @@
     \
     public:\
     \
-        NT_FOR_EACH_FIELD(fields, NT_DEFINE_FIELD)\
-        NT_FOR_EACH_FIELD(fields, NT_DEFINE_FIELD_TYPE)\
+        SEQ_FOR_EACH(fields, NT_DEFINE_FIELD)\
+        SEQ_FOR_EACH(fields, NT_DEFINE_FIELD_TYPE)\
     \
         template <class Cls = cls> cls() {}\
     \
-        cls(NT_ENUM_FIELDS(fields, NT_PARAMETER)) :\
-            NT_ENUM_FIELDS(fields, NT_PARAM_MOVE)\
+        cls(SEQ_ENUM(fields, NT_PARAMETER)) :\
+            SEQ_ENUM(fields, NT_PARAM_MOVE)\
         {}\
     \
-        template <NT_ENUM_FIELDS(fields, NT_TEMPLATE_TPARAM)>\
-        cls(NT_ENUM_FIELDS(fields, NT_TEMPLATE_PARAM)) :\
-            NT_ENUM_FIELDS(fields, NT_PARAM_FORWARD)\
+        template <SEQ_ENUM(fields, NT_TEMPLATE_TPARAM)>\
+        cls(SEQ_ENUM(fields, NT_TEMPLATE_PARAM)) :\
+            SEQ_ENUM(fields, NT_PARAM_FORWARD)\
         {}\
     \
         NT_COMPILE_ON_DEMAND(bool) operator==(const Cls& a, const Cls& b) {\
-            return true NT_FOR_EACH_FIELD(fields, NT_COMPARE);\
+            return true SEQ_FOR_EACH(fields, NT_COMPARE);\
         }\
         NT_COMPILE_ON_DEMAND(bool) operator!=(const Cls& a, const Cls& b) {\
             return !(a == b);\
@@ -97,7 +89,7 @@
         NT_COMPILE_ON_DEMAND(std::ostream&)\
         operator<<(std::ostream& os, const Cls& self) {\
             os << #cls << " { ";\
-            os NT_FOR_EACH_FIELD(fields, NT_PRINT_TO_OSTREAM) << '}';\
+            os SEQ_FOR_EACH(fields, NT_PRINT_TO_OSTREAM) << '}';\
             return os;\
         }\
     \

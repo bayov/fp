@@ -1,44 +1,44 @@
 #pragma once
 
 #include <boost/preprocessor/seq/variadic_seq_to_seq.hpp>
-#include <boost/preprocessor/seq/size.hpp>
-#include <boost/preprocessor/seq/for_each.hpp>
 
+#include <fp/util/pp_seq.h>
+
+/// A variadic-sequence of all keywords in the language.
 #define FP_KEYWORDS\
-    (AND, "and")\
-    (AS, "as")\
-    (BREAK, "break")\
-    (CASE, "case")\
-    (CATCH, "catch")\
-    (CLASS, "class")\
-    (CONCEPT, "concept")\
-    (CONTINUE, "continue")\
-    (DEFAULT, "default")\
-    (DO, "do")\
-    (ELSE, "else")\
-    (ENUM, "enum")\
-    (EXPORT, "export")\
-    (FOR, "for")\
-    (IF, "if")\
-    (IMPLICIT, "implicit")\
-    (IMPORT, "import")\
-    (IN, "in")\
-    (MUT, "mut")\
-    (NOT, "not")\
-    (OF, "of")\
-    (OR, "or")\
-    (OVERRIDE, "override")\
-    (RETURN, "return")\
-    (SWITCH, "switch")\
-    (THROW, "throw")\
-    (TRY, "try")\
-    (WHILE, "while")
+    (AND,       "and")\
+    (AS,        "as")\
+    (BREAK,     "break")\
+    (CASE,      "case")\
+    (CATCH,     "catch")\
+    (CLASS,     "class")\
+    (CONCEPT,   "concept")\
+    (CONTINUE,  "continue")\
+    (DEFAULT,   "default")\
+    (DO,        "do")\
+    (ELSE,      "else")\
+    (ENUM,      "enum")\
+    (EXPORT,    "export")\
+    (FOR,       "for")\
+    (IF,        "if")\
+    (IMPLICIT,  "implicit")\
+    (IMPORT,    "import")\
+    (IN,        "in")\
+    (MUT,       "mut")\
+    (NOT,       "not")\
+    (OF,        "of")\
+    (OR,        "or")\
+    (RETURN,    "return")\
+    (SWITCH,    "switch")\
+    (THROW,     "throw")\
+    (TRY,       "try")\
+    (WHILE,     "while")
 
+/// FP_KEYWORDS as a sequence of pairs.
 #define FP_KEYWORDS_SEQ BOOST_PP_VARIADIC_SEQ_TO_SEQ(FP_KEYWORDS)
 
-#define FP_KEYWORDS_COUNT BOOST_PP_SEQ_SIZE(FP_KEYWORDS_SEQ)
+/// Apply `MACRO` on each element in FP_KEYWORDS.
+#define FP_KEYWORDS_FOR_EACH(MACRO) SEQ_FOR_EACH(FP_KEYWORDS_SEQ, MACRO)
 
-#define FP_KEYWORD_APPLY_EACH(_1, MACRO, keyword) MACRO keyword
-
-#define FP_KEYWORDS_FOR_EACH(MACRO)\
-    BOOST_PP_SEQ_FOR_EACH_R(1, FP_KEYWORD_APPLY_EACH, MACRO, FP_KEYWORDS_SEQ)
+/// Enumerate FP_KEYWORDS after applying `MACRO` to each.
+#define FP_KEYWORDS_ENUM(MACRO) SEQ_ENUM(FP_KEYWORDS_SEQ, MACRO)

@@ -1,8 +1,9 @@
 #pragma once
 
-#include <fp/lex/symbol.h>
+#include <fp/common/symbol.h>
+#include <fp/common/error.h>
+
 #include <fp/lex/token_list.h>
-#include <fp/lex/error.h>
 
 namespace fp::lex::detail {
 
@@ -38,11 +39,9 @@ public:
         symbol_iterator to,
         std::string what = "Invalid symbol"
     ) const {
-        throw lex::error(
-            input_view_t(from, to),
-            line,
-            line_number,
-            std::move(what)
+        throw fp::error(
+            std::move(what),
+            source_origin({ from, to }, line, line_number)
         );
     }
 
@@ -71,14 +70,14 @@ public:
     template <lex::token TOKEN, class... Args>
     void push(Args&&... args) {
         tokens.push_back<TOKEN>(
-            token_source(token_symbols(), line, line_number),
+            source_origin(token_symbols(), line, line_number),
             attribute_t<TOKEN>(std::forward<Args>(args)...)
         );
     }
 
     /// Push a new token to the list, with @ref no_attribute.
     void push(lex::token t) {
-        tokens.push_back(t, token_source(token_symbols(), line, line_number));
+        tokens.push_back(t, source_origin(token_symbols(), line, line_number));
     }
 
     /// Tokenize the current symbol as `TOKEN`.

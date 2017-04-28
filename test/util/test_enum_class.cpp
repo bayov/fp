@@ -29,15 +29,15 @@ TEST(sequence) {
 }
 
 TEST(compile_time_traits) {
-    ASSERT_EQ(2, ENUMERATOR(suit::HEARTS)::index);
-    ASSERT_EQ("HEARTS", ENUMERATOR(suit::HEARTS)::name);
+    ASSERT_EQ(2, enumerator<suit::HEARTS>::index);
+    ASSERT_EQ("HEARTS", enumerator<suit::HEARTS>::name);
 }
 
 TEST(run_time_traits) {
     suit clubs = suit::CLUBS;
-    ASSERT_EQ(1, enumerator(clubs).index());
-    ASSERT_EQ("CLUBS", enumerator(clubs).name());
-    ASSERT_EQ(suit::CLUBS, enumerator(clubs).value());
+    ASSERT_EQ(1, info(clubs).index());
+    ASSERT_EQ("CLUBS", info(clubs).name());
+    ASSERT_EQ(suit::CLUBS, info(clubs).value());
 }
 
 } // fp::util

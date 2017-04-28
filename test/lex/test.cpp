@@ -1,13 +1,15 @@
 #include <gtest/gtest.h>
 
+#include <fp/util/named_tuple.h>
+
+#include <fp/common/symbol.h>
+#include <fp/common/source_origin.h>
+#include <fp/common/error.h>
+
 #include <fp/lex/attribute.h>
-#include <fp/lex/error.h>
-#include <fp/lex/symbol.h>
 #include <fp/lex/token.h>
 #include <fp/lex/token_list.h>
-#include <fp/lex/token_source.h>
 #include <fp/lex/tokenize.h>
-#include <fp/util/named_tuple.h>
 
 namespace fp::lex {
 
@@ -34,19 +36,19 @@ R"fp(
 
         std::cout << "After tokenization:" << std::endl;
         std::cout << "===================" << std::endl;
-        size_t line = tokens.front().source.line_number;
+        size_t line = tokens.front().origin.line_number;
         std::string source_line;
         std::string tokens_line;
         for (const auto& t : tokens) {
-            if (t.source.line_number > line) {
+            if (t.origin.line_number > line) {
                 std::cout << source_line << std::endl;
                 std::cout << tokens_line << std::endl;
-                line = t.source.line_number;
+                line = t.origin.line_number;
                 source_line.clear();
                 tokens_line.clear();
             }
-            std::string source_str(t.source.symbols.view());
-            std::string token_str(util::enumerator(t.value).name());
+            std::string source_str(t.origin.symbols.view());
+            std::string token_str(util::info(t.value).name());
             switch (t.value) {
                 case token::COMMENT:
                     token_str += "(" + std::string(t.attribute.as<token::COMMENT>()) + ")";
@@ -83,21 +85,22 @@ R"fp(
         std::cout << "-------------------" << std::endl;
         std::cout << std::endl;
 
-    } catch (const fp::lex::error& e) {
-        std::cout << "line: " << e.line_number << std::endl << std::endl;
+    } catch (const fp::error& e) {
+        const auto& o = e.origin();
+        std::cout << "line: " << o.line_number << std::endl << std::endl;
 
-        auto from_col = e.symbols.begin() - e.line;
-        auto to_col = from_col + (e.symbols.end() - e.symbols.begin());
+        auto from_col = o.symbols.begin() - o.line;
+        auto to_col = from_col + (o.symbols.end() - o.symbols.begin());
 
-        input_view_t prefix_line(e.line, e.line + from_col);
-        input_view_t error_line(e.line + from_col, e.line + to_col);
+        input_view_t prefix_line(o.line, o.line + from_col);
+        input_view_t error_line(o.line + from_col, o.line + to_col);
         std::cout << prefix_line;
         if (error_line.size() != 0) {
             std::cout << "\033[31m" << error_line << "\033[0m";
         }
-        auto it = e.line + to_col;
+        auto it = o.line + to_col;
         while (it != symbols.end() && *it != '\n' && *it != '\r') { ++it; }
-        input_view_t suffix_line(e.line + to_col, it);
+        input_view_t suffix_line(o.line + to_col, it);
         std::cout << suffix_line << std::endl;
 
         for (size_t i = 0; i < from_col; ++i) { std::cout << " "; }

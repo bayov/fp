@@ -10,12 +10,11 @@
 
 namespace fp::lex::detail {
 
-#define KEYWORD_MAP_ITEM(enumerator, name)\
-    { name, token::enumerator },
+#define FP_KEYWORD_MAP_ITEM(enumerator, name) { name, token::enumerator },
 
 /// A mapping from keyword strings to their matching tokens.
 inline std::unordered_map<std::string_view, token> create_keywords_map() {
-    return { FP_KEYWORDS_FOR_EACH(KEYWORD_MAP_ITEM) };
+    return { FP_KEYWORDS_FOR_EACH(FP_KEYWORD_MAP_ITEM) };
 }
 
 /// Skip symbols until reaching a non-identifier symbol.

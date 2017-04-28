@@ -28,14 +28,14 @@ namespace fp::util {
  *      // compile-time traits are under:
  *      util::enum_class<suit>::enumerator_traits<suit::CLUBS>::name; // "CLUBS"
  *
- *      // but it is easier to access using this macro:
- *      ENUMERATOR(suit::CLUBS)::name; // "CLUBS"
+ *      // but it is easier to access using this typedef:
+ *      enumerator<suit::CLUBS>::name; // "CLUBS"
  *
  *      // run-time traits are under:
  *      util::enum_class<suit>::enumerator_info(suit::CLUBS).name(); // "CLUBS"
  *
  *      // but it is easier to access using this function:
- *      util::enumerator(suit::CLUBS).name(); // "CLUBS"
+ *      util::info(suit::CLUBS).name(); // "CLUBS"
  *
  */
 #define ENUM_CLASS(name, type, enumerators...)\
@@ -130,13 +130,14 @@ public:
 
 };
 
-/// Access compile-time traits of enumerator defined with ENUM_CLASS.
-#define ENUMERATOR(enumerator)\
-    ::fp::util::enum_class<decltype(enumerator)>::enumerator_traits<enumerator>
+/// Access compile-time traits of an enumerator defined with ENUM_CLASS.
+template <auto ENUMERATOR>
+using enumerator =
+    typename enum_class<decltype(ENUMERATOR)>::template enumerator_traits<ENUMERATOR>;
 
-/// Access run-time traits of enumerator defined with ENUM_CLASS.
+/// Access run-time traits of an enumerator defined with ENUM_CLASS.
 template <class Enum>
-typename enum_class<Enum>::enumerator_info enumerator(Enum enumerator) {
+typename enum_class<Enum>::enumerator_info info(Enum enumerator) {
     return typename enum_class<Enum>::enumerator_info(enumerator);
 }
 
