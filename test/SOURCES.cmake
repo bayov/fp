@@ -8,6 +8,7 @@ set(
     util/test_box.cpp
     util/test_enum_class.cpp
     util/test_named_tuple.cpp
+    util/test_overloaded.cpp
     util/test_type_name.cpp
     util/test_va_args.cpp
     PARENT_SCOPE
