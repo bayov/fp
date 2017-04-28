@@ -3,6 +3,7 @@ project(fp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++1z")
 
+include(cmake/glob_sources.cmake)
 include(cmake/package.cmake)
 include(cmake/boost_package.cmake)
 
