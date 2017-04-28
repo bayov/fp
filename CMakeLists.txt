@@ -14,7 +14,7 @@ boost_package(
     range
     DEPENDENCIES config assert concept_check utility type_traits mpl iterator
 )
-finalize_boost_packages(boost-1.63.0)
+finalize_boost_packages(boost-1.64.0)
 
 include_directories(src)
 

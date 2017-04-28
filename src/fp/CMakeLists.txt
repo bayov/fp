@@ -17,8 +17,11 @@ set(
     lex/tokenize.cpp
     lex/tokenize.h
     util/as_string.h
+    util/box.h
     util/enum_class.h
+    util/match.h
     util/named_tuple.h
+    util/overloaded.h
     util/type_name.cpp
     util/type_name.h
     util/va_args.h
