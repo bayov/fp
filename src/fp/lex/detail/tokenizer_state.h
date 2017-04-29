@@ -1,25 +1,24 @@
 #pragma once
 
-#include <fp/common/symbol.h>
-#include <fp/common/error.h>
+#include <fp/common/types.h>
 
 #include <fp/lex/token_list.h>
+#include <fp/lex/error.h>
 
 namespace fp::lex::detail {
 
 /// The internal state of a fp::lex::detail::tokenizer.
-class tokenizer_state {
-public:
+struct tokenizer_state {
 
     token_list tokens;      ///< The current token list.
     symbol_iterator it;     ///< The current symbol.
-    symbol_iterator end;    ///< The last symbol of the input.
+    symbol_iterator end;    ///< The end of the input.
     symbol_iterator token;  ///< The beginning of the current token.
     symbol_iterator line;   ///< The beginning of the current line.
     size_t line_number;     ///< The current line number.
 
     /// Initialize the state to start tokenizing the given input.
-    void initialize(const input_view_t& input) {
+    void initialize(const input_view& input) {
         tokens = token_list();
         it = input.begin();
         end = input.end();
@@ -39,7 +38,7 @@ public:
         symbol_iterator to,
         std::string what = "Invalid symbol"
     ) const {
-        throw fp::error(
+        throw lex::error(
             std::move(what),
             source_origin({ from, to }, line, line_number)
         );
@@ -93,7 +92,7 @@ public:
     }
 
     /// @return An @ref input_view_t to the current token's symbols.
-    input_view_t token_symbols() { return { token, it }; }
+    input_view token_symbols() { return { token, it }; }
 
 };
 

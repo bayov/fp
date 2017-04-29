@@ -11,8 +11,8 @@ class error : public std::exception {
 public:
 
     error(std::string what, source_origin origin) :
-        m_origin(std::move(origin)),
-        m_what(std::move(what))
+        m_what(std::move(what)),
+        m_origin(std::move(origin))
     {}
 
     const char* what() const noexcept override { return m_what.c_str(); }

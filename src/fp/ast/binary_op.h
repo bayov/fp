@@ -1,49 +1,36 @@
 #pragma once
 
-#include <unordered_map>
+#include <fp/lex/token.h>
+#include <fp/lex/token_view.h>
 
-#include <fp/util/enum_class.h>
-
-#include <fp/lex/binary_ops.h>
-
+#include "base_node.h"
 #include "node.h"
 
 namespace fp::ast {
 
-#define FP_BINARY_OP_ENUMERATOR(enumerator, _) enumerator
-
-ENUM_CLASS(binary, uint8_t, FP_BINARY_OPS_ENUM(FP_BINARY_OP_ENUMERATOR));
-
-namespace detail {
-
-#define FP_BINARY_OP_MAP_ITEM(enumerator, op)\
-    { binary::enumerator, op },
-
-/// A mapping from binary-ops to their string representation.
-inline std::unordered_map<binary, std::string_view> create_binary_ops_map() {
-    return { FP_BINARY_OPS_FOR_EACH(FP_BINARY_OP_MAP_ITEM) };
-}
-
-} // detail
-
-/// @return The given binary-op's string representation.
-inline std::string_view as_string(binary op) {
-    static const auto keywords_map = detail::create_binary_ops_map();
-    return keywords_map.at(op);
-}
-
-class binary_op : public node {
+class binary_op : public base_node {
 public:
 
-    binary op() const { return m_op; }
+    using op_t = lex::token;
+
+    binary_op(node lhs, lex::token_iterator it, node rhs) :
+        base_node(ast::tokens(lhs).begin(), ast::tokens(rhs).end()),
+        m_lhs(std::move(lhs)),
+        m_op(it),
+        m_rhs(std::move(rhs))
+    {}
+
+    op_t op() const { return m_op->value; }
     const node& lhs() const { return m_lhs; }
     const node& rhs() const { return m_rhs; }
+
+    const input_view& op_symbols() const { return m_op->origin.symbols; }
 
 private:
 
     node m_lhs;
+    lex::token_iterator m_op;
     node m_rhs;
-    binary m_op;
 
 };
 

@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.6)
 project(fp)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++1z")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
+
+set(WARNING_FLAGS "-Wall -pedantic -Wno-variadic-macros")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS}")
 
 include(cmake/glob_sources.cmake)
 include(cmake/package.cmake)

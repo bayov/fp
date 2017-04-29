@@ -65,22 +65,22 @@
     \
     public:\
     \
-        SEQ_FOR_EACH(fields, NT_DEFINE_FIELD)\
-        SEQ_FOR_EACH(fields, NT_DEFINE_FIELD_TYPE)\
+        TSEQ_FOR_EACH(fields, NT_DEFINE_FIELD)\
+        TSEQ_FOR_EACH(fields, NT_DEFINE_FIELD_TYPE)\
     \
         template <class Cls = cls> cls() {}\
     \
-        cls(SEQ_ENUM(fields, NT_PARAMETER)) :\
-            SEQ_ENUM(fields, NT_PARAM_MOVE)\
+        cls(TSEQ_ENUM(fields, NT_PARAMETER)) :\
+            TSEQ_ENUM(fields, NT_PARAM_MOVE)\
         {}\
     \
-        template <SEQ_ENUM(fields, NT_TEMPLATE_TPARAM)>\
-        cls(SEQ_ENUM(fields, NT_TEMPLATE_PARAM)) :\
-            SEQ_ENUM(fields, NT_PARAM_FORWARD)\
+        template <TSEQ_ENUM(fields, NT_TEMPLATE_TPARAM)>\
+        cls(TSEQ_ENUM(fields, NT_TEMPLATE_PARAM)) :\
+            TSEQ_ENUM(fields, NT_PARAM_FORWARD)\
         {}\
     \
         NT_COMPILE_ON_DEMAND(bool) operator==(const Cls& a, const Cls& b) {\
-            return true SEQ_FOR_EACH(fields, NT_COMPARE);\
+            return true TSEQ_FOR_EACH(fields, NT_COMPARE);\
         }\
         NT_COMPILE_ON_DEMAND(bool) operator!=(const Cls& a, const Cls& b) {\
             return !(a == b);\
@@ -89,7 +89,7 @@
         NT_COMPILE_ON_DEMAND(std::ostream&)\
         operator<<(std::ostream& os, const Cls& self) {\
             os << #cls << " { ";\
-            os SEQ_FOR_EACH(fields, NT_PRINT_TO_OSTREAM) << '}';\
+            os TSEQ_FOR_EACH(fields, NT_PRINT_TO_OSTREAM) << '}';\
             return os;\
         }\
     \

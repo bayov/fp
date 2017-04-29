@@ -13,7 +13,7 @@ namespace fp::lex::detail {
 class tokenizer {
 public:
 
-    inline token_list tokenize(const input_view_t& input) {
+    inline token_list tokenize(const input_view& input) {
         m_state.initialize(input);
         while (m_state.it != m_state.end) { tokenize_one(); }
         return std::move(m_state.tokens);
@@ -167,16 +167,34 @@ private:
                 m_state.tokenize_as<token::R_PAREN>();
                 break;
             case '*':  // 0x2a
-                tokenize_arithmetic<token::MUL, token::MUL_ASSIGN>();
+                if (m_state.next_is<'='>()) {
+                    ++m_state.it;
+                    m_state.tokenize_as<token::MUL_ASSIGN>();
+                } else if (m_state.next_is<'*'>()) {
+                    ++m_state.it;
+                    tokenize_arithmetic<token::POW, token::POW_ASSIGN>();
+                } else {
+                    m_state.tokenize_as<token::MUL>();
+                }
                 break;
             case '+':  // 0x2b
-                tokenize_arithmetic<token::PLUS, token::PLUS_ASSIGN>();
+                if (m_state.next_is<'+'>()) {
+                    ++m_state.it;
+                    m_state.tokenize_as<token::INC>();
+                } else {
+                    tokenize_arithmetic<token::PLUS, token::PLUS_ASSIGN>();
+                }
                 break;
             case ',':  // 0x2c
                 m_state.tokenize_as<token::COMMA>();
                 break;
             case '-':  // 0x2d
-                tokenize_arithmetic<token::MINUS, token::MINUS_ASSIGN>();
+                if (m_state.next_is<'-'>()) {
+                    ++m_state.it;
+                    m_state.tokenize_as<token::DEC>();
+                } else {
+                    tokenize_arithmetic<token::MINUS, token::MINUS_ASSIGN>();
+                }
                 break;
             case '.':  // 0x2e
                 if (m_state.next_is<'.'>()) {

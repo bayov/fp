@@ -1,6 +1,6 @@
 #pragma once
 
-#include <fp/common/symbol.h>
+#include <fp/common/types.h>
 
 #include "error.h"
 #include "token_list.h"
@@ -14,8 +14,8 @@ namespace fp::lex {
  * @throws fp::lex::error
  *      On invalid input.
  */
-token_list tokenize(const input_t&);
-token_list tokenize(const input_view_t&);
+token_list tokenize(const input&);
+token_list tokenize(const input_view&);
 //@}
 
 } // fp::lex

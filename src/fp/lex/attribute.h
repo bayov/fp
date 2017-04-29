@@ -4,7 +4,8 @@
 #include <string>
 #include <variant>
 
-#include <fp/common/symbol.h>
+#include <fp/common/types.h>
+#include <fp/common/types.h>
 
 #include "token.h"
 
@@ -17,12 +18,12 @@ struct no_attribute {};
 template <token> struct attribute { using type = no_attribute; };
 template <token TOKEN> using attribute_t = typename attribute<TOKEN>::type;
 
-template <> struct attribute<token::COMMENT> { using type = input_view_t; };
-template <> struct attribute<token::IDENTIFIER> { using type = input_view_t; };
-template <> struct attribute<token::INTEGER> { using type = uint64_t; };
-template <> struct attribute<token::FLOAT> { using type = double; };
-template <> struct attribute<token::CHAR> { using type = char32_t; };
-template <> struct attribute<token::STRING> { using type = std::string; };
+template <> struct attribute<token::COMMENT>    { using type = input_view; };
+template <> struct attribute<token::IDENTIFIER> { using type = input_view; };
+template <> struct attribute<token::INTEGER>    { using type = integer_type; };
+template <> struct attribute<token::FLOAT>      { using type = float_type; };
+template <> struct attribute<token::CHAR>       { using type = char_type; };
+template <> struct attribute<token::STRING>     { using type = std::string; };
 
 namespace detail {
 

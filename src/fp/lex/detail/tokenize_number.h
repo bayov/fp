@@ -5,9 +5,6 @@
 
 namespace fp::lex::detail {
 
-using integer_type = attribute_t<token::INTEGER>;
-using float_type = attribute_t<token::FLOAT>;
-
 /// Throw an error for a missing digit. Takes a symbol range.
 template <class SymbolRange>
 void digit_error(tokenizer_state& s, symbol_iterator from, symbol_iterator to) {

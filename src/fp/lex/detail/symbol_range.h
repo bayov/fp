@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <fp/common/symbol.h>
+#include <fp/common/types.h>
 
 namespace fp::lex::detail {
 

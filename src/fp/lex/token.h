@@ -5,7 +5,6 @@
 #include <fp/util/enum_class.h>
 
 #include "keywords.h"
-#include "binary_ops.h"
 
 namespace fp::lex {
 
@@ -17,10 +16,15 @@ using token_type = uint8_t;
 /// Enumeration of all tokens in the language.
 ENUM_CLASS(token, token_type,
     QUOTE,          ///< "
+    COMMA,          ///< ,
+    COLON,          ///< :
     SEMICOLON,      ///< ;
     OPTIONAL,       ///< ?
     DECORATOR,      ///< @
     BIT_NOT,        ///< ~
+    PERIOD,         ///< .
+    RANGE,          ///< ..
+    CLOSED_RANGE,   ///< ...
 
     // brackets
     L_PAREN,        ///< (
@@ -33,12 +37,44 @@ ENUM_CLASS(token, token_type,
     // keywords
     FP_KEYWORDS_ENUM(FP_TOKEN_ENUMERATOR),
 
-    // binary-ops (excluding keywords)
-    FP_BINARY_OPS_NO_KEYWORDS_ENUM(FP_TOKEN_ENUMERATOR),
-
     // functions
     TYPE_ARROW,     ///< ->
     LAMBDA_ARROW,   ///< =>
+
+    // arithmetic
+    PLUS,           ///< +
+    MINUS,          ///< -
+    MUL,            ///< *
+    DIV,            ///< /
+    MOD,            ///< %
+    POW,            ///< **
+    BIT_AND,        ///< &
+    BIT_OR,         ///< |
+    XOR,            ///< ^
+    LSHIFT,         ///< <<
+    RSHIFT,         ///< >>
+
+    // assignment
+    ASSIGN,         ///< =
+    PLUS_ASSIGN,    ///< +=
+    MINUS_ASSIGN,   ///< -=
+    MUL_ASSIGN,     ///< *=
+    DIV_ASSIGN,     ///< /=
+    MOD_ASSIGN,     ///< %=
+    POW_ASSIGN,     ///< **=
+    BIT_AND_ASSIGN, ///< &=
+    BIT_OR_ASSIGN,  ///< |=
+    XOR_ASSIGN,     ///< ^=
+    LSHIFT_ASSIGN,  ///< <<=
+    RSHIFT_ASSIGN,  ///< >>=
+
+    // comparison
+    EQ,             ///< ==
+    NE,             ///< !=
+    LT,             ///< <
+    GT,             ///< >
+    LTE,            ///< <=
+    GTE,            ///< >=
 
     // increment & decrement
     INC,            ///< ++

@@ -32,7 +32,7 @@ inline void tokenize_identifier(tokenizer_state& s) {
 inline void tokenize_keyword_or_identifier(tokenizer_state& s) {
     static const auto keywords_map = create_keywords_map();
     skip_to_end_of_identifier(s);
-    auto it = keywords_map.find(s.token_symbols().view());
+    auto it = keywords_map.find(std::string_view(s.token_symbols()));
     if (it != keywords_map.end()) {
         s.push(it->second);
     } else {
