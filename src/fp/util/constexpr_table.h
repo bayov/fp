@@ -113,6 +113,9 @@ public:
         return table[TransformKey{}(key)];
     }
 
+    template <Key KEY>
+    static constexpr Value get() { return create_table()[TransformKey{}(KEY)]; }
+
 private:
 
     static constexpr std::array<Value, SIZE> create_table() {

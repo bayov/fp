@@ -7,7 +7,9 @@
 namespace fp::parse::detail::parsers {
 
 inline ast::node binary_op(parser_state& p, ast::node lhs) {
-    return ast::make<ast::binary_op>(std::move(lhs), p.it++, p.parse());
+    auto op = p.it++;
+    ast::node rhs = p.parse(p.precedence(op));
+    return ast::make<ast::binary_op>(std::move(lhs), op, std::move(rhs));
 }
 
 } // fp::parse::detail::parsers

@@ -39,6 +39,7 @@ set(
     parse/detail/parsers/integer.h
     parse/detail/parsers/postfix_op.h
     parse/detail/parsers/prefix_op.h
+    parse/detail/precedence.h
     parse/detail/prefix_parser.h
     parse/error.h
     util/as_string.h

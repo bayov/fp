@@ -10,7 +10,15 @@ void parser_state::initialize(const lex::token_view& tokens) {
     end = tokens.end();
 }
 
-ast::node parser_state::parse() { return m_parser.parse(); }
+precedence_t parser_state::precedence(lex::token_iterator it) const {
+    return m_parser.precedence(it);
+}
+
+precedence_t parser_state::precedence(lex::token t) const {
+    return m_parser.precedence(t);
+}
+
+ast::node parser_state::parse(precedence_t p) { return m_parser.parse(p); }
 
 void parser_state::error(std::string what) const {
     error(it, it + 1, std::move(what));

@@ -6,6 +6,8 @@
 
 #include <fp/parse/error.h>
 
+#include "precedence.h"
+
 namespace fp::parse::detail {
 
 class parser;
@@ -21,7 +23,10 @@ public:
 
     void initialize(const lex::token_view& tokens);
 
-    ast::node parse();
+    precedence_t precedence(lex::token_iterator) const;
+    precedence_t precedence(lex::token) const;
+
+    ast::node parse(precedence_t p);
 
     /// Throw an error with the current token being parsed.
     void error(std::string what = "Invalid token") const;
