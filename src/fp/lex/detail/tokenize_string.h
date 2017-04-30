@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tokenizer_state.h"
+#include <fp/lex/detail/tokenizer_state.h>
 
 namespace fp::lex::detail {
 

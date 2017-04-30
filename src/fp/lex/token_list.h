@@ -3,10 +3,8 @@
 #include <vector>
 
 #include <fp/util/named_tuple.h>
-
 #include <fp/common/source_location.h>
-
-#include "token_value.h"
+#include <fp/lex/token_value.h>
 
 namespace fp::lex {
 

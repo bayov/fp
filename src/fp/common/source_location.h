@@ -1,8 +1,7 @@
 #pragma once
 
 #include <fp/util/named_tuple.h>
-
-#include "input.h"
+#include <fp/common/input.h>
 
 namespace fp {
 

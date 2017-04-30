@@ -5,8 +5,8 @@
 
 #include <boost/preprocessor/stringize.hpp>
 
-#include "va_args.h"
-#include "pp_seq.h"
+#include <fp/util/va_args.h>
+#include <fp/util/pp_seq.h>
 
 namespace fp::util {
 

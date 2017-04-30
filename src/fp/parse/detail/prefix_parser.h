@@ -1,13 +1,11 @@
 #pragma once
 
 #include <fp/ast/node.h>
-
 #include <fp/parse/detail/parser_state.h>
 #include <fp/parse/detail/parsers/identifier.h>
 #include <fp/parse/detail/parsers/integer.h>
 #include <fp/parse/detail/parsers/prefix_op.h>
-
-#include "constexpr_token_table.h"
+#include <fp/parse/detail/constexpr_token_table.h>
 
 namespace fp::parse::detail {
 

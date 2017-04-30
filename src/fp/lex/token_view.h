@@ -2,7 +2,7 @@
 
 #include <boost/range/iterator_range.hpp>
 
-#include "token_list.h"
+#include <fp/lex/token_list.h>
 
 namespace fp::lex {
 

@@ -3,7 +3,6 @@
 #include <fp/common/types.h>
 #include <fp/common/input.h>
 #include <fp/common/diagnostic.h>
-
 #include <fp/lex/token_list.h>
 
 namespace fp::lex::detail {

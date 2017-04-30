@@ -6,8 +6,7 @@
 
 #include <fp/common/types.h>
 #include <fp/common/input.h>
-
-#include "token.h"
+#include <fp/lex/token.h>
 
 namespace fp::lex {
 

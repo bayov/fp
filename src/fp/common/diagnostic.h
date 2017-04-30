@@ -6,8 +6,7 @@
 #include <list>
 
 #include <fp/util/enum_class.h>
-
-#include "source_location.h"
+#include <fp/common/source_location.h>
 
 namespace fp {
 

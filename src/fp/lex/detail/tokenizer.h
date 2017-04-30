@@ -2,10 +2,10 @@
 
 #include <deque>
 
-#include "tokenizer_state.h"
-#include "tokenize_keyword_or_identifier.h"
-#include "tokenize_number.h"
-#include "tokenize_string.h"
+#include <fp/lex/detail/tokenizer_state.h>
+#include <fp/lex/detail/tokenize_keyword_or_identifier.h>
+#include <fp/lex/detail/tokenize_number.h>
+#include <fp/lex/detail/tokenize_string.h>
 
 namespace fp::lex::detail {
 

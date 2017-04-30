@@ -3,8 +3,7 @@
 #include <cstdint>
 
 #include <fp/util/enum_class.h>
-
-#include "keywords.h"
+#include <fp/lex/keywords.h>
 
 namespace fp::lex {
 

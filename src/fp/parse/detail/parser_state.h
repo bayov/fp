@@ -1,12 +1,9 @@
 #pragma once
 
 #include <fp/common/diagnostic.h>
-
 #include <fp/lex/token_view.h>
-
 #include <fp/ast/node.h>
-
-#include "precedence.h"
+#include <fp/parse/detail/precedence.h>
 
 namespace fp::parse::detail {
 

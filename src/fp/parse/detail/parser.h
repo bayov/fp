@@ -1,12 +1,10 @@
 #pragma once
 
 #include <fp/lex/token_view.h>
-
 #include <fp/ast/node.h>
-
-#include "precedence.h"
-#include "prefix_parser.h"
-#include "infix_parser.h"
+#include <fp/parse/detail/precedence.h>
+#include <fp/parse/detail/prefix_parser.h>
+#include <fp/parse/detail/infix_parser.h>
 
 namespace fp::parse::detail {
 

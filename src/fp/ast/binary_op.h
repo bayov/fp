@@ -2,9 +2,8 @@
 
 #include <fp/lex/token.h>
 #include <fp/lex/token_view.h>
-
-#include "base_node.h"
-#include "node.h"
+#include <fp/ast/base_node.h>
+#include <fp/ast/node.h>
 
 namespace fp::ast {
 

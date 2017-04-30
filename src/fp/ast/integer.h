@@ -1,6 +1,6 @@
 #pragma once
 
-#include "base_node.h"
+#include <fp/ast/base_node.h>
 
 namespace fp::ast {
 

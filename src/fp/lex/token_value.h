@@ -2,9 +2,8 @@
 
 #include <fp/util/named_tuple.h>
 #include <fp/common/source_location.h>
-
-#include "attribute.h"
-#include "token.h"
+#include <fp/lex/attribute.h>
+#include <fp/lex/token.h>
 
 namespace fp::lex {
 

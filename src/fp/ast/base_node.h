@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fp/common/source_location.h>
-
 #include <fp/lex/token_view.h>
 
 namespace fp::ast {

@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "cast.h"
+#include <fp/util/cast.h>
 
 namespace fp::util {
 

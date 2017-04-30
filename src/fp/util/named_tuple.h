@@ -6,7 +6,7 @@
 #include <boost/preprocessor/seq/variadic_seq_to_seq.hpp>
 #include <boost/preprocessor/cat.hpp>
 
-#include "pp_seq.h"
+#include <fp/util/pp_seq.h>
 
 /**
  * Define a named-tuple.

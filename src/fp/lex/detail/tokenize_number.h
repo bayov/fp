@@ -1,7 +1,7 @@
 #pragma once
 
-#include "tokenizer_state.h"
-#include "identifier_symbols.h"
+#include <fp/lex/detail/tokenizer_state.h>
+#include <fp/lex/detail/identifier_symbols.h>
 
 namespace fp::lex::detail {
 

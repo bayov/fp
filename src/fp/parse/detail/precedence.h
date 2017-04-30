@@ -1,8 +1,7 @@
 #pragma once
 
 #include <boost/preprocessor/slot/counter.hpp>
-
-#include "constexpr_token_table.h"
+#include <fp/parse/detail/constexpr_token_table.h>
 
 namespace fp::parse::detail {
 

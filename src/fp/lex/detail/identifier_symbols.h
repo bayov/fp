@@ -1,6 +1,6 @@
 #pragma once
 
-#include "symbol_range.h"
+#include <fp/lex/detail/symbol_range.h>
 
 namespace fp::lex::detail {
 

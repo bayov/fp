@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fp/util/constexpr_table.h>
-
 #include <fp/lex/token.h>
 
 namespace fp::parse::detail {

@@ -3,7 +3,6 @@
 #include <memory>
 
 #include <fp/common/source_location.h>
-
 #include <fp/lex/token_view.h>
 
 namespace fp::ast {
@@ -40,4 +39,4 @@ constexpr decltype(auto) visit(Visitor&& visitor, const fp::ast::node& n) {
 
 } // std
 
-#include "detail/variant_node.h"
+#include <fp/ast/detail/variant_node.h>
