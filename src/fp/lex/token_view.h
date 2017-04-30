@@ -14,11 +14,11 @@ struct token_view : boost::iterator_range<token_iterator> {
 
     using boost::iterator_range<token_iterator>::iterator_range;
 
-    operator source_origin() const {
+    operator source_location() const {
         return {
-            { front().origin.symbols.begin(), back().origin.symbols.end() },
-            front().origin.line,
-            front().origin.line_number
+            { front().source.symbols.begin(), back().source.symbols.end() },
+            front().source.line,
+            front().source.line_number
         };
     }
 

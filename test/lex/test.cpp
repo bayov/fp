@@ -3,8 +3,8 @@
 #include <fp/util/named_tuple.h>
 
 #include <fp/common/types.h>
-#include <fp/common/source_origin.h>
-#include <fp/common/error.h>
+#include <fp/common/source_location.h>
+#include <fp/common/diagnostic.h>
 
 #include <fp/lex/attribute.h>
 #include <fp/lex/token.h>
@@ -17,7 +17,7 @@ TEST(fiddle, test) {
     std::cout << std::endl;
     std::cout << std::endl;
 
-    std::string symbols =
+    input_view symbols =
 R"fp(
 # test, test, 1, 2, 3...
 '"'
@@ -36,18 +36,18 @@ R"fp(
 
         std::cout << "After tokenization:" << std::endl;
         std::cout << "===================" << std::endl;
-        size_t line = tokens.front().origin.line_number;
+        size_t line = tokens.front().source.line_number;
         std::string source_line;
         std::string tokens_line;
         for (const auto& t : tokens) {
-            if (t.origin.line_number > line) {
+            if (t.source.line_number > line) {
                 std::cout << source_line << std::endl;
                 std::cout << tokens_line << std::endl;
-                line = t.origin.line_number;
+                line = t.source.line_number;
                 source_line.clear();
                 tokens_line.clear();
             }
-            std::string source_str(t.origin.symbols);
+            std::string source_str(t.source.symbols);
             std::string token_str(util::info(t.value).name());
             switch (t.value) {
                 case token::COMMENT:
@@ -85,8 +85,8 @@ R"fp(
         std::cout << "-------------------" << std::endl;
         std::cout << std::endl;
 
-    } catch (const fp::error& e) {
-        const auto& o = e.origin();
+    } catch (const fp::diagnostic& e) {
+        const auto& o = e.source();
         std::cout << "line: " << o.line_number << std::endl << std::endl;
 
         auto from_col = o.symbols.begin() - o.line;

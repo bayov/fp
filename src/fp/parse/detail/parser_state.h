@@ -1,10 +1,10 @@
 #pragma once
 
+#include <fp/common/diagnostic.h>
+
 #include <fp/lex/token_view.h>
 
 #include <fp/ast/node.h>
-
-#include <fp/parse/error.h>
 
 #include "precedence.h"
 

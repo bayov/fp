@@ -2,13 +2,13 @@
 
 #include <fp/util/named_tuple.h>
 
-#include "types.h"
+#include "input.h"
 
 namespace fp {
 
-/// Information about the original source of an element.
+/// Information about the location of an element in the source code.
 NAMED_TUPLE(
-    source_origin,
+    source_location,
     (input_view, symbols)(symbol_iterator, line)(size_t, line_number)
 );
 

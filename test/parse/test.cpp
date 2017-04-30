@@ -7,7 +7,7 @@
 namespace fp::parse {
 
 TEST(parse, test) {
-    std::string symbols =
+    input_view symbols =
 R"fp(
 a, b for a + b
 )fp";
@@ -58,8 +58,8 @@ a, b for a + b
         print_ast(ast);
         std::cout << std::endl << "------------------------" << std::endl;
 
-    } catch (const fp::error& e) {
-        const auto& o = e.origin();
+    } catch (const fp::diagnostic& e) {
+        const auto& o = e.source();
         std::cout << "line: " << o.line_number << std::endl << std::endl;
 
         auto from_col = o.symbols.begin() - o.line;

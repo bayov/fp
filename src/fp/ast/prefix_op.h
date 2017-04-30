@@ -19,7 +19,7 @@ public:
     const node& rhs() const { return m_rhs; }
 
     const input_view& op_symbols() const {
-        return tokens().front().origin.symbols;
+        return tokens().front().source.symbols;
     }
 
 private:

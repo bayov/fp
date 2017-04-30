@@ -29,7 +29,15 @@ void parser_state::error(
     lex::token_iterator to,
     std::string what
 ) const {
-    throw parse::error(std::move(what), { from, to });
+    if (from == end) { from = end - 1;} // special case: from == it == end
+    throw diagnostic::error(
+        source_location(
+            { from->source.symbols.begin(), (to - 1)->source.symbols.end() },
+            from->source.line,
+            from->source.line_number
+        ),
+        std::move(what)
+    );
 }
 
 } // fp::parse::detail

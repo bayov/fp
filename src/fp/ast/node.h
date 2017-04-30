@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include <fp/common/source_origin.h>
+#include <fp/common/source_location.h>
 
 #include <fp/lex/token_view.h>
 
@@ -12,8 +12,8 @@ namespace detail { struct variant_node; }
 
 using node = std::unique_ptr<detail::variant_node>;
 
-/// The origin of the node inside the source code.
-const source_origin& origin(const node&);
+/// The node's source-location.
+const source_location& source(const node&);
 
 /// The tokens that make up this node.
 const lex::token_view& tokens(const node&);

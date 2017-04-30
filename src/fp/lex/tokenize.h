@@ -1,6 +1,6 @@
 #pragma once
 
-#include <fp/common/types.h>
+#include <fp/common/input.h>
 
 #include "error.h"
 #include "token_list.h"

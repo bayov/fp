@@ -24,7 +24,7 @@ public:
     const node& lhs() const { return m_lhs; }
     const node& rhs() const { return m_rhs; }
 
-    const input_view& op_symbols() const { return m_op->origin.symbols; }
+    const input_view& op_symbols() const { return m_op->source.symbols; }
 
 private:
 

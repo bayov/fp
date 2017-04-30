@@ -10,8 +10,11 @@ set(
     ast/node.h
     ast/postfix_op.h
     ast/prefix_op.h
-    common/error.h
-    common/source_origin.h
+    common/diagnostic.cpp
+    common/diagnostic.h
+    common/input.cpp
+    common/input.h
+    common/source_location.h
     common/types.h
     lex/attribute.h
     lex/detail/identifier_symbols.h
@@ -21,7 +24,6 @@ set(
     lex/detail/tokenize_string.h
     lex/detail/tokenizer.h
     lex/detail/tokenizer_state.h
-    lex/error.h
     lex/keywords.h
     lex/token.h
     lex/token_list.h
@@ -41,7 +43,6 @@ set(
     parse/detail/parsers/prefix_op.h
     parse/detail/precedence.h
     parse/detail/prefix_parser.h
-    parse/error.h
     util/as_string.h
     util/box.h
     util/cast.h

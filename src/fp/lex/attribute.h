@@ -5,7 +5,7 @@
 #include <variant>
 
 #include <fp/common/types.h>
-#include <fp/common/types.h>
+#include <fp/common/input.h>
 
 #include "token.h"
 

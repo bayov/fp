@@ -13,7 +13,7 @@ namespace fp::lex::detail {
 #define FP_KEYWORD_MAP_ITEM(enumerator, name) { name, token::enumerator },
 
 /// A mapping from keyword strings to their matching tokens.
-inline std::unordered_map<std::string_view, token> create_keywords_map() {
+inline std::unordered_map<input_view, token> create_keywords_map() {
     return { FP_KEYWORDS_FOR_EACH(FP_KEYWORD_MAP_ITEM) };
 }
 
@@ -32,7 +32,7 @@ inline void tokenize_identifier(tokenizer_state& s) {
 inline void tokenize_keyword_or_identifier(tokenizer_state& s) {
     static const auto keywords_map = create_keywords_map();
     skip_to_end_of_identifier(s);
-    auto it = keywords_map.find(std::string_view(s.token_symbols()));
+    auto it = keywords_map.find(s.token_symbols());
     if (it != keywords_map.end()) {
         s.push(it->second);
     } else {

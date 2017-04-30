@@ -13,7 +13,7 @@ const base_node& base(const node& n) {
 
 } // detail
 
-const source_origin& origin(const node& n) { return base(n).origin(); }
+const source_location& source(const node& n) { return base(n).source(); }
 
 const lex::token_view& tokens(const node& n) { return base(n).tokens(); }
 
