@@ -4,7 +4,7 @@
 
 namespace fp::util {
 
-/// A simple functor that explicity casts to `T`.
+/// A simple functor that explicitly casts to `T`.
 template <class T>
 struct cast {
     template <class Arg>

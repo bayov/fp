@@ -8,6 +8,7 @@ set(
     lex/test.cpp
     parse/test.cpp
     util/test_box.cpp
+    util/test_constexpr_table.cpp
     util/test_enum_class.cpp
     util/test_match.cpp
     util/test_named_tuple.cpp

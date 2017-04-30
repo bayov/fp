@@ -4,7 +4,7 @@
 
 namespace fp::util {
 
-/// A Boxed value is stored on the heap.
+/// An object that is stored on the heap. Implicitly convertible to `T`.
 template <class T>
 class box {
 public:
