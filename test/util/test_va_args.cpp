@@ -1,8 +1,7 @@
-#include <boost/preprocessor/stringize.hpp>
-
 #include <fp/util/va_args.h>
 
 #include <catergorized_test.h>
+#include <assert_macro_eq.h>
 
 #define TEST(what) CATEGORIZED_TEST(util, va_args, what)
 
@@ -11,7 +10,7 @@ namespace fp::util {
 TEST(size) { ASSERT_EQ(3, VA_ARGS_SIZE(a, b, c)); }
 
 TEST(to_seq) {
-    ASSERT_EQ("(a)(b)(c)", BOOST_PP_STRINGIZE(VA_ARGS_TO_SEQ(a, b, c)));
+    ASSERT_MACRO_EQ("(a)(b)(c)", VA_ARGS_TO_SEQ(a, b, c));
 }
 
 TEST(to_seq_of_256_elements) {
@@ -37,9 +36,9 @@ TEST(to_seq_of_256_elements) {
         "(238)(239)(240)(241)(242)(243)(244)(245)(246)(247)(248)(249)"
         "(250)(251)(252)(253)(254)(255)(256)"
     ;
-    ASSERT_EQ(
+    ASSERT_MACRO_EQ(
         expected,
-        BOOST_PP_STRINGIZE(VA_ARGS_TO_SEQ(
+        VA_ARGS_TO_SEQ(
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
             18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
             33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
@@ -60,7 +59,7 @@ TEST(to_seq_of_256_elements) {
             226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237,
             238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
             250, 251, 252, 253, 254, 255, 256
-        ))
+        )
     );
 }
 
