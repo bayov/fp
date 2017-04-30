@@ -7,8 +7,6 @@
 #define SEQ_APPLY_EACH_(_, MACRO, v) MACRO(v)
 
 /**
- * Convenience wrapper over BOOST_PP_SEQ_FOR_EACH.
- *
  * @example
  *
  *      #define SEQ (1)(2)(3)
@@ -20,8 +18,6 @@
     BOOST_PP_SEQ_FOR_EACH_R(1, SEQ_APPLY_EACH_, MACRO, seq)
 
 /**
- * Convenience wrapper over BOOST_PP_SEQ_TRANSFORM.
- *
  * @example
  *
  *      #define SEQ (1)(2)(3)
@@ -33,8 +29,6 @@
     BOOST_PP_SEQ_TRANSFORM_S(1, SEQ_APPLY_EACH_, MACRO, seq)
 
 /**
- * Convenience wrapper over BOOST_PP_SEQ_ENUM.
- *
  * @example
  *
  *      #define SEQ (1)(2)(3)
@@ -47,8 +41,6 @@
 #define TSEQ_APPLY_EACH_(_, MACRO, v) MACRO v
 
 /**
- * Like SEQ_FOR_EACH, but for sequence of tuples.
- *
  * @example
  *
  *      #define TSEQ ((a, 1))((b, 2))((c, 3))
@@ -60,8 +52,6 @@
     BOOST_PP_SEQ_FOR_EACH_R(1, TSEQ_APPLY_EACH_, MACRO, seq)
 
 /**
- * Like SEQ_TRANSFORM, but for sequence of tuples.
- *
  * @example
  *
  *      #define TSEQ ((a, 1))((b, 2))((c, 3))
@@ -73,8 +63,6 @@
     BOOST_PP_SEQ_TRANSFORM_S(1, TSEQ_APPLY_EACH_, MACRO, seq)
 
 /**
- * Like SEQ_ENUM, but for sequence of tuples.
- *
  * @example
  *
  *      #define TSEQ ((a, 1))((b, 2))((c, 3))

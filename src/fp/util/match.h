@@ -28,7 +28,7 @@ private:
 } // detail
 
 /**
- * Syntax sugar over std::variant matching (visiting):
+ * Syntax sugar over std::variant matching (std::visit).
  *
  * @example
  *
@@ -38,7 +38,7 @@ private:
  *          [](int) { return "int"; }
  *          [](std::string) { return "string"; }
  *      );
- *      // s == "string"
+ *      assert(s == "string");
  *
  * @note
  *      Use `[](auto&&) { ... }` for an "otherwise-match-clause".

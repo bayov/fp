@@ -3,10 +3,10 @@
 #include <type_traits>
 #include <string>
 
-#include <boost/preprocessor/seq/enum.hpp>
-#include <boost/preprocessor/seq/transform.hpp>
+#include <boost/preprocessor/stringize.hpp>
 
 #include "va_args.h"
+#include "pp_seq.h"
 
 namespace fp::util {
 
@@ -63,24 +63,19 @@ template <class Enum>
 using enum_class_traits =
     std::remove_cv_t<decltype(get_enum_class_traits_of(Enum{}))>;
 
-#define ENUM_CLASS_ENUMERATOR_STRING(_1, _2, enumerator) #enumerator
-
-#define ENUM_CLASS_ENUMERATOR_QUALIFIED(_1, name, enumerator) name::enumerator
+#define ENUM_CLASS_ENUMERATOR_QUALIFIED(enumerator) enum_type::enumerator
 
 #define ENUM_CLASS_TRAITS(enum_name, type, enumerators)\
     struct enum_class_##enum_name##_traits {\
+        using enum_type = enum_name;\
         static constexpr auto name = #enum_name;\
         using underlying_type = type;\
         static constexpr const char* enumerator_names[] = {\
-            BOOST_PP_SEQ_ENUM(BOOST_PP_SEQ_TRANSFORM_S(\
-                1, ENUM_CLASS_ENUMERATOR_STRING, _, enumerators\
-            ))\
+            SEQ_ENUM(enumerators, BOOST_PP_STRINGIZE)\
         };\
         using sequence = ::fp::util::enumerator_sequence<\
             enum_name,\
-            BOOST_PP_SEQ_ENUM(BOOST_PP_SEQ_TRANSFORM_S(\
-                1, ENUM_CLASS_ENUMERATOR_QUALIFIED, enum_name, enumerators\
-            ))\
+            SEQ_ENUM(enumerators, ENUM_CLASS_ENUMERATOR_QUALIFIED)\
         >;\
         static constexpr size_t size = sequence::size;\
     };\

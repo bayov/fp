@@ -25,11 +25,12 @@ TEST(default_constructible) {
     ASSERT_TRUE(p.name.empty());
 }
 
-// TEST(features_are_compiled_on_demand)
-// The below code should compile successfully, even though `skinny` has no
-// default-constructor, no operator==, no operator<<, etc.
-struct skinny { skinny() = delete; };
-NAMED_TUPLE(has_skinny, (int, n)(skinny, s));
+// TEST(features_are_compiled_on_demand) {
+    // The below code should compile successfully, even though `skinny` has no
+    // default-constructor, no operator==, no operator<<, etc.
+    struct skinny { skinny() = delete; };
+    NAMED_TUPLE(has_skinny, (int, n)(skinny, s));
+// }
 
 TEST(constructible_from_convertible_types) {
     const char* name = "Bjarne Stroustrup";
