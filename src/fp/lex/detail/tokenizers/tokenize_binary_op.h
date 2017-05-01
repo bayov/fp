@@ -71,18 +71,26 @@ void token_binary_ops(tokenizer_state& s) {
         token::SECOND_TOKEN##_ASSIGN\
     >
 
-/// Tokenize one of `+`, `-`, `++`, `--`, `+=`, or `-=`.
-template <symbol_t PLUS_OR_MINUS>
-void tokenize_plus_or_minus(tokenizer_state& s) {
-    constexpr token t = PLUS_OR_MINUS == '+' ? token::PLUS : token::MINUS;
-    constexpr token tt = PLUS_OR_MINUS == '+' ? token::INC : token::DEC;
-    constexpr token te = PLUS_OR_MINUS == '+' ?
-                         token::PLUS_ASSIGN : token::MINUS_ASSIGN;
-    if (s.next_is<PLUS_OR_MINUS>()) {
+/// Tokenize one of `+`, `++`, or `+=`
+void tokenize_plus(tokenizer_state& s) {
+    if (s.next_is<'+'>()) {
         ++s.it;
-        s.tokenize_as<tt>(); // `++` or `--`
+        s.tokenize_as<token::INC>();
     } else {
-        tokenize_binary_op<t, te>(s);
+        tokenize_binary_op<token::PLUS, token::PLUS_ASSIGN>(s);
+    }
+}
+
+/// Tokenize one of `-`, `--`, `->`, or `-=`
+void tokenize_minus(tokenizer_state& s) {
+    if (s.next_is<'-'>()) {
+        ++s.it;
+        s.tokenize_as<token::DEC>();
+    } else if (s.next_is<'>'>()) {
+        ++s.it;
+        s.tokenize_as<token::TYPE_ARROW>();
+    } else {
+        tokenize_binary_op<token::MINUS, token::MINUS_ASSIGN>(s);
     }
 }
 

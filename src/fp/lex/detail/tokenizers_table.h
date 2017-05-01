@@ -139,8 +139,8 @@ using tokenizers_table =
     ::set<'z' , tokenize_keyword_or_identifier>
 
     // binary-operators
-    ::set<'+' , tokenize_plus_or_minus<'+'>>
-    ::set<'-' , tokenize_plus_or_minus<'-'>>
+    ::set<'+' , tokenize_plus>
+    ::set<'-' , tokenize_minus>
     ::set<'*' , TOKENIZE_BINARY_OPS(MUL, '*', POW)>
     ::set<'/' , TOKENIZE_BINARY_OP(DIV)>
     ::set<'%' , TOKENIZE_BINARY_OP(MOD)>

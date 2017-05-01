@@ -36,7 +36,7 @@ ENUM_CLASS(token, token_type,
     // keywords
     FP_KEYWORDS_ENUM(FP_TOKEN_ENUMERATOR),
 
-    // functions
+    // arrows
     TYPE_ARROW,     ///< ->
     LAMBDA_ARROW,   ///< =>
 
@@ -53,7 +53,7 @@ ENUM_CLASS(token, token_type,
     LSHIFT,         ///< <<
     RSHIFT,         ///< >>
 
-    // assignment
+    // assignments
     ASSIGN,         ///< =
     PLUS_ASSIGN,    ///< +=
     MINUS_ASSIGN,   ///< -=
@@ -67,7 +67,7 @@ ENUM_CLASS(token, token_type,
     LSHIFT_ASSIGN,  ///< <<=
     RSHIFT_ASSIGN,  ///< >>=
 
-    // comparison
+    // comparisons
     EQ,             ///< ==
     NE,             ///< !=
     LT,             ///< <

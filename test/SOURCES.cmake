@@ -6,15 +6,16 @@ set(
     include/assert_same.h
     include/catergorized_test.h
     lex/test.cpp
+    lex/tokenize.cpp
     parse/test.cpp
-    util/test_box.cpp
-    util/test_constexpr_table.cpp
-    util/test_enum_class.cpp
-    util/test_match.cpp
-    util/test_named_tuple.cpp
-    util/test_overloaded.cpp
-    util/test_pp_seq.cpp
-    util/test_type_name.cpp
-    util/test_va_args.cpp
+    util/box.cpp
+    util/constexpr_table.cpp
+    util/enum_class.cpp
+    util/match.cpp
+    util/named_tuple.cpp
+    util/overloaded.cpp
+    util/pp_seq.cpp
+    util/type_name.cpp
+    util/va_args.cpp
     PARENT_SCOPE
 )
