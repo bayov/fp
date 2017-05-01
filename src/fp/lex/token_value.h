@@ -7,7 +7,7 @@
 
 namespace fp::lex {
 
-/// The type of the values stored in a @ref token_list.
+/// A token, it's attribute, and it's location in the source code.
 NAMED_TUPLE(
     token_value,
     (token, value)(token_attribute, attribute)(source_location, source)

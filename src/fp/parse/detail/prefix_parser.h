@@ -16,7 +16,8 @@ inline ast::node prefix_parser_error(parser_state& s) {
     throw std::invalid_argument("");
 }
 
-using prefix_parser_table = constexpr_token_table<prefix_parser_t>
+using prefix_parser_table =
+    constexpr_token_table<prefix_parser_t>
     ::set_default<prefix_parser_error>
     ::set<lex::token::IDENTIFIER, parsers::identifier>
     ::set<lex::token::INTEGER, parsers::integer>
@@ -26,6 +27,7 @@ using prefix_parser_table = constexpr_token_table<prefix_parser_t>
     ::set<lex::token::MINUS, parsers::prefix_op>
     ::set<lex::token::BIT_AND, parsers::prefix_op>
     ::set<lex::token::INC, parsers::prefix_op>
-    ::set<lex::token::DEC, parsers::prefix_op>;
+    ::set<lex::token::DEC, parsers::prefix_op>
+;
 
 } // fp::parse::detail

@@ -21,7 +21,6 @@ set(
     lex/attribute.h
     lex/detail/identifier_symbols.h
     lex/detail/symbol_range.h
-    lex/detail/tokenizer.h
     lex/detail/tokenizer_state.h
     lex/detail/tokenizers/tokenize_binary_op.h
     lex/detail/tokenizers/tokenize_comment.h

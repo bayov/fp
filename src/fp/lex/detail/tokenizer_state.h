@@ -1,5 +1,7 @@
 #pragma once
 
+#include <deque>
+
 #include <fp/common/types.h>
 #include <fp/common/input.h>
 #include <fp/common/diagnostic_report.h>
@@ -57,8 +59,8 @@ public:
     {}
 
     /// Report a diagnostic error with the symbols of the current token.
-    void error(std::string what = "Invalid symbol") const {
-        error(m_token, it + 1, std::move(what));
+    void error(std::string what = "Invalid symbol") {
+        error(m_token, it, std::move(what));
     }
 
     /// Report a diagnostic error with symbols `[from, to)`.
@@ -66,11 +68,19 @@ public:
         symbol_iterator from,
         symbol_iterator to,
         std::string what = "Invalid symbol"
-    ) const {
-        m_diagnostics.add(diagnostic::error(
-            source_location({ from, to }, m_line, m_line_number),
-            std::move(what)
-        ));
+    ) {
+        report(diagnostic::error(location(from, to), std::move(what)));
+    }
+
+    /// Report the given diagnostic.
+    void report(diagnostic d) { m_diagnostics.report(std::move(d)); }
+
+    /// @return The source location of the current token.
+    source_location location() { return location(m_token, it); }
+
+    /// @return The source location of `[from, to)` in the current line.
+    source_location location(symbol_iterator from, symbol_iterator to) {
+        return source_location({ from, to }, m_line, m_line_number);
     }
 
     /// @return The current token's symbols.
@@ -79,9 +89,8 @@ public:
     /// Set the current symbol to be the next token.
     void start_next_token() { m_token = it; }
 
-    /// Advance one symbol and start a new-line.
+    /// Start a new-line (beginning from the current token `it`).
     void newline() {
-        ++it;
         m_line = it;
         ++m_line_number;
     }
@@ -97,29 +106,19 @@ public:
     template <token TOKEN, class... Args>
     void push(Args&&... args) {
         m_tokens.push_back<TOKEN>(
-            source_location(token_symbols(), m_line, m_line_number),
+            location(),
             attribute_t<TOKEN>(std::forward<Args>(args)...)
         );
     }
 
     /// Push a new token to the list, with @ref no_attribute.
-    void push(token t) {
-        m_tokens.push_back(
-            t,
-            source_location(token_symbols(), m_line, m_line_number)
-        );
-    }
+    void push(token t) { m_tokens.push_back(t, location()); }
 
     /// Tokenize the current symbol as `TOKEN`.
     template <token TOKEN>
     void tokenize_as() {
         ++it;
         push<TOKEN>();
-    }
-
-    /// Skip to the next `'\n'` or `'\r'`.
-    void skip_to_end_of_line() {
-        while (it != end && *it != '\n' && *it != '\r') { ++it; }
     }
 
 private:

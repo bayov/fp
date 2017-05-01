@@ -4,8 +4,9 @@
 
 namespace fp::lex::detail {
 
+/// Tokenize a comment, its content being all symbols to the end of the line.
 inline void tokenize_comment(tokenizer_state& s) {
-    s.skip_to_end_of_line();
+    while (s.it != s.end && *s.it != '\n' && *s.it != '\r') { ++s.it; }
     s.push<token::COMMENT>(s.token_symbols());
 }
 

@@ -35,37 +35,36 @@ inline void tokenize_char(tokenizer_state& s) {
     auto value = unescaped_char<'\''>(s);
     ++s.it; // skip over character value
     if (s.it == s.end || *s.it != '\'') {
-        s.error(s.it, s.it, "Missing terminating `'`");
+        auto d =  diagnostic::error(
+            s.location(s.it, s.it),
+            "Missing terminating `'`"
+        );
+        d.add_supplement(s.location());
     }
     ++s.it; // skip over closing `'`
     s.push<token::CHAR>(value);
 }
 
 /**
- * Tokenize the following symbols as a string token (token::STRING), until
- * reaching either a `"` or an `{` terminator.
+ * Tokenize the following symbols as a string token (token::STRING), and a
+ * terminating `"` or `{` (token::QUOTE or token::L_BRACE).
  *
  * @note
- *      If the string is empty, no token will be pushed to the token-list.
+ *      If the string is empty, no token::STRING will be pushed.
  */
-inline void tokenize_string_section(tokenizer_state& s) {
+inline void tokenize_string(tokenizer_state& s) {
     std::string value;
     while (*s.it != '"' && *s.it != '{') {
         if (s.it == s.end || *s.it == '\n' || *s.it == '\r') {
             s.error(s.it, s.it, "Missing terminating `\"`");
+            // in order to recover from the error, we insert a terminator
+            s.push<token::QUOTE>();
+            return;
         }
         value += unescaped_char<'"'>(s);
         ++s.it;
     }
     if (!value.empty()) { s.push<token::STRING>(std::move(value)); }
-}
-
-/**
- * Tokenize a string (token::STRING) and a terminating `"` or `{` (token::QUOTE
- * or token::L_BRACE).
- */
-inline void tokenize_string_and_terminator(tokenizer_state& s) {
-    tokenize_string_section(s);
     s.start_next_token();
     if (*s.it == '"') {
         s.tokenize_as<token::QUOTE>();
@@ -82,7 +81,7 @@ inline void tokenize_string_and_terminator(tokenizer_state& s) {
 inline void tokenize_quote(tokenizer_state& s) {
     s.tokenize_as<token::QUOTE>();
     s.start_next_token();
-    tokenize_string_and_terminator(s);
+    tokenize_string(s);
 }
 
 /**
@@ -110,7 +109,7 @@ inline void tokenize_right_brace(tokenizer_state& s) {
         if (s.string_iterpolation_stack.back() == 0) {
             s.string_iterpolation_stack.pop_back();
             s.start_next_token();
-            tokenize_string_and_terminator(s);
+            tokenize_string(s);
         } else {
             --s.string_iterpolation_stack.back();
         }

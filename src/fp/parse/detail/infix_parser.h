@@ -14,7 +14,8 @@ inline ast::node infix_parser_non_infix(parser_state& s, ast::node lhs) {
     return lhs;
 }
 
-using infix_parser_table = constexpr_token_table<infix_parser_t>
+using infix_parser_table =
+    constexpr_token_table<infix_parser_t>
     ::set_default<infix_parser_non_infix>
 
     // binary-operators
@@ -58,6 +59,7 @@ using infix_parser_table = constexpr_token_table<infix_parser_t>
     // postfix-operators
     ::set<lex::token::OPTIONAL, parsers::postfix_op>
     ::set<lex::token::INC, parsers::postfix_op>
-    ::set<lex::token::DEC, parsers::postfix_op>;
+    ::set<lex::token::DEC, parsers::postfix_op>
+;
 
 } // fp::parse::detail

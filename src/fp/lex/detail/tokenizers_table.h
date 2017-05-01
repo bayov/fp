@@ -22,21 +22,40 @@ struct symbol_to_index {
     }
 };
 
-void tokenize_error(tokenizer_state& s) { s.error(); }
-inline void skip(tokenizer_state& s) { ++s.it; }
-inline void line_feed(tokenizer_state& s) { s.newline(); }
+/// Tokenize the symbol as a token::ERROR, and report a diagnostic error.
+void error(tokenizer_state& s) {
+    s.tokenize_as<token::ERROR_IGNORE>();
+    s.error();
+}
 
-inline void carriage_return(tokenizer_state& s) {
-    if (s.next_is<'\n'>()) { ++s.it; } // CRLF (\r\n)
+void error_op(tokenizer_state& s) {
+    s.tokenize_as<token::ERROR_OP>();
+    s.error();
+}
+
+/// Skip over a symbol.
+inline void skip(tokenizer_state& s) { ++s.it; }
+
+/// Skip over a symbol and start a new line.
+inline void line_feed(tokenizer_state& s) {
+    ++s.it;
     s.newline();
 }
 
+/// Like @ref line_feed, but skips over CRLF (`\r\n`) when encountered.
+inline void carriage_return(tokenizer_state& s) {
+    if (s.next_is<'\n'>()) { ++s.it; }
+    line_feed(s);
+}
+
+/// Tokenize the symbol as `TOKEN`.
 template <token TOKEN>
 void as(tokenizer_state& s) { s.tokenize_as<TOKEN>(); }
 
+/// Dispatch table: maps symbols to tokenizers.
 using tokenizers_table =
     util::constexpr_table<symbol_t, tokenizer_t, 256, symbol_to_index>
-    ::set_default<tokenize_error>
+    ::set_default<error>
 
     // whitespace
     ::set<'\t', skip>               // (0x09) horizontal tab
@@ -148,6 +167,10 @@ using tokenizers_table =
     ::set<'!' , tokenize_exclamation>
     ::set<'#' , tokenize_comment>
     ::set<'.' , tokenize_period>
+
+    // errors
+    ::set<'$' , error_op>
+    ::set<'\\', error_op>
 ;
 
 } // fp::lex::detail

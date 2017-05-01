@@ -5,7 +5,7 @@
 namespace fp::lex::detail {
 
 /**
- * Tokenize the current symbol a `TOKEN`, or as the assignment version of it,
+ * Tokenize the current symbol as `TOKEN`, or as the assignment version of it,
  * `TOKEN_ASSIGN`.
  */
 template <token TOKEN, token TOKEN_ASSIGN>
@@ -86,6 +86,7 @@ void tokenize_plus_or_minus(tokenizer_state& s) {
     }
 }
 
+/// Tokenize one of `=`, `=>`, or `==`.
 inline void tokenize_eq(tokenizer_state& s) {
     if (s.next_is<'='>()) {
         ++s.it;

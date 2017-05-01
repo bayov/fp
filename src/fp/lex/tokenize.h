@@ -6,18 +6,16 @@
 
 namespace fp::lex {
 
-//@{
 /**
  * Tokenize the given input.
  *
- * Stores diagnostic problems in the given @ref diagnostic_report.
+ * When encountering an error, a diagnostic will be reported and an error token
+ * will be added to the result.
  *
  * @throws compilation_error
- *      Thrown by @ref diagnostic_report when reaching the maximum number of
- *      allowed errors.
+ *      Thrown when the maximum allowed errors is reached (as set by the given
+ *      @ref diagnostic_report).
  */
-token_list tokenize(const input&, diagnostic_report&);
 token_list tokenize(const input_view&, diagnostic_report&);
-//@}
 
 } // fp::lex

@@ -11,7 +11,7 @@ namespace fp::lex::detail {
 
 #define FP_KEYWORD_MAP_ITEM(enumerator, name) { name, token::enumerator },
 
-/// A mapping from keyword strings to their matching tokens.
+/// A mapping from keywords to their matching tokens.
 inline std::unordered_map<input_view, token> create_keywords_map() {
     return { FP_KEYWORDS_FOR_EACH(FP_KEYWORD_MAP_ITEM) };
 }

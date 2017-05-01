@@ -99,7 +99,12 @@ ENUM_CLASS(token, token_type,
      *            ^~~~~~                                      ^~~~~~
      *            "one plus one is "                          "."
      */
-    STRING
+    STRING,
+
+    // error tokens (these are useful for recovering from errors)
+    ERROR_IGNORE,   ///< Error token. Most likely should be ignored.
+    ERROR_OP,       ///< Error token. Most likely an operator of some kind.
+    ERROR_NUMBER    ///< Error token. Most likely supposed to be a number.
 );
 
 } // fp::lex

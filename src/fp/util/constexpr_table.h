@@ -34,10 +34,12 @@ struct assigned_value {
  *      int plus_one(int n) { return n + 1; }
  *      int times_two(int n) { return 2 * n; }
  *
- *      using my_table = constexpr_table<char, handler_t, 100>
+ *      using my_table =
+ *          constexpr_table<char, handler_t, 100>
  *          ::set_default<as_is>
  *          ::set<'1', plus_one>
- *          ::set<'*', times_two>;
+ *          ::set<'*', times_two>
+ *      ;
  *
  *      my_table::get('c')(42); // == 42  (uses `as_is`)
  *      my_table::get('1')(42); // == 43  (uses `plus_one`)

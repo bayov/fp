@@ -10,7 +10,8 @@ using precedence_t = size_t;
 constexpr precedence_t STARTING_PRECEDENCE = BOOST_PP_COUNTER;
 #define FP_PRECEDENCE() (BOOST_PP_COUNTER - STARTING_PRECEDENCE)
 
-using precedence_table = constexpr_token_table<precedence_t>
+using precedence_table =
+    constexpr_token_table<precedence_t>
     ::set_default<FP_PRECEDENCE()>
 
 #include BOOST_PP_UPDATE_COUNTER()
@@ -94,7 +95,8 @@ using precedence_table = constexpr_token_table<precedence_t>
 
 #include BOOST_PP_UPDATE_COUNTER()
     ::set<lex::token::RANGE, FP_PRECEDENCE()>
-    ::set<lex::token::CLOSED_RANGE, FP_PRECEDENCE()>;
+    ::set<lex::token::CLOSED_RANGE, FP_PRECEDENCE()>
+;
 
 constexpr precedence_t PREFIX_PRECEDENCE =
     precedence_table::get<lex::token::INC>() - 1;

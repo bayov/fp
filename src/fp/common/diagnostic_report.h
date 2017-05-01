@@ -30,8 +30,14 @@ public:
     /// @return A list of accumulated warning diagnostics.
     const std::list<diagnostic>& warnings() const;
 
-    /// Add a diagnostic to the report.
-    void add(diagnostic);
+    /// Report the given diagnostic.
+    void report(diagnostic);
+
+    /// Report an error diagnostic.
+    void report_error(source_location, std::string text);
+
+    /// Report a warning diagnostic.
+    void report_warning(source_location, std::string text);
 
 private:
 
