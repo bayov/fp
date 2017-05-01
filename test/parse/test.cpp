@@ -12,54 +12,55 @@ R"fp(
 a, b for a + b
 )fp";
 
-    try {
-        auto tokens = lex::tokenize(symbols);
-        detail::parser parser;
-        ast::node ast = parser.parse(tokens);
+    diagnostic_report diagnostics;
+    auto tokens = lex::tokenize(symbols, diagnostics);
 
-        std::string s("hello");
-        std::cout << s;
-        std::vector<std::string> v;
-        v.push_back("hello");
-        v.push_back("hello");
-        v.push_back("hello");
-        v.push_back("hello");
-        v.push_back("hello");
-        v.push_back("hello");
-        v.push_back("hello");
+    detail::parser parser;
+    ast::node ast = parser.parse(tokens);
 
-        std::function<void(const ast::node&)> print_ast = [&](const ast::node& n) {
-            util::match(n)(
-                [&](const ast::identifier& id) { std::cout << id.name(); },
-                [&](const ast::integer& n) { std::cout << n.value(); },
-                [&](const ast::binary_op& op) {
-                    std::cout << "(";
-                    print_ast(op.lhs());
-                    std::cout << " " << op.op_symbols() << " " ;
-                    print_ast(op.rhs());
-                    std::cout << ")";
-                },
-                [&](const ast::prefix_op& op) {
-                    std::cout << "(";
-                    std::cout << op.op_symbols();
-                    print_ast(op.rhs());
-                    std::cout << ")";
-                },
-                [&](const ast::postfix_op& op) {
-                    std::cout << "(";
-                    print_ast(op.lhs());
-                    std::cout << op.op_symbols();
-                    std::cout << ")";
-                }
-            );
-        };
+    std::string s("hello");
+    std::cout << s;
+    std::vector<std::string> v;
+    v.push_back("hello");
+    v.push_back("hello");
+    v.push_back("hello");
+    v.push_back("hello");
+    v.push_back("hello");
+    v.push_back("hello");
+    v.push_back("hello");
 
-        std::cout << std::endl << "------------------------" << std::endl;
-        print_ast(ast);
-        std::cout << std::endl << "------------------------" << std::endl;
+    std::function<void(const ast::node&)> print_ast = [&](const ast::node& n) {
+        util::match(n)(
+            [&](const ast::identifier& id) { std::cout << id.name(); },
+            [&](const ast::integer& n) { std::cout << n.value(); },
+            [&](const ast::binary_op& op) {
+                std::cout << "(";
+                print_ast(op.lhs());
+                std::cout << " " << op.op_symbols() << " " ;
+                print_ast(op.rhs());
+                std::cout << ")";
+            },
+            [&](const ast::prefix_op& op) {
+                std::cout << "(";
+                std::cout << op.op_symbols();
+                print_ast(op.rhs());
+                std::cout << ")";
+            },
+            [&](const ast::postfix_op& op) {
+                std::cout << "(";
+                print_ast(op.lhs());
+                std::cout << op.op_symbols();
+                std::cout << ")";
+            }
+        );
+    };
 
-    } catch (const fp::diagnostic& e) {
-        const auto& o = e.source();
+    std::cout << std::endl << "------------------------" << std::endl;
+    print_ast(ast);
+    std::cout << std::endl << "------------------------" << std::endl;
+
+    for (auto& d : diagnostics.errors()) {
+        const auto& o = d.source();
         std::cout << "line: " << o.line_number << std::endl << std::endl;
 
         auto from_col = o.symbols.begin() - o.line;
@@ -84,7 +85,7 @@ a, b for a + b
         std::cout << "\033[0m" << std::endl;
 
         for (size_t i = 0; i < from_col; ++i) { std::cout << " "; }
-        std::cout << "\033[1m" << e.what() << "\033[0m" << std::endl;
+        std::cout << "\033[1m" << d.text() << "\033[0m" << std::endl;
         std::cout << std::endl;
     }
 }

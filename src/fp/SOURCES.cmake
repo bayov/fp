@@ -12,6 +12,8 @@ set(
     ast/prefix_op.h
     common/diagnostic.cpp
     common/diagnostic.h
+    common/diagnostic_report.cpp
+    common/diagnostic_report.h
     common/input.cpp
     common/input.h
     common/source_location.h

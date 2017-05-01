@@ -42,8 +42,6 @@ void diagnostic::add_fix_suggestion(source_location source, input replacement) {
     m_fix_suggestions.emplace_back(std::move(source), std::move(replacement));
 }
 
-const char* diagnostic::what() const noexcept { return m_text.c_str(); }
-
 diagnostic::diagnostic(
     fp::severity severity,
     source_location source,

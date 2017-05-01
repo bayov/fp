@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdexcept>
 #include <string>
 #include <optional>
 #include <list>
@@ -14,7 +13,7 @@ namespace fp {
 ENUM_CLASS(severity, uint8_t, ERROR, WARNING);
 
 /// Information about a single problem encountered by the compiler.
-class diagnostic : public std::exception {
+class diagnostic {
 public:
 
     /// A relevant source location, with optional text.
@@ -64,8 +63,6 @@ public:
 
     /// Add a suggestion for a fix (by `replacement` of `source_location`).
     void add_fix_suggestion(source_location, input replacement);
-
-    const char* what() const noexcept override;
 
 private:
 

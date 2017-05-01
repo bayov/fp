@@ -145,7 +145,7 @@ inline void tokenize_floating_literal(tokenizer_state& s) {
         );
     }
 
-    float_type value = std::strtod(&*s.token, nullptr);
+    float_type value = std::strtod(&s.token_symbols().front(), nullptr);
     if (errno == ERANGE) {
         errno = 0;
         if (value == 0) {

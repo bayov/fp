@@ -1,20 +1,23 @@
 #pragma once
 
 #include <fp/common/input.h>
-#include <fp/common/diagnostic.h>
+#include <fp/common/diagnostic_report.h>
 #include <fp/lex/token_list.h>
 
 namespace fp::lex {
 
 //@{
 /**
- * @return A list of tokens from the given input symbols.
+ * Tokenize the given input.
  *
- * @throws fp::lex::error
- *      On invalid input.
+ * Stores diagnostic problems in the given @ref diagnostic_report.
+ *
+ * @throws compilation_error
+ *      Thrown by @ref diagnostic_report when reaching the maximum number of
+ *      allowed errors.
  */
-token_list tokenize(const input&);
-token_list tokenize(const input_view&);
+token_list tokenize(const input&, diagnostic_report&);
+token_list tokenize(const input_view&, diagnostic_report&);
 //@}
 
 } // fp::lex

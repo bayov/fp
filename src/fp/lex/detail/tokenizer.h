@@ -2,6 +2,7 @@
 
 #include <deque>
 
+#include <fp/common/diagnostic_report.h>
 #include <fp/lex/detail/tokenizer_state.h>
 #include <fp/lex/detail/tokenize_keyword_or_identifier.h>
 #include <fp/lex/detail/tokenize_number.h>
@@ -9,58 +10,31 @@
 
 namespace fp::lex::detail {
 
-/// Producer of tokens from input symbols. Not thread-safe.
+/// Producer of tokens from input symbols.
 class tokenizer {
 public:
 
-    inline token_list tokenize(const input_view& input) {
-        m_state.initialize(input);
-        while (m_state.it != m_state.end) { tokenize_one(); }
-        return std::move(m_state.tokens);
+    inline token_list tokenize(
+        const input_view& input,
+        diagnostic_report& diagnostics
+    ) {
+        token_list tokens;
+        tokens.reserve(input.size());
+        tokenizer_state s(input, tokens, diagnostics);
+        while (s.it != s.end) { tokenize_one(s); }
+        return tokens;
     }
 
 private:
 
-    tokenizer_state m_state;
-
-    /**
-     * This stack indicates the current tokenizing position in relation to
-     * string interpolations. For example, a stack of size 1 we are currently
-     * tokenizing inside a string interpolation:
-     *
-     *      "one plus one plus million is {1 + 1 + 1`000`000}"
-     *                                    |--(we are here)--|
-     *
-     * While a stack of size 2 means we are inside a second string
-     * interpolation:
-     *
-     *      "hello, {"from the other {"side of the plant"}..."}"
-     *              |-(depth 1)------|                   |----|
-     *                               |-(depth 2)---------|
-     *
-     * A stack of size zero, of course, means we are not inside any string
-     * interpolation.
-     *
-     * Additionally, each element in the stack (`size_t`) keeps track of how
-     * many non-string-interpolation left-braces are currently open.
-     * Encountering will pop the current string interpolation frame from the
-     * stack only when there are 0 open left-braces:
-     *
-     *      "look, {"a wild brace:" { 3 { 4 } 1 + 1 } "bla" }"
-     *             |----------------v---v---v-------v-------|
-     *               open braces:   1   2   1       0
-     */
-    std::deque<size_t> m_string_iterpolation_stack;
-
     /// Tokenize a string and a terminating `"` or `{`.
-    inline void tokenize_string_and_terminator() {
-        tokenize_string(m_state);
-        m_state.token = m_state.it;
-        if (*m_state.it == '"') {
-            m_state.tokenize_as<token::QUOTE>();
-        } else { // *m_state.it == '{'
-            m_string_iterpolation_stack.push_back(0);
-            m_state.tokenize_as<token::L_BRACE>();
+    inline void tokenize_string_and_terminator(tokenizer_state& s) {
+        tokenize_string(s);
+        if (*s.it == '"') {
+            s.tokenize_as<token::QUOTE>();
+        } else { // *s.it == '{'
+            s.string_iterpolation_stack.push_back(0);
+            s.tokenize_as<token::L_BRACE>();
         }
     }
 
@@ -69,19 +43,18 @@ private:
      * assignment version of it (`TOKEN_ASSIGN`).
      */
     template <token TOKEN, token TOKEN_ASSIGN>
-    void tokenize_arithmetic() {
-        if (m_state.next_is<'='>()) {
-            m_state.it += 2;
-            m_state.push<TOKEN_ASSIGN>();
+    void tokenize_arithmetic(tokenizer_state& s) {
+        if (s.next_is<'='>()) {
+            s.it += 2;
+            s.push<TOKEN_ASSIGN>();
         } else {
-            ++m_state.it;
-            m_state.push<TOKEN>();
+            ++s.it;
+            s.push<TOKEN>();
         }
     };
 
-    inline void tokenize_one() {
-        m_state.token = m_state.it;
-        switch (*m_state.it) {
+    inline void tokenize_one(tokenizer_state& s) {
+        switch (*s.it) {
             case 0x00: // null (\0)
             case 0x01: // start of Heading
             case 0x02: // start of Text
@@ -91,21 +64,21 @@ private:
             case 0x06: // acknowledge
             case 0x07: // bell (\a)
             case 0x08: // backspace (\b)
-                m_state.error();
+                s.error();
                 break;
             case 0x09: // horizontal tab (\t)
-                ++m_state.it;
+                ++s.it;
                 break;
             case 0x0a: // line feed (\n)
-                m_state.newline();
+                s.newline();
                 break;
             case 0x0b: // vertical tab (\v)
             case 0x0c: // form feed (\f)
-                ++m_state.it;
+                ++s.it;
                 break;
             case 0x0d: // carriage return (\r)
-                if (m_state.next_is<'\n'>()) { ++m_state.it; } // CRLF (\r\n)
-                m_state.newline();
+                if (s.next_is<'\n'>()) { ++s.it; } // CRLF (\r\n)
+                s.newline();
                 break;
             case 0x0e: // shift out
             case 0x0f: // shift in
@@ -125,92 +98,91 @@ private:
             case 0x1d: // group separator
             case 0x1e: // record separator
             case 0x1f: // unit separator
-                m_state.error();
+                s.error();
                 break;
             case ' ':  // 0x20
-                ++m_state.it;
+                ++s.it;
                 break;
             case '!':  // 0x21
-                if (!m_state.next_is<'='>()) {
-                    m_state.error(
+                if (!s.next_is<'='>()) {
+                    s.error(
                         "Invalid symbol. Did you mean `not` or `!=`?"
                     );
                 }
-                m_state.it += 2;
-                m_state.push<token::NE>();
+                s.it += 2;
+                s.push<token::NE>();
                 break;
             case '"':  // 0x22
-                m_state.tokenize_as<token::QUOTE>();
-                m_state.token = m_state.it;
-                tokenize_string_and_terminator();
+                s.tokenize_as<token::QUOTE>();
+                tokenize_string_and_terminator(s);
                 break;
             case '#':  // 0x23
-                m_state.skip_to_end_of_line();
-                m_state.push<token::COMMENT>(m_state.token_symbols());
+                s.skip_to_end_of_line();
+                s.push<token::COMMENT>(s.token_symbols());
                 break;
             case '$':  // 0x24
-                m_state.error();
+                s.error();
                 break;
             case '%':  // 0x25
-                tokenize_arithmetic<token::MOD, token::MOD_ASSIGN>();
+                tokenize_arithmetic<token::MOD, token::MOD_ASSIGN>(s);
                 break;
             case '&':  // 0x26
-                tokenize_arithmetic<token::BIT_AND, token::BIT_AND_ASSIGN>();
+                tokenize_arithmetic<token::BIT_AND, token::BIT_AND_ASSIGN>(s);
                 break;
             case '\'': // 0x27
-                tokenize_char(m_state);
+                tokenize_char(s);
                 break;
             case '(':  // 0x28
-                m_state.tokenize_as<token::L_PAREN>();
+                s.tokenize_as<token::L_PAREN>();
                 break;
             case ')':  // 0x29
-                m_state.tokenize_as<token::R_PAREN>();
+                s.tokenize_as<token::R_PAREN>();
                 break;
             case '*':  // 0x2a
-                if (m_state.next_is<'='>()) {
-                    ++m_state.it;
-                    m_state.tokenize_as<token::MUL_ASSIGN>();
-                } else if (m_state.next_is<'*'>()) {
-                    ++m_state.it;
-                    tokenize_arithmetic<token::POW, token::POW_ASSIGN>();
+                if (s.next_is<'='>()) {
+                    ++s.it;
+                    s.tokenize_as<token::MUL_ASSIGN>();
+                } else if (s.next_is<'*'>()) {
+                    ++s.it;
+                    tokenize_arithmetic<token::POW, token::POW_ASSIGN>(s);
                 } else {
-                    m_state.tokenize_as<token::MUL>();
+                    s.tokenize_as<token::MUL>();
                 }
                 break;
             case '+':  // 0x2b
-                if (m_state.next_is<'+'>()) {
-                    ++m_state.it;
-                    m_state.tokenize_as<token::INC>();
+                if (s.next_is<'+'>()) {
+                    ++s.it;
+                    s.tokenize_as<token::INC>();
                 } else {
-                    tokenize_arithmetic<token::PLUS, token::PLUS_ASSIGN>();
+                    tokenize_arithmetic<token::PLUS, token::PLUS_ASSIGN>(s);
                 }
                 break;
             case ',':  // 0x2c
-                m_state.tokenize_as<token::COMMA>();
+                s.tokenize_as<token::COMMA>();
                 break;
             case '-':  // 0x2d
-                if (m_state.next_is<'-'>()) {
-                    ++m_state.it;
-                    m_state.tokenize_as<token::DEC>();
+                if (s.next_is<'-'>()) {
+                    ++s.it;
+                    s.tokenize_as<token::DEC>();
                 } else {
-                    tokenize_arithmetic<token::MINUS, token::MINUS_ASSIGN>();
+                    tokenize_arithmetic<token::MINUS, token::MINUS_ASSIGN>(s);
                 }
                 break;
             case '.':  // 0x2e
-                if (m_state.next_is<'.'>()) {
-                    ++m_state.it;
-                    if (m_state.next_is<'.'>()) {
-                        ++m_state.it;
-                        m_state.tokenize_as<token::CLOSED_RANGE>();
+                if (s.next_is<'.'>()) {
+                    ++s.it;
+                    if (s.next_is<'.'>()) {
+                        ++s.it;
+                        s.tokenize_as<token::CLOSED_RANGE>();
                     } else {
-                        m_state.tokenize_as<token::RANGE>();
+                        s.tokenize_as<token::RANGE>();
                     }
                 } else {
-                    m_state.tokenize_as<token::PERIOD>();
+                    s.tokenize_as<token::PERIOD>();
                 }
                 break;
             case '/':  // 0x2f
-                tokenize_arithmetic<token::DIV, token::DIV_ASSIGN>();
+                tokenize_arithmetic<token::DIV, token::DIV_ASSIGN>(s);
                 break;
             case '0':  // 0x30
             case '1':  // 0x31
@@ -222,52 +194,52 @@ private:
             case '7':  // 0x37
             case '8':  // 0x38
             case '9':  // 0x39
-                tokenize_number(m_state);
+                tokenize_number(s);
                 break;
             case ':':  // 0x3a
-                m_state.tokenize_as<token::COLON>();
+                s.tokenize_as<token::COLON>();
                 break;
             case ';':  // 0x3b
-                m_state.tokenize_as<token::SEMICOLON>();
+                s.tokenize_as<token::SEMICOLON>();
                 break;
             case '<':  // 0x3c
-                if (m_state.next_is<'='>()) {
-                    ++m_state.it;
-                    m_state.tokenize_as<token::LTE>();
-                } else if (m_state.next_is<'<'>()) {
-                    ++m_state.it;
-                    tokenize_arithmetic<token::LSHIFT, token::LSHIFT_ASSIGN>();
+                if (s.next_is<'='>()) {
+                    ++s.it;
+                    s.tokenize_as<token::LTE>();
+                } else if (s.next_is<'<'>()) {
+                    ++s.it;
+                    tokenize_arithmetic<token::LSHIFT, token::LSHIFT_ASSIGN>(s);
                 } else {
-                    m_state.tokenize_as<token::LT>();
+                    s.tokenize_as<token::LT>();
                 }
                 break;
             case '=':  // 0x3d
-                if (m_state.next_is<'='>()) {
-                    ++m_state.it;
-                    m_state.tokenize_as<token::EQ>();
-                } else if (m_state.next_is<'>'>()) {
-                    ++m_state.it;
-                    m_state.tokenize_as<token::LAMBDA_ARROW>();
+                if (s.next_is<'='>()) {
+                    ++s.it;
+                    s.tokenize_as<token::EQ>();
+                } else if (s.next_is<'>'>()) {
+                    ++s.it;
+                    s.tokenize_as<token::LAMBDA_ARROW>();
                 } else {
-                    m_state.tokenize_as<token::ASSIGN>();
+                    s.tokenize_as<token::ASSIGN>();
                 }
                 break;
             case '>':  // 0x3e
-                if (m_state.next_is<'='>()) {
-                    ++m_state.it;
-                    m_state.tokenize_as<token::GTE>();
-                } else if (m_state.next_is<'>'>()) {
-                    ++m_state.it;
-                    tokenize_arithmetic<token::RSHIFT, token::RSHIFT_ASSIGN>();
+                if (s.next_is<'='>()) {
+                    ++s.it;
+                    s.tokenize_as<token::GTE>();
+                } else if (s.next_is<'>'>()) {
+                    ++s.it;
+                    tokenize_arithmetic<token::RSHIFT, token::RSHIFT_ASSIGN>(s);
                 } else {
-                    m_state.tokenize_as<token::GT>();
+                    s.tokenize_as<token::GT>();
                 }
                 break;
             case '?':  // 0x3f
-                m_state.tokenize_as<token::OPTIONAL>();
+                s.tokenize_as<token::OPTIONAL>();
                 break;
             case '@':  // 0x40
-                m_state.tokenize_as<token::DECORATOR>();
+                s.tokenize_as<token::DECORATOR>();
                 break;
             case 'A':  // 0x41
             case 'B':  // 0x42
@@ -295,25 +267,25 @@ private:
             case 'X':  // 0x58
             case 'Y':  // 0x59
             case 'Z':  // 0x5a
-                tokenize_identifier(m_state);
+                tokenize_identifier(s);
                 break;
             case '[':  // 0x5b
-                m_state.tokenize_as<token::L_BRACKET>();
+                s.tokenize_as<token::L_BRACKET>();
                 break;
             case '\\': // 0x5c
-                m_state.error();
+                s.error();
                 break;
             case ']':  // 0x5d
-                m_state.tokenize_as<token::R_BRACKET>();
+                s.tokenize_as<token::R_BRACKET>();
                 break;
             case '^':  // 0x5e
-                tokenize_arithmetic<token::XOR, token::XOR_ASSIGN>();
+                tokenize_arithmetic<token::XOR, token::XOR_ASSIGN>(s);
                 break;
             case '_':  // 0x5f
-                tokenize_identifier(m_state);
+                tokenize_identifier(s);
                 break;
             case '`':  // 0x60
-                m_state.error();
+                s.error();
                 break;
             case 'a':  // 0x61
             case 'b':  // 0x62
@@ -341,35 +313,34 @@ private:
             case 'x':  // 0x78
             case 'y':  // 0x79
             case 'z':  // 0x7a
-                tokenize_keyword_or_identifier(m_state);
+                tokenize_keyword_or_identifier(s);
                 break;
             case '{':  // 0x7b
-                m_state.tokenize_as<token::L_BRACE>();
-                if (!m_string_iterpolation_stack.empty()) {
-                    ++m_string_iterpolation_stack.back();
+                s.tokenize_as<token::L_BRACE>();
+                if (!s.string_iterpolation_stack.empty()) {
+                    ++s.string_iterpolation_stack.back();
                 }
                 break;
             case '|':  // 0x7c
-                tokenize_arithmetic<token::BIT_OR, token::BIT_OR_ASSIGN>();
+                tokenize_arithmetic<token::BIT_OR, token::BIT_OR_ASSIGN>(s);
                 break;
             case '}':  // 0x7d
-                m_state.tokenize_as<token::R_BRACE>();
-                m_state.token = m_state.it;
-                if (!m_string_iterpolation_stack.empty()) {
-                    if (m_string_iterpolation_stack.back() == 0) {
-                        m_string_iterpolation_stack.pop_back();
-                        tokenize_string_and_terminator();
+                s.tokenize_as<token::R_BRACE>();
+                if (!s.string_iterpolation_stack.empty()) {
+                    if (s.string_iterpolation_stack.back() == 0) {
+                        s.string_iterpolation_stack.pop_back();
+                        tokenize_string_and_terminator(s);
                     } else {
-                        --m_string_iterpolation_stack.back();
+                        --s.string_iterpolation_stack.back();
                     }
                 }
                 break;
             case '~':  // 0x7e
-                m_state.tokenize_as<token::BIT_NOT>();
+                s.tokenize_as<token::BIT_NOT>();
                 break;
             case 0x7f: // delete
             default:
-                m_state.error();
+                s.error();
         }
     }
 
