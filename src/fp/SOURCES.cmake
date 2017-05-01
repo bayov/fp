@@ -21,11 +21,16 @@ set(
     lex/attribute.h
     lex/detail/identifier_symbols.h
     lex/detail/symbol_range.h
-    lex/detail/tokenize_keyword_or_identifier.h
-    lex/detail/tokenize_number.h
-    lex/detail/tokenize_string.h
     lex/detail/tokenizer.h
     lex/detail/tokenizer_state.h
+    lex/detail/tokenizers/tokenize_binary_op.h
+    lex/detail/tokenizers/tokenize_comment.h
+    lex/detail/tokenizers/tokenize_exclamation.h
+    lex/detail/tokenizers/tokenize_keyword_or_identifier.h
+    lex/detail/tokenizers/tokenize_number.h
+    lex/detail/tokenizers/tokenize_period.h
+    lex/detail/tokenizers/tokenize_string.h
+    lex/detail/tokenizers_table.h
     lex/keywords.h
     lex/token.h
     lex/token_list.h

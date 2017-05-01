@@ -13,7 +13,7 @@ using prefix_parser_t = ast::node (*)(parser_state&);
 
 inline ast::node prefix_parser_error(parser_state& s) {
     s.error();
-    assert(false);
+    throw std::invalid_argument("");
 }
 
 using prefix_parser_table = constexpr_token_table<prefix_parser_t>

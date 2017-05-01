@@ -74,7 +74,10 @@ public:
     }
 
     /// @return The current token's symbols.
-    input_view token_symbols() { return { m_token, it }; }
+    input_view token_symbols() const { return { m_token, it }; }
+
+    /// Set the current symbol to be the next token.
+    void start_next_token() { m_token = it; }
 
     /// Advance one symbol and start a new-line.
     void newline() {
@@ -97,7 +100,6 @@ public:
             source_location(token_symbols(), m_line, m_line_number),
             attribute_t<TOKEN>(std::forward<Args>(args)...)
         );
-        m_token = it;
     }
 
     /// Push a new token to the list, with @ref no_attribute.
@@ -106,7 +108,6 @@ public:
             t,
             source_location(token_symbols(), m_line, m_line_number)
         );
-        m_token = it;
     }
 
     /// Tokenize the current symbol as `TOKEN`.

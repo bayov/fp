@@ -16,10 +16,11 @@ inline ast::node infix_parser_non_infix(parser_state& s, ast::node lhs) {
 
 using infix_parser_table = constexpr_token_table<infix_parser_t>
     ::set_default<infix_parser_non_infix>
+
     // binary-operators
     ::set<lex::token::COMMA, parsers::binary_op>
-    ::set<lex::token::COLON, parsers::binary_op>
-    ::set<lex::token::PERIOD, parsers::binary_op>
+    ::set<lex::token::ANNOTATION, parsers::binary_op>
+    ::set<lex::token::MEMBER_ACCESS, parsers::binary_op>
     ::set<lex::token::RANGE, parsers::binary_op>
     ::set<lex::token::CLOSED_RANGE, parsers::binary_op>
     ::set<lex::token::TYPE_ARROW, parsers::binary_op>
@@ -53,6 +54,7 @@ using infix_parser_table = constexpr_token_table<infix_parser_t>
     ::set<lex::token::GT, parsers::binary_op>
     ::set<lex::token::LTE, parsers::binary_op>
     ::set<lex::token::GTE, parsers::binary_op>
+
     // postfix-operators
     ::set<lex::token::OPTIONAL, parsers::postfix_op>
     ::set<lex::token::INC, parsers::postfix_op>

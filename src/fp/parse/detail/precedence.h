@@ -38,7 +38,7 @@ using precedence_table = constexpr_token_table<precedence_t>
     ::set<lex::token::LAMBDA_ARROW, FP_PRECEDENCE()>
 
 #include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::COLON, FP_PRECEDENCE()>       // (type) annotation
+    ::set<lex::token::ANNOTATION, FP_PRECEDENCE()>
 
 #include BOOST_PP_UPDATE_COUNTER()
     ::set<lex::token::OR, FP_PRECEDENCE()>
@@ -90,7 +90,7 @@ using precedence_table = constexpr_token_table<precedence_t>
     ::set<lex::token::OPTIONAL, FP_PRECEDENCE()>
     ::set<lex::token::L_PAREN, FP_PRECEDENCE()>     // function call
     ::set<lex::token::L_BRACKET, FP_PRECEDENCE()>   // subscript
-    ::set<lex::token::PERIOD, FP_PRECEDENCE()>      // member access
+    ::set<lex::token::MEMBER_ACCESS, FP_PRECEDENCE()>
 
 #include BOOST_PP_UPDATE_COUNTER()
     ::set<lex::token::RANGE, FP_PRECEDENCE()>

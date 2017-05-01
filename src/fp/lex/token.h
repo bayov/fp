@@ -16,12 +16,12 @@ using token_type = uint8_t;
 ENUM_CLASS(token, token_type,
     QUOTE,          ///< "
     COMMA,          ///< ,
-    COLON,          ///< :
+    ANNOTATION,     ///< :
     SEMICOLON,      ///< ;
     OPTIONAL,       ///< ?
     DECORATOR,      ///< @
     BIT_NOT,        ///< ~
-    PERIOD,         ///< .
+    MEMBER_ACCESS,  ///< .
     RANGE,          ///< ..
     CLOSED_RANGE,   ///< ...
 
