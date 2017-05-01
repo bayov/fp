@@ -22,6 +22,7 @@ struct tokenizer_state {
         tokens = token_list();
         it = input.begin();
         end = input.end();
+        tokens.reserve(end - it);
         token = it;
         line = it;
         line_number = 1;

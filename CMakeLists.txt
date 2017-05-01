@@ -24,3 +24,4 @@ include_directories(src)
 
 add_subdirectory(src/fp)
 add_subdirectory(test)
+add_subdirectory(profile)
