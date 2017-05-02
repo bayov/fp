@@ -51,10 +51,10 @@ struct ansi_color_code {
 
 namespace color {
 
-/// Forcebly enable printing of color escape codes (non-thread-safe).
+/// Forcibly enable printing of color escape codes (non-thread-safe).
 inline void enable() { detail::has_color_support() = true; }
 
-/// Forcebly disable printing of color escape codes (non-thread-safe).
+/// Forcibly disable printing of color escape codes (non-thread-safe).
 inline void disable() { detail::has_color_support() = false; }
 
 constexpr auto bold =           detail::ansi_color_code<1, 21>{};
@@ -74,10 +74,7 @@ constexpr auto magenta =        detail::ansi_color_code<35, 39>{};
 constexpr auto cyan =           detail::ansi_color_code<36, 39>{};
 constexpr auto white =          detail::ansi_color_code<37, 39>{};
 
-} // namespace color
-
-namespace color::bright {
-
+namespace bright {
 constexpr auto black =          detail::ansi_color_code<90, 39>{};
 constexpr auto red =            detail::ansi_color_code<91, 39>{};
 constexpr auto green =          detail::ansi_color_code<92, 39>{};
@@ -86,11 +83,9 @@ constexpr auto blue =           detail::ansi_color_code<94, 39>{};
 constexpr auto magenta =        detail::ansi_color_code<95, 39>{};
 constexpr auto cyan =           detail::ansi_color_code<96, 39>{};
 constexpr auto white =          detail::ansi_color_code<97, 39>{};
+} // namespace bright
 
-} // namespace color::bright
-
-namespace color::bg {
-
+namespace bg {
 constexpr auto black =          detail::ansi_color_code<40, 49>{};
 constexpr auto red =            detail::ansi_color_code<41, 49>{};
 constexpr auto green =          detail::ansi_color_code<42, 49>{};
@@ -99,11 +94,9 @@ constexpr auto blue =           detail::ansi_color_code<44, 49>{};
 constexpr auto magenta =        detail::ansi_color_code<45, 49>{};
 constexpr auto cyan =           detail::ansi_color_code<46, 49>{};
 constexpr auto white =          detail::ansi_color_code<47, 49>{};
+} // namespace bg
 
-} // namespace color::bg
-
-namespace color::bg::bright {
-
+namespace bg::bright {
 constexpr auto black =          detail::ansi_color_code<100, 49>{};
 constexpr auto red =            detail::ansi_color_code<101, 49>{};
 constexpr auto green =          detail::ansi_color_code<102, 49>{};
@@ -112,7 +105,8 @@ constexpr auto blue =           detail::ansi_color_code<104, 49>{};
 constexpr auto magenta =        detail::ansi_color_code<105, 49>{};
 constexpr auto cyan =           detail::ansi_color_code<106, 49>{};
 constexpr auto white =          detail::ansi_color_code<107, 49>{};
+} // namespace bg::bright
 
-} // namespace color::bg::bright
+} // namespace color
 
 } // namespace fp::util
