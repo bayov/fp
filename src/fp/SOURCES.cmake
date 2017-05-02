@@ -10,6 +10,7 @@ set(
     ast/node.h
     ast/postfix_op.h
     ast/prefix_op.h
+    common/detail/diagnostic_printing.h
     common/diagnostic.cpp
     common/diagnostic.h
     common/diagnostic_report.cpp
@@ -52,8 +53,9 @@ set(
     util/as_string.h
     util/box.h
     util/cast.h
-    util/color.h
     util/color_support.h
+    util/color_value.h
+    util/colored_text.h
     util/constexpr_table.h
     util/enum_class.h
     util/match.h
@@ -63,5 +65,6 @@ set(
     util/type_name.cpp
     util/type_name.h
     util/va_args.h
+    util/with.h
     PARENT_SCOPE
 )

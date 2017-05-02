@@ -47,13 +47,6 @@ inline bool& force_disabled_in_thread() {
     return b;
 }
 
-/// @return `true` if color is enabled in the current scope.
-inline bool has_color_support() {
-    if (force_enabled_in_thread()) { return true; }
-    if (force_disabled_in_thread()) { return false; }
-    return enabled();
-}
-
 /// Base class for @ref enable_in_scope and @ref disable_in_scope.
 class force_in_scope_base {
 public:
@@ -76,6 +69,13 @@ private:
 };
 
 } // namespace detail
+
+/// @return `true` if coloring is enabled in the current scope.
+inline bool has_color_support() {
+    if (detail::force_enabled_in_thread()) { return true; }
+    if (detail::force_disabled_in_thread()) { return false; }
+    return detail::enabled();
+}
 
 /// Forcibly enable printing of color escape codes (not thread-safe).
 inline void enable() { detail::enabled() = true; }

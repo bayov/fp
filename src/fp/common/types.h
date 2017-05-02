@@ -4,8 +4,6 @@
 #include <string>
 #include <string_view>
 
-#include <boost/range/iterator_range.hpp>
-
 namespace fp {
 
 /// The type representing integers in the compiler.

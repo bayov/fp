@@ -35,7 +35,8 @@ void parser_state::error(
         source_location(
             { from->source.symbols.begin(), (to - 1)->source.symbols.end() },
             from->source.line,
-            from->source.line_number
+            from->source.line_number,
+            from->source.input
         ),
         std::move(what)
     );

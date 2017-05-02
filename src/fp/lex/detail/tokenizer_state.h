@@ -52,6 +52,7 @@ public:
     ) :
         it(input.begin()),
         end(input.end()),
+        m_input(input),
         m_tokens(output_token_list),
         m_diagnostics(diagnostics),
         m_token(it),
@@ -80,7 +81,7 @@ public:
 
     /// @return The source location of `[from, to)` in the current line.
     source_location location(symbol_iterator from, symbol_iterator to) {
-        return source_location({ from, to }, m_line, m_line_number);
+        return source_location({ from, to }, m_line, m_line_number, m_input);
     }
 
     /// @return The current token's symbols.
@@ -123,6 +124,7 @@ public:
 
 private:
 
+    const input_view& m_input;
     token_list& m_tokens;
     diagnostic_report& m_diagnostics;
 
