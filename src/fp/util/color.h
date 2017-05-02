@@ -2,21 +2,23 @@
 
 #include <cstddef>
 #include <ostream>
-#include <unistd.h>
 
-namespace fp::util {
+#include <fp/util/color_support.h>
+
+namespace fp::util::color {
 
 namespace detail {
 
-inline bool& has_color_support() {
-    // TODO: improve color support detection...
-    static bool b = bool(isatty(fileno(stdout)));
-    return b;
+/// An ostream-able ansi color escape code.
+template <size_t NUMBER> struct code {};
+
+template <size_t NUMBER>
+std::ostream& operator<<(std::ostream& os, code<NUMBER>) {
+    if (!has_color_support()) { return os; }
+    return os << "\033[" << NUMBER << 'm';
 }
 
-constexpr auto ANSI_PREFIX = "\u001B[";
-constexpr auto ANSI_SUFFIX = "m";
-
+/// Wraps `T` in `Color`, causing it to be ostream-ed with color escape codes.
 template <class T, class Color>
 struct color_wrapper {
     using value_type = T;
@@ -26,87 +28,70 @@ struct color_wrapper {
 
 template <class T, class Color>
 std::ostream& operator<<(std::ostream& os, color_wrapper<T, Color> c) {
-    if (has_color_support()) {
-        os << detail::ANSI_PREFIX << Color::open << detail::ANSI_SUFFIX;
-    }
-    os << c.value;
-    if (has_color_support()) {
-        os << detail::ANSI_PREFIX << Color::close << detail::ANSI_SUFFIX;
-    }
-    return os;
+    return os << code<Color::open>{} << c.value << code<Color::close>{};
 }
 
 template <size_t OPEN, size_t CLOSE>
-struct ansi_color_code {
+struct color_codes {
     static constexpr size_t open = OPEN;
     static constexpr size_t close = CLOSE;
 
     template <class T>
-    constexpr color_wrapper<T, ansi_color_code> operator()(const T& v) const {
+    constexpr color_wrapper<T, color_codes> operator()(const T& v) const {
         return { v };
     }
 };
 
 } // namespace detail
 
-namespace color {
+constexpr auto bold =           detail::color_codes<1, 21>{};
+constexpr auto dim =            detail::color_codes<2, 22>{};
+constexpr auto italic =         detail::color_codes<3, 23>{};
+constexpr auto underline =      detail::color_codes<4, 24>{};
+constexpr auto inverse =        detail::color_codes<7, 27>{};
+constexpr auto hidden =         detail::color_codes<8, 28>{};
+constexpr auto strikethrough =  detail::color_codes<9, 29>{};
 
-/// Forcibly enable printing of color escape codes (non-thread-safe).
-inline void enable() { detail::has_color_support() = true; }
-
-/// Forcibly disable printing of color escape codes (non-thread-safe).
-inline void disable() { detail::has_color_support() = false; }
-
-constexpr auto bold =           detail::ansi_color_code<1, 21>{};
-constexpr auto dim =            detail::ansi_color_code<2, 22>{};
-constexpr auto italic =         detail::ansi_color_code<3, 23>{};
-constexpr auto underline =      detail::ansi_color_code<4, 24>{};
-constexpr auto inverse =        detail::ansi_color_code<7, 27>{};
-constexpr auto hidden =         detail::ansi_color_code<8, 28>{};
-constexpr auto strikethrough =  detail::ansi_color_code<9, 29>{};
-
-constexpr auto black =          detail::ansi_color_code<30, 39>{};
-constexpr auto red =            detail::ansi_color_code<31, 39>{};
-constexpr auto green =          detail::ansi_color_code<32, 39>{};
-constexpr auto yellow =         detail::ansi_color_code<33, 39>{};
-constexpr auto blue =           detail::ansi_color_code<34, 39>{};
-constexpr auto magenta =        detail::ansi_color_code<35, 39>{};
-constexpr auto cyan =           detail::ansi_color_code<36, 39>{};
-constexpr auto white =          detail::ansi_color_code<37, 39>{};
+constexpr auto black =          detail::color_codes<30, 39>{};
+constexpr auto red =            detail::color_codes<31, 39>{};
+constexpr auto green =          detail::color_codes<32, 39>{};
+constexpr auto yellow =         detail::color_codes<33, 39>{};
+constexpr auto blue =           detail::color_codes<34, 39>{};
+constexpr auto magenta =        detail::color_codes<35, 39>{};
+constexpr auto cyan =           detail::color_codes<36, 39>{};
+constexpr auto white =          detail::color_codes<37, 39>{};
 
 namespace bright {
-constexpr auto black =          detail::ansi_color_code<90, 39>{};
-constexpr auto red =            detail::ansi_color_code<91, 39>{};
-constexpr auto green =          detail::ansi_color_code<92, 39>{};
-constexpr auto yellow =         detail::ansi_color_code<93, 39>{};
-constexpr auto blue =           detail::ansi_color_code<94, 39>{};
-constexpr auto magenta =        detail::ansi_color_code<95, 39>{};
-constexpr auto cyan =           detail::ansi_color_code<96, 39>{};
-constexpr auto white =          detail::ansi_color_code<97, 39>{};
+constexpr auto black =          detail::color_codes<90, 39>{};
+constexpr auto red =            detail::color_codes<91, 39>{};
+constexpr auto green =          detail::color_codes<92, 39>{};
+constexpr auto yellow =         detail::color_codes<93, 39>{};
+constexpr auto blue =           detail::color_codes<94, 39>{};
+constexpr auto magenta =        detail::color_codes<95, 39>{};
+constexpr auto cyan =           detail::color_codes<96, 39>{};
+constexpr auto white =          detail::color_codes<97, 39>{};
 } // namespace bright
 
 namespace bg {
-constexpr auto black =          detail::ansi_color_code<40, 49>{};
-constexpr auto red =            detail::ansi_color_code<41, 49>{};
-constexpr auto green =          detail::ansi_color_code<42, 49>{};
-constexpr auto yellow =         detail::ansi_color_code<43, 49>{};
-constexpr auto blue =           detail::ansi_color_code<44, 49>{};
-constexpr auto magenta =        detail::ansi_color_code<45, 49>{};
-constexpr auto cyan =           detail::ansi_color_code<46, 49>{};
-constexpr auto white =          detail::ansi_color_code<47, 49>{};
+constexpr auto black =          detail::color_codes<40, 49>{};
+constexpr auto red =            detail::color_codes<41, 49>{};
+constexpr auto green =          detail::color_codes<42, 49>{};
+constexpr auto yellow =         detail::color_codes<43, 49>{};
+constexpr auto blue =           detail::color_codes<44, 49>{};
+constexpr auto magenta =        detail::color_codes<45, 49>{};
+constexpr auto cyan =           detail::color_codes<46, 49>{};
+constexpr auto white =          detail::color_codes<47, 49>{};
 } // namespace bg
 
 namespace bg::bright {
-constexpr auto black =          detail::ansi_color_code<100, 49>{};
-constexpr auto red =            detail::ansi_color_code<101, 49>{};
-constexpr auto green =          detail::ansi_color_code<102, 49>{};
-constexpr auto yellow =         detail::ansi_color_code<103, 49>{};
-constexpr auto blue =           detail::ansi_color_code<104, 49>{};
-constexpr auto magenta =        detail::ansi_color_code<105, 49>{};
-constexpr auto cyan =           detail::ansi_color_code<106, 49>{};
-constexpr auto white =          detail::ansi_color_code<107, 49>{};
+constexpr auto black =          detail::color_codes<100, 49>{};
+constexpr auto red =            detail::color_codes<101, 49>{};
+constexpr auto green =          detail::color_codes<102, 49>{};
+constexpr auto yellow =         detail::color_codes<103, 49>{};
+constexpr auto blue =           detail::color_codes<104, 49>{};
+constexpr auto magenta =        detail::color_codes<105, 49>{};
+constexpr auto cyan =           detail::color_codes<106, 49>{};
+constexpr auto white =          detail::color_codes<107, 49>{};
 } // namespace bg::bright
 
-} // namespace color
-
-} // namespace fp::util
+} // namespace fp::util::color

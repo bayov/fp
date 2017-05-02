@@ -53,6 +53,7 @@ set(
     util/box.h
     util/cast.h
     util/color.h
+    util/color_support.h
     util/constexpr_table.h
     util/enum_class.h
     util/match.h
