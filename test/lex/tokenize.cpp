@@ -41,4 +41,4 @@ TEST(string_interpolation) {
     assert_example(in, expected);
 }
 
-} // fp::lex
+} // namespace fp::lex

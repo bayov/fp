@@ -14,4 +14,4 @@ template <class T> struct foo {};
 
 TEST(of_template) { ASSERT_EQ("fp::util::foo<int>", type_name<foo<int>>()); }
 
-} // fp::util
+} // namespace fp::util

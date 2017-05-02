@@ -63,4 +63,4 @@ TEST(to_seq_of_256_elements) {
     );
 }
 
-} // fp::util
+} // namespace fp::util

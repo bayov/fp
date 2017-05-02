@@ -40,4 +40,4 @@ TEST(run_time_traits) {
     ASSERT_EQ(suit::CLUBS, info(clubs).value());
 }
 
-} // fp::util
+} // namespace fp::util

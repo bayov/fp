@@ -90,4 +90,4 @@ a, b for a + b
     }
 }
 
-} // fp::lex
+} // namespace fp::lex

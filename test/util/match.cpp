@@ -22,4 +22,4 @@ TEST(basic_usage) {
     ASSERT_EQ("int", s);
 }
 
-} // fp::util
+} // namespace fp::util

@@ -15,4 +15,4 @@ TEST(basic_usage) {
     ASSERT_EQ(R"("hello")", f("hello"));
 }
 
-} // fp::util
+} // namespace fp::util

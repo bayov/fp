@@ -23,4 +23,4 @@ TEST(copy_constructible) {
     box<int> b2(b);
 }
 
-} // fp::util
+} // namespace fp::util

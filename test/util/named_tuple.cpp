@@ -65,4 +65,4 @@ TEST(supports_templates) {
     ASSERT_AS_STRING("point { x: 2.71; y: 3.14; z: 4; }", p2);
 }
 
-} // fp::util
+} // namespace fp::util

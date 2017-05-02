@@ -55,4 +55,4 @@ TEST(tseq_enum) {
     );
 }
 
-} // fp::util
+} // namespace fp::util

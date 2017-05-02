@@ -23,4 +23,4 @@ TEST(basic_usage) {
     ASSERT_EQ(84, my_table::get('*')(42));
 }
 
-} // fp::util
+} // namespace fp::util
