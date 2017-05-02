@@ -20,4 +20,4 @@ using char_type = char32_t;
 /// Represents a symbol in a source file.
 using symbol_t = char;
 
-} // namespace fp
+} // namespace namespace fp

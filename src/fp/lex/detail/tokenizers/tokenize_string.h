@@ -116,4 +116,4 @@ inline void tokenize_right_brace(tokenizer_state& s) {
     }
 }
 
-} // fp::lex::detail
+} // namespace fp::lex::detail

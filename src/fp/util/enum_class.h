@@ -81,7 +81,7 @@ using enum_class_traits =
     };\
     enum_class_##enum_name##_traits get_enum_class_traits_of(enum_name)
 
-} // detail
+} // namespace detail
 
 /// Utilities for `enum class`es defined using ENUM_CLASS.
 template <class Enum>
@@ -136,4 +136,4 @@ typename enum_class<Enum>::enumerator_info info(Enum enumerator) {
     return typename enum_class<Enum>::enumerator_info(enumerator);
 }
 
-} // fp::util
+} // namespace fp::util

@@ -19,7 +19,7 @@ struct assigned_value {
     static constexpr auto value = VALUE;
 };
 
-} // detail
+} // namespace detail
 
 /**
  * Create a compile time table mapping from keys to values.
@@ -129,4 +129,4 @@ private:
 
 };
 
-} // fp::util
+} // namespace fp::util

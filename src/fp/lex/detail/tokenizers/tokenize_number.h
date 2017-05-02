@@ -267,4 +267,4 @@ inline void tokenize_number(tokenizer_state& s) {
     }
 }
 
-} // fp::lex::detail
+} // namespace fp::lex::detail

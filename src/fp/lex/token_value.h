@@ -13,4 +13,4 @@ NAMED_TUPLE(
     (token, value)(token_attribute, attribute)(source_location, source)
 );
 
-} // namespace fp::lex
+} // namespace namespace fp::lex

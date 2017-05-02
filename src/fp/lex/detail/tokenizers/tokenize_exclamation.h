@@ -15,4 +15,4 @@ inline void tokenize_exclamation(tokenizer_state& s) {
     }
 }
 
-} // fp::lex::detail
+} // namespace fp::lex::detail

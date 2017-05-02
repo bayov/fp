@@ -10,4 +10,4 @@ input_view::input_view(const input& in) :
     basic_string_view(&in.front(), in.size())
 {}
 
-} // fp
+} // namespace fp

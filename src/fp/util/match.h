@@ -25,7 +25,7 @@ private:
 
 };
 
-} // detail
+} // namespace detail
 
 /**
  * Syntax sugar over std::variant matching (std::visit).
@@ -48,4 +48,4 @@ constexpr detail::matcher<Variant> match(const Variant& v) {
     return detail::matcher<Variant>(v);
 }
 
-} // fp::util
+} // namespace fp::util

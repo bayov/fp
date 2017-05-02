@@ -52,4 +52,4 @@ diagnostic::diagnostic(
     m_text(std::move(text))
 {}
 
-} // fp
+} // namespace fp

@@ -9,4 +9,4 @@ inline ast::node postfix_op(parser_state& p, ast::node lhs) {
     return ast::make<ast::postfix_op>(std::move(lhs), p.it++);
 }
 
-} // fp::parse::detail::parsers
+} // namespace fp::parse::detail::parsers

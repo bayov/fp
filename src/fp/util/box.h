@@ -25,4 +25,4 @@ private:
 
 };
 
-} // fp::util
+} // namespace fp::util

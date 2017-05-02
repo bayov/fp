@@ -107,4 +107,4 @@ ENUM_CLASS(token, token_type,
     ERROR_NUMBER    ///< Error token. Most likely supposed to be a number.
 );
 
-} // fp::lex
+} // namespace fp::lex

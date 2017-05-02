@@ -16,4 +16,4 @@ token_list tokenize(const input_view& input, diagnostic_report& diagnostics) {
     return tokens;
 }
 
-} // fp::lex
+} // namespace fp::lex

@@ -24,4 +24,4 @@ struct token_view : boost::iterator_range<token_iterator> {
 
 };
 
-} // namespace fp::lex
+} // namespace namespace fp::lex

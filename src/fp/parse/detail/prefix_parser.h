@@ -30,4 +30,4 @@ using prefix_parser_table =
     ::set<lex::token::DEC, parsers::prefix_op>
 ;
 
-} // fp::parse::detail
+} // namespace fp::parse::detail

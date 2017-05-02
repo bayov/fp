@@ -62,4 +62,4 @@ using infix_parser_table =
     ::set<lex::token::DEC, parsers::postfix_op>
 ;
 
-} // fp::parse::detail
+} // namespace fp::parse::detail

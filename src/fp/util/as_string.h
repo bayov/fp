@@ -13,4 +13,4 @@ std::string as_string(const T& v) {
     return oss.str();
 }
 
-} // fp::util
+} // namespace fp::util

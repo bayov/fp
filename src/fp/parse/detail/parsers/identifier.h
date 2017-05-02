@@ -9,4 +9,4 @@ inline ast::node identifier(parser_state& p) {
     return ast::make<ast::identifier>(p.it++);
 }
 
-} // fp::parse::detail::parsers
+} // namespace fp::parse::detail::parsers

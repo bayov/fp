@@ -26,4 +26,4 @@ std::string demangle(const char* name) {
     }
 }
 
-} // fp::util
+} // namespace fp::util

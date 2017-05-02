@@ -17,7 +17,7 @@ struct overloaded_set : Fs... {
 
 };
 
-} // detail
+} // namespace detail
 
 /**
  * Given a list of function objects `fs...`, return a overloaded function object
@@ -38,4 +38,4 @@ constexpr detail::overloaded_set<Fs...> overloaded(Fs&&... fs) {
     return detail::overloaded_set<Fs...>(std::forward<Fs>(fs)...);
 }
 
-} // fp::util
+} // namespace fp::util

@@ -101,4 +101,4 @@ using precedence_table =
 constexpr precedence_t PREFIX_PRECEDENCE =
     precedence_table::get<lex::token::INC>() - 1;
 
-} // fp::parse::detail
+} // namespace fp::parse::detail

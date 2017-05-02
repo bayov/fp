@@ -21,4 +21,4 @@ using variant_node_t = std::variant<
 
 struct variant_node : variant_node_t { using variant_node_t::variant; };
 
-} // fp::ast::detail
+} // namespace fp::ast::detail

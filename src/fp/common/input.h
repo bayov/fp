@@ -19,11 +19,11 @@ struct input_view : std::basic_string_view<symbol_t> {
 /// An iterator to a @ref symbol_t in an @ref input_view.
 using symbol_iterator = input_view::const_iterator;
 
-} // namespace fp
+} // namespace namespace fp
 
 namespace std {
 
 template <>
 struct hash<fp::input_view> : hash<std::basic_string_view<fp::symbol_t>> {};
 
-} // std
+} // namespace std

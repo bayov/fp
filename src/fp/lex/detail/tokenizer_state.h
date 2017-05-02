@@ -139,4 +139,4 @@ private:
 
 };
 
-} // fp::lex::detail
+} // namespace fp::lex::detail

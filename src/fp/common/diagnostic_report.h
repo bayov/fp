@@ -47,4 +47,4 @@ private:
 
 };
 
-} // fp
+} // namespace fp

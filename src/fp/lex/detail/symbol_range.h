@@ -36,4 +36,4 @@ struct composite_symbol_range {
 
 };
 
-} // fp::lex::detail
+} // namespace fp::lex::detail

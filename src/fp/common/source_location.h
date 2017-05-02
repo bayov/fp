@@ -11,4 +11,4 @@ NAMED_TUPLE(
     (input_view, symbols)(symbol_iterator, line)(size_t, line_number)
 );
 
-} // fp
+} // namespace fp

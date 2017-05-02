@@ -39,4 +39,4 @@ inline void tokenize_keyword_or_identifier(tokenizer_state& s) {
     }
 }
 
-} // fp::lex::detail
+} // namespace fp::lex::detail

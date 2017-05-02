@@ -30,4 +30,4 @@ void diagnostic_report::report_warning(source_location source, std::string text)
     report(diagnostic::warning(std::move(source), std::move(text)));
 }
 
-} // fp
+} // namespace fp

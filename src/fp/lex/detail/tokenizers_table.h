@@ -173,4 +173,4 @@ using tokenizers_table =
     ::set<'\\', error_op>
 ;
 
-} // fp::lex::detail
+} // namespace fp::lex::detail

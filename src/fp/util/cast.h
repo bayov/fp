@@ -13,4 +13,4 @@ struct cast {
     }
 };
 
-} // fp::util
+} // namespace fp::util

@@ -55,7 +55,7 @@ constexpr auto attribute_set(util::enumerator_sequence<token, TOKENS...>) {
 using variant_attribute_t =
     decltype(attribute_set(util::enum_class<token>::sequence{}))::variant_t;
 
-} // detail
+} // namespace detail
 
 /// A variant over all possible @ref token @ref attribute types.
 struct token_attribute : detail::variant_attribute_t {
@@ -68,4 +68,4 @@ struct token_attribute : detail::variant_attribute_t {
     }
 };
 
-} // namespace fp::lex
+} // namespace namespace fp::lex

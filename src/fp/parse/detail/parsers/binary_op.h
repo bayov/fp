@@ -11,4 +11,4 @@ inline ast::node binary_op(parser_state& p, ast::node lhs) {
     return ast::make<ast::binary_op>(std::move(lhs), op, std::move(rhs));
 }
 
-} // fp::parse::detail::parsers
+} // namespace fp::parse::detail::parsers

@@ -26,4 +26,4 @@ inline void tokenize_period(tokenizer_state& s) {
     }
 }
 
-} // fp::lex::detail
+} // namespace fp::lex::detail

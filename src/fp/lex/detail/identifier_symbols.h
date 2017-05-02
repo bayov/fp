@@ -12,4 +12,4 @@ using identifier_symbols = composite_symbol_range<
     symbol_range<'0', '9'>
 >;
 
-} // fp::lex::detail
+} // namespace fp::lex::detail

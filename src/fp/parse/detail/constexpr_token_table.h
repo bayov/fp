@@ -12,4 +12,4 @@ using constexpr_token_table = util::constexpr_table<
     util::enum_class<lex::token>::size
 >;
 
-} // fp::parse::detail
+} // namespace fp::parse::detail

@@ -15,4 +15,4 @@ std::string type_name() { return demangle(typeid(T).name()); }
 template <class T>
 std::string type_name(const T& v) { return demangle(typeid(v).name()); }
 
-} // fp::util
+} // namespace fp::util

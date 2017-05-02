@@ -11,10 +11,10 @@ const base_node& base(const node& n) {
     );
 }
 
-} // detail
+} // namespace detail
 
 const source_location& source(const node& n) { return base(n).source(); }
 
 const lex::token_view& tokens(const node& n) { return base(n).tokens(); }
 
-} // fp::ast
+} // namespace fp::ast

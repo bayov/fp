@@ -25,7 +25,7 @@ node make(Args&& ... args) {
     );
 }
 
-} // fp::ast
+} // namespace fp::ast
 
 namespace std {
 
@@ -37,6 +37,6 @@ constexpr decltype(auto) visit(Visitor&& visitor, const fp::ast::node& n) {
     return std::visit(visitor, *n);
 }
 
-} // std
+} // namespace std
 
 #include <fp/ast/detail/variant_node.h>

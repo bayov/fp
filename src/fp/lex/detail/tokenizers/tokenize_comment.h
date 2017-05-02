@@ -10,4 +10,4 @@ inline void tokenize_comment(tokenizer_state& s) {
     s.push<token::COMMENT>(s.token_symbols());
 }
 
-} // fp::lex::detail
+} // namespace fp::lex::detail

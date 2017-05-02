@@ -9,4 +9,4 @@ inline ast::node integer(parser_state& p) {
     return ast::make<ast::integer>(p.it++);
 }
 
-} // fp::parse::detail::parsers
+} // namespace fp::parse::detail::parsers

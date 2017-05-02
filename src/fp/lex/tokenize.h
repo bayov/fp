@@ -18,4 +18,4 @@ namespace fp::lex {
  */
 token_list tokenize(const input_view&, diagnostic_report&);
 
-} // fp::lex
+} // namespace fp::lex

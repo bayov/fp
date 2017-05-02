@@ -81,4 +81,4 @@ private:
 
 };
 
-} // fp
+} // namespace fp

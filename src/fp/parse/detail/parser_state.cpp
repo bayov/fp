@@ -41,4 +41,4 @@ void parser_state::error(
     );
 }
 
-} // fp::parse::detail
+} // namespace fp::parse::detail
