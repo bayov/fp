@@ -88,7 +88,9 @@ inline void disable() { detail::enabled() = false; }
  * well with recursions to any depth (together with @ref disable_in_scope).
  */
 struct enable_in_scope : detail::force_in_scope_base {
-    enable_in_scope() { detail::force_enabled_in_thread() = true; }
+    enable_in_scope(bool enable = true) {
+        if (enable) { detail::force_enabled_in_thread() = true; }
+    }
 };
 
 /**
@@ -96,7 +98,9 @@ struct enable_in_scope : detail::force_in_scope_base {
  * well with recursions to any depth (together with @ref enable_in_scope).
  */
 struct disable_in_scope : detail::force_in_scope_base {
-    disable_in_scope() { detail::force_disabled_in_thread() = true; }
+    disable_in_scope(bool disable = true) {
+        if (disable) { detail::force_disabled_in_thread() = true; }
+    }
 };
 
 } // namespace fp::util::color
