@@ -11,7 +11,7 @@ token_list tokenize(const input_view& input, diagnostic_report& diagnostics) {
     detail::tokenizer_state s(input, tokens, diagnostics);
     while (s.it != s.end) {
         s.start_next_token();
-        detail::tokenizers_table::get(*s.it)(s);
+        detail::tokenizers_table[*s.it](s);
     }
     return tokens;
 }

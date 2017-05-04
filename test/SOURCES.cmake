@@ -9,12 +9,12 @@ set(
     lex/tokenize.cpp
     parse/test.cpp
     util/box.cpp
-    util/constexpr_table.cpp
     util/enum_class.cpp
     util/match.cpp
     util/named_tuple.cpp
     util/overloaded.cpp
     util/pp_seq.cpp
+    util/table.cpp
     util/type_name.cpp
     util/va_args.cpp
     PARENT_SCOPE

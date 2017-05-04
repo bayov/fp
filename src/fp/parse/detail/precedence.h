@@ -1,104 +1,102 @@
 #pragma once
 
-#include <boost/preprocessor/slot/counter.hpp>
-#include <fp/parse/detail/constexpr_token_table.h>
+#include <fp/parse/detail/token_table_t.h>
 
 namespace fp::parse::detail {
 
 using precedence_t = size_t;
 
-constexpr precedence_t STARTING_PRECEDENCE = BOOST_PP_COUNTER;
-#define FP_PRECEDENCE() (BOOST_PP_COUNTER - STARTING_PRECEDENCE)
+constexpr auto precedence_table_and_prefix = ([]() {
+    precedence_t precedence = 0;
+    auto t = token_table_t<precedence_t>::with_default(precedence);
 
-using precedence_table =
-    constexpr_token_table<precedence_t>
-    ::set_default<FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::SEMICOLON] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::SEMICOLON, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::COMMA] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::COMMA, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::ASSIGN] = precedence;
+    t[lex::token::PLUS_ASSIGN] = precedence;
+    t[lex::token::MINUS_ASSIGN] = precedence;
+    t[lex::token::MUL_ASSIGN] = precedence;
+    t[lex::token::DIV_ASSIGN] = precedence;
+    t[lex::token::MOD_ASSIGN] = precedence;
+    t[lex::token::POW_ASSIGN] = precedence;
+    t[lex::token::BIT_AND_ASSIGN] = precedence;
+    t[lex::token::BIT_OR_ASSIGN] = precedence;
+    t[lex::token::XOR_ASSIGN] = precedence;
+    t[lex::token::LSHIFT_ASSIGN] = precedence;
+    t[lex::token::RSHIFT_ASSIGN] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::ASSIGN, FP_PRECEDENCE()>
-    ::set<lex::token::PLUS_ASSIGN, FP_PRECEDENCE()>
-    ::set<lex::token::MINUS_ASSIGN, FP_PRECEDENCE()>
-    ::set<lex::token::MUL_ASSIGN, FP_PRECEDENCE()>
-    ::set<lex::token::DIV_ASSIGN, FP_PRECEDENCE()>
-    ::set<lex::token::MOD_ASSIGN, FP_PRECEDENCE()>
-    ::set<lex::token::POW_ASSIGN, FP_PRECEDENCE()>
-    ::set<lex::token::BIT_AND_ASSIGN, FP_PRECEDENCE()>
-    ::set<lex::token::BIT_OR_ASSIGN, FP_PRECEDENCE()>
-    ::set<lex::token::XOR_ASSIGN, FP_PRECEDENCE()>
-    ::set<lex::token::LSHIFT_ASSIGN, FP_PRECEDENCE()>
-    ::set<lex::token::RSHIFT_ASSIGN, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::TYPE_ARROW] = precedence;
+    t[lex::token::LAMBDA_ARROW] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::TYPE_ARROW, FP_PRECEDENCE()>
-    ::set<lex::token::LAMBDA_ARROW, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::ANNOTATION] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::ANNOTATION, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::OR] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::OR, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::AND] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::AND, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::BIT_OR] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::BIT_OR, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::XOR] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::XOR, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::BIT_AND] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::BIT_AND, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::EQ] = precedence;
+    t[lex::token::NE] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::EQ, FP_PRECEDENCE()>
-    ::set<lex::token::NE, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::LT] = precedence;
+    t[lex::token::GT] = precedence;
+    t[lex::token::LTE] = precedence;
+    t[lex::token::GTE] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::LT, FP_PRECEDENCE()>
-    ::set<lex::token::GT, FP_PRECEDENCE()>
-    ::set<lex::token::LTE, FP_PRECEDENCE()>
-    ::set<lex::token::GTE, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::LSHIFT] = precedence;
+    t[lex::token::RSHIFT] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::LSHIFT, FP_PRECEDENCE()>
-    ::set<lex::token::RSHIFT, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::PLUS] = precedence;
+    t[lex::token::MINUS] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::PLUS, FP_PRECEDENCE()>
-    ::set<lex::token::MINUS, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::MUL] = precedence;
+    t[lex::token::DIV] = precedence;
+    t[lex::token::MOD] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::MUL, FP_PRECEDENCE()>
-    ::set<lex::token::DIV, FP_PRECEDENCE()>
-    ::set<lex::token::MOD, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::POW] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::POW, FP_PRECEDENCE()>
+    ++precedence;
+    auto prefix_precedence = precedence;     // all prefix operators
 
-#include BOOST_PP_UPDATE_COUNTER()
-    // <reserved> : all prefix operators
+    ++precedence;
+    t[lex::token::INC] = precedence;         // postfix increment
+    t[lex::token::DEC] = precedence;         // postfix decrement
+    t[lex::token::OPTIONAL] = precedence;
+    t[lex::token::L_PAREN] = precedence;     // function call
+    t[lex::token::L_BRACKET] = precedence;   // subscript
+    t[lex::token::MEMBER_ACCESS] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::INC, FP_PRECEDENCE()>         // postfix increment
-    ::set<lex::token::DEC, FP_PRECEDENCE()>         // postfix decrement
-    ::set<lex::token::OPTIONAL, FP_PRECEDENCE()>
-    ::set<lex::token::L_PAREN, FP_PRECEDENCE()>     // function call
-    ::set<lex::token::L_BRACKET, FP_PRECEDENCE()>   // subscript
-    ::set<lex::token::MEMBER_ACCESS, FP_PRECEDENCE()>
+    ++precedence;
+    t[lex::token::RANGE] = precedence;
+    t[lex::token::CLOSED_RANGE] = precedence;
 
-#include BOOST_PP_UPDATE_COUNTER()
-    ::set<lex::token::RANGE, FP_PRECEDENCE()>
-    ::set<lex::token::CLOSED_RANGE, FP_PRECEDENCE()>
-;
+    return std::make_pair(t, prefix_precedence);
+})();
 
-constexpr precedence_t PREFIX_PRECEDENCE =
-    precedence_table::get<lex::token::INC>() - 1;
+constexpr auto precedence_table = precedence_table_and_prefix.first;
+constexpr precedence_t PREFIX_PRECEDENCE = precedence_table_and_prefix.second;
 
 } // namespace fp::parse::detail

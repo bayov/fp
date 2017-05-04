@@ -30,22 +30,12 @@ private:
         return precedence(it->value);
     }
 
-    precedence_t precedence(lex::token t) const {
-        return precedence_table::get(t);
-    }
-
-    prefix_parser_t prefix_parser() const {
-        return prefix_parser_table::get(m_state.it->value);
-    }
-
-    infix_parser_t infix_parser() const {
-        return infix_parser_table::get(m_state.it->value);
-    }
+    precedence_t precedence(lex::token t) const { return precedence_table[t]; }
 
     ast::node parse(precedence_t p) {
-        ast::node lhs = prefix_parser()(m_state);
-        while (p < precedence()) {
-            lhs = infix_parser()(m_state, std::move(lhs));
+        ast::node lhs = prefix_parser_table[m_state.it->value](m_state);
+        while (p < precedence_table[m_state.it->value]) {
+            lhs = infix_parser_table[m_state.it->value](m_state, std::move(lhs));
         }
         return lhs;
     }

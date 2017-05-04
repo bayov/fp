@@ -38,7 +38,6 @@ set(
     lex/token_view.h
     lex/tokenize.cpp
     lex/tokenize.h
-    parse/detail/constexpr_token_table.h
     parse/detail/infix_parser.h
     parse/detail/parser.h
     parse/detail/parser_state.cpp
@@ -50,18 +49,19 @@ set(
     parse/detail/parsers/prefix_op.h
     parse/detail/precedence.h
     parse/detail/prefix_parser.h
+    parse/detail/token_table_t.h
     util/as_string.h
     util/box.h
     util/cast.h
     util/color_support.h
     util/color_value.h
     util/colored_text.h
-    util/constexpr_table.h
     util/enum_class.h
     util/match.h
     util/named_tuple.h
     util/overloaded.h
     util/pp_seq.h
+    util/table.h
     util/type_name.cpp
     util/type_name.h
     util/va_args.h
