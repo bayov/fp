@@ -30,4 +30,10 @@ void diagnostic_report::report_warning(source_location source, std::string text)
     report(diagnostic::warning(std::move(source), std::move(text)));
 }
 
+std::ostream& operator<<(std::ostream& os, const diagnostic_report& ds) {
+    for (auto&& d : ds.errors()) { os << d << std::endl; }
+    for (auto&& d : ds.warnings()) { os << d << std::endl; }
+    return os;
+}
+
 } // namespace fp

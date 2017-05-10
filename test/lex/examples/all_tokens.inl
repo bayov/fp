@@ -14,7 +14,7 @@ constexpr auto in = R"fp(
 
     # arithmetic
     + - * / % ** & | ^ << >>
-    
+
     # assignments
     = += -= *= /= %= **=
     &= |= ^= <<= >>=
@@ -46,7 +46,7 @@ constexpr auto expected = R"tokens(
 
     COMMENT(# arithmetic)
     PLUS MINUS MUL DIV MOD POW BIT_AND BIT_OR XOR LSHIFT RSHIFT
-    
+
     COMMENT(# assignments)
     ASSIGN PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN POW_ASSIGN
     BIT_AND_ASSIGN BIT_OR_ASSIGN XOR_ASSIGN LSHIFT_ASSIGN RSHIFT_ASSIGN

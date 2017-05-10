@@ -10,6 +10,7 @@ set(
     ast/node.h
     ast/postfix_op.h
     ast/prefix_op.h
+    common/detail/diagnostic_printer.h
     common/detail/diagnostic_printing.h
     common/diagnostic.cpp
     common/diagnostic.h
@@ -53,9 +54,14 @@ set(
     util/as_string.h
     util/box.h
     util/cast.h
-    util/color_support.h
-    util/color_value.h
-    util/colored_text.h
+    util/console/color/color.h
+    util/console/color/support.h
+    util/console/colored_text.h
+    util/console/fill.h
+    util/console/text_formatter.cpp
+    util/console/text_formatter.h
+    util/console/width.cpp
+    util/console/width.h
     util/enum_class.h
     util/match.h
     util/named_tuple.h

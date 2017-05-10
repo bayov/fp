@@ -5,10 +5,10 @@
 #include <map>
 #include <list>
 
-#include <fp/util/color_value.h>
+#include <fp/util/console/color/color.h>
 #include <fp/util/named_tuple.h>
 
-namespace fp::util::color {
+namespace fp::util::console {
 
 /**
  * A simply utility to help coloring lines of text before printing them.
@@ -38,7 +38,7 @@ public:
     template <class T>
     std::ostream& operator<<(T&& v) { return m_text << std::forward<T>(v); }
 
-    void color(const color_value& c, size_t from, size_t to) {
+    void color(const color::value& c, size_t from, size_t to) {
         m_color_codes[from].push_back({ c.open });
         m_color_codes[to].push_back({ c.close });
     }
@@ -71,14 +71,16 @@ public:
             for (auto& code : codes) { os << code; }
             i = col;
         }
+        // print the remaining text
+        os << std::string_view(&s[i], s.size() - i);
         return os;
     }
 
 private:
 
     std::stringstream m_text;
-    std::map<size_t, std::list<color_code>> m_color_codes;
+    std::map<size_t, std::list<color::code>> m_color_codes;
 
 };
 
-} // namespace fp::util::color
+} // namespace fp::util::console

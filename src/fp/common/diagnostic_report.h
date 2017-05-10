@@ -47,4 +47,12 @@ private:
 
 };
 
+/**
+ * If std::ostream is std::cout, std::cerr, or std::clog, the diagnostics will
+ * be printed with colors (ANSI escape codes).
+ *
+ * To disable colors, you can use fp::util::color::disable_in_scope.
+ */
+std::ostream& operator<<(std::ostream&, const diagnostic_report&);
+
 } // namespace fp

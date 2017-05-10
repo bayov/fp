@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <regex>
 
-namespace fp::util::color {
+namespace fp::util::console::color {
 
 namespace detail {
 
@@ -103,4 +103,4 @@ struct disable_in_scope : detail::force_in_scope_base {
     }
 };
 
-} // namespace fp::util::color
+} // namespace fp::util::console::color

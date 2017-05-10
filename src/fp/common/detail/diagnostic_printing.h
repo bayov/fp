@@ -4,28 +4,19 @@
 #include <iomanip>
 #include <map>
 
-#include <fp/util/color_value.h>
-#include <fp/util/colored_text.h>
+#include <fp/util/console/color/color.h>
+#include <fp/util/console/colored_text.h>
 #include <fp/util/with.h>
+#include <fp/common/detail/diagnostic_printer.h>
 #include <fp/common/diagnostic.h>
 
 namespace fp::detail {
 
-inline size_t n_decimal_digits(size_t n) {
-    return n < 10 ? 1 : 1 + n_decimal_digits(n / 10);
-}
-
-inline input_view source_line(const source_location& source) {
-    auto it = source.line;
-    while (it != source.input.end() && *it != '\r' && *it != '\n') { ++it; }
-    return { source.line, it };
-}
-
 inline void add_underlines(
-    util::color::colored_text& ct,
+    util::console::colored_text& ct,
     const input_view& line,
     const std::list<input_view>& underlines,
-    util::color::color_value color
+    util::console::color::value color
 ) {
     std::string text = std::string(line.size(), ' ');
     for (auto&& u : underlines) {
@@ -38,10 +29,10 @@ inline void add_underlines(
 }
 
 inline void add_arrow(
-    util::color::colored_text& ct,
+    util::console::colored_text& ct,
     const input_view& line,
     const input_view& arrow,
-    util::color::color_value color
+    util::console::color::value color
 ) {
     size_t p = arrow.begin() - line.begin();
     ct.replace_text('^', p, p + 1);
@@ -49,10 +40,23 @@ inline void add_arrow(
 }
 
 inline void print_diagnostic(std::ostream& os, const diagnostic& d) {
-    util::color::disable_in_scope disable_colors(
+    util::console::color::disable_in_scope disable_colors(
         os.rdbuf() != std::cout.rdbuf() && os.rdbuf() != std::cerr.rdbuf()
     );
-    using namespace util::color;
+    using namespace util::console::color;
+
+    WITH(bold.in_scope(os)) {
+        os << blue("<source-file>") << ":";
+        size_t column_number = d.source().symbols.begin() - d.source().line;
+        os << d.source().line_number << ":" << column_number << ": ";
+        if (d.severity() == severity::ERROR) {
+            os << red("error");
+        } else {
+            os << yellow("warning");
+        }
+        os << ": " << d.text();
+    }
+    os << std::endl;
 
     size_t line_number_digits = 3;
     std::map<size_t, input_view> lines;
@@ -77,14 +81,15 @@ inline void print_diagnostic(std::ostream& os, const diagnostic& d) {
             }
             os << std::setw(int(line_number_digits)) << line_number << " | ";
         }
-        os << line << std::endl;
-        WITH(gray.in_scope(os)) {
-            os << std::setw(int(line_number_digits)) << ' ' << " | ";
-        }
-        colored_text ct;
+        util::console::colored_text colored_line(line);
+        util::console::colored_text ct;
         add_underlines(ct, line, underlines[line_number], magenta);
         if (d.source().line_number == line_number) {
             add_arrow(ct, line, d.source().symbols, red);
+        }
+        os << colored_line << std::endl;
+        WITH(gray.in_scope(os)) {
+            os << std::setw(int(line_number_digits)) << ' ' << " | ";
         }
         os << ct << std::endl;
 

@@ -1,4 +1,6 @@
+#include <fp/util/console/width.h>
 #include <fp/common/detail/diagnostic_printing.h>
+#include <fp/common/detail/diagnostic_printer.h>
 
 #include "diagnostic.h"
 
@@ -78,12 +80,15 @@ let x = 42 if first or second else 43;
     auto line1 = &in.front() + 1;
     auto line2 = line1 + 18;
     auto line3 = line2 + 29;
-    
+
     fp::source_location source(
         fp::input_view(line3 + 20, line3 + 22),
         line3, 8, in
     );
-    auto d = fp::diagnostic::error(source, "Unknown variable");
+    auto d = fp::diagnostic::error(
+        source,
+        "invalid arguments to `or`: (bool, list[bool])"
+    );
     fp::source_location lhs(
         fp::input_view(line3 + 14, line3 + 19),
         line3, 8, in
@@ -107,4 +112,10 @@ let x = 42 if first or second else 43;
     d.add_fix_suggestion(rhs, "second.empty()");
 
     std::cout << d << std::endl;
+    std::cout << "=============================" << std::endl;
+
+    fp::detail::diagnostic_printer printer(d);
+    printer.print(std::cout);
+    std::cout << std::endl;
+    std::cout << "=============================" << std::endl;
 }

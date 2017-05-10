@@ -3,10 +3,31 @@
 #include <fp/lex/tokenize.h>
 
 #include <catergorized_test.h>
+#include <fp/util/console/color/support.h>
+#include <fp/util/with.h>
 
 #define TEST(what) CATEGORIZED_TEST(lex, tokenize, what)
 
 namespace fp::lex {
+
+template <token TOKEN>
+void assert_token(const attribute_t<TOKEN>& attr, const input_view& in) {
+    diagnostic_report diagnostics;
+    auto tokens = tokenize(in, diagnostics);
+    if (!diagnostics.errors().empty()) {
+        FAIL() << diagnostics;
+    }
+    ASSERT_EQ(1, tokens.size());
+    ASSERT_EQ(TOKEN, tokens.front().value);
+    if constexpr (!std::is_same_v<no_attribute, attribute_t<TOKEN>>) {
+        ASSERT_EQ(attr, tokens.front().attribute.as<TOKEN>());
+    }
+    ASSERT_EQ(in, tokens.front().source.symbols);
+}
+
+TEST(fiddle) {
+    assert_token<token::COMMA>(no_attribute{}, "!");
+}
 
 void assert_example(
     input_view in,
