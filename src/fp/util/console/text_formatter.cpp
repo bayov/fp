@@ -39,24 +39,6 @@ std::pair<std::string_view, std::string_view> split_text(
 
 } // namespace detail
 
-text_formatter::color_in_scope::color_in_scope(
-    color::value c,
-    std::list<color::value>& cs
-) :
-    cs(cs), it(cs.insert(cs.end(), std::move(c)))
-{}
-
-text_formatter::color_in_scope::~color_in_scope() { cs.erase(it); }
-
-text_formatter::prefix_in_scope::prefix_in_scope(
-    prefix_t p,
-    std::list<prefix_t>& ps
-) :
-    ps(ps), it(ps.insert(ps.end(), std::move(p)))
-{}
-
-text_formatter::prefix_in_scope::~prefix_in_scope() { ps.erase(it); }
-
 text_formatter::text_formatter() : text_formatter(console::width()) {}
 
 text_formatter::text_formatter(size_t width) : m_width(width) { newline(); }
@@ -64,7 +46,7 @@ text_formatter::text_formatter(size_t width) : m_width(width) { newline(); }
 void text_formatter::newline() {
     m_lines.emplace_back();
     m_lines.back().text.reserve(m_width);
-    for (auto&& p : m_prefixes_in_scope) { write(p.text, p.colors); }
+    for (auto&& p : m_prefixes) { write(p.text, p.colors); }
 }
 
 text_formatter& text_formatter::operator<<(std::ostream& (&m)(std::ostream&)) {
@@ -74,10 +56,6 @@ text_formatter& text_formatter::operator<<(std::ostream& (&m)(std::ostream&)) {
         write(m, {});
     }
     return *this;
-}
-
-auto text_formatter::color(const color::value& c) -> color_in_scope {
-    return color_in_scope(c, m_colors_in_scope);
 }
 
 size_t text_formatter::width() const { return m_width; }
@@ -123,7 +101,7 @@ void text_formatter::write(
     size_t from = line.text.size();
     line.text += s;
     size_t to = line.text.size();
-    for (auto&& c : m_colors_in_scope) {
+    for (auto&& c : m_colors) {
         line.color_codes[from].push_back({ c.open });
         line.color_codes[to].push_back({ c.close });
     }

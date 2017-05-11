@@ -111,11 +111,11 @@ let x = 42 if first or second else 43;
 
     d.add_fix_suggestion(rhs, "second.empty()");
 
-    std::cout << d << std::endl;
-    std::cout << "=============================" << std::endl;
-
     fp::detail::diagnostic_printer printer(d);
     printer.print(std::cout);
     std::cout << std::endl;
+    std::cout << "=============================" << std::endl;
+
+    std::cout << d << std::endl;
     std::cout << "=============================" << std::endl;
 }

@@ -5,9 +5,38 @@
 #include <list>
 
 #include <fp/util/as_string.h>
+#include <fp/util/context_list.h>
 #include <fp/util/console/color/color.h>
 
 namespace fp::util::console {
+
+namespace detail {
+
+struct text_formatter_prefix {
+
+    std::string text;
+    std::list<color::value> colors;
+
+    template <class T>
+    static text_formatter_prefix create(
+        const T& v,
+        std::list<color::value> colors
+    ) {
+        return { as_string(v), std::move(colors) };
+    }
+
+    template <class T>
+    static text_formatter_prefix create(
+        const color::value::wrapper<T>& w,
+        std::list<color::value> colors
+    ) {
+        colors.push_back(w.c);
+        return create(w.v, std::move(colors));
+    }
+
+};
+
+} // namespace detail
 
 /**
  * A simple utility to help printing lines of text that are both colored and
@@ -46,41 +75,6 @@ namespace fp::util::console {
  *      std::cout << t;         // print the written text stdout
  */
 class text_formatter {
-private:
-
-    struct color_in_scope {
-        std::list<color::value>& cs;
-        std::list<color::value>::iterator it;
-        color_in_scope(color::value c, std::list<color::value>& cs);
-        ~color_in_scope();
-    };
-
-    struct prefix_t {
-        std::string text;
-        std::list<color::value> colors;
-    };
-
-    struct prefix_in_scope {
-        std::list<prefix_t>& ps;
-        std::list<prefix_t>::iterator it;
-        prefix_in_scope(prefix_t p, std::list<prefix_t>& ps);
-        ~prefix_in_scope();
-    };
-
-    template <class T>
-    prefix_t create_prefix(const T& v, std::list<color::value> colors) {
-        return { as_string(v), std::move(colors) };
-    }
-
-    template <class T>
-    prefix_t create_prefix(
-        const color::value::wrapper<T>& w,
-        std::list<color::value> colors
-    ) {
-        colors.push_back(w.c);
-        return create_prefix(w.v, std::move(colors));
-    }
-
 public:
 
     /// Construct a text-formatter with width `console::width()`.
@@ -107,12 +101,12 @@ public:
 
     /// Set the prefix to be written after each `newline()` in scope.
     template <class T>
-    prefix_in_scope prefix(const T& v) {
-        return prefix_in_scope(create_prefix(v, {}), m_prefixes_in_scope);
+    auto prefix(const T& v) {
+        return m_prefixes(detail::text_formatter_prefix::create(v, {}));
     }
 
     /// Set a color in scope.
-    color_in_scope color(const color::value&);
+    auto color(const color::value& v) { return m_colors(v); }
 
     /// @return The max width.
     size_t width() const;
@@ -132,8 +126,8 @@ private:
     size_t m_width;
     std::vector<line_t> m_lines;
 
-    std::list<color::value> m_colors_in_scope;
-    std::list<prefix_t> m_prefixes_in_scope;
+    context_list<const detail::text_formatter_prefix> m_prefixes;
+    context_list<const color::value> m_colors;
 
     template <class T>
     void write(const T& v, const std::list<color::value>& colors) {
