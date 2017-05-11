@@ -1,3 +1,5 @@
+#include <fp/util/console/width.h>
+
 #include "text_formatter.h"
 
 namespace fp::util::console {

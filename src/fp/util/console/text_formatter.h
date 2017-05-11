@@ -6,7 +6,6 @@
 
 #include <fp/util/as_string.h>
 #include <fp/util/console/color/color.h>
-#include <fp/util/console/width.h>
 
 namespace fp::util::console {
 
