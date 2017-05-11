@@ -62,6 +62,9 @@ set(
     util/console/text_formatter.h
     util/console/width.cpp
     util/console/width.h
+    util/context_list.h
+    util/context_value.h
+    util/deref.h
     util/enum_class.h
     util/match.h
     util/named_tuple.h

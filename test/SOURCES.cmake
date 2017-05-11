@@ -9,6 +9,8 @@ set(
     lex/tokenize.cpp
     parse/test.cpp
     util/box.cpp
+    util/context_list.cpp
+    util/context_value.cpp
     util/enum_class.cpp
     util/match.cpp
     util/named_tuple.cpp
