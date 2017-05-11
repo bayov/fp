@@ -108,6 +108,9 @@ public:
     /// Set a color in scope.
     auto color(const color::value& v) { return m_colors(v); }
 
+    /// Colorize the current line `[from, to)` with the given color.
+    void colorize(const color::value& v, size_t from, size_t to);
+
     /// @return The max width.
     size_t width() const;
 

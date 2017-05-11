@@ -1,5 +1,4 @@
 #include <fp/util/console/width.h>
-#include <fp/common/detail/diagnostic_printing.h>
 #include <fp/common/detail/diagnostic_printer.h>
 
 #include "diagnostic.h"
@@ -57,12 +56,13 @@ diagnostic::diagnostic(
 {}
 
 std::ostream& operator<<(std::ostream& os, const diagnostic& d) {
-    detail::print_diagnostic(os, d);
+    detail::diagnostic_printer(d).print(os);
     return os;
 }
 
 } // namespace fp
 
+#include <iostream>
 int main() {
     fp::input_view in =
 R"fp(
@@ -111,11 +111,5 @@ let x = 42 if first or second else 43;
 
     d.add_fix_suggestion(rhs, "second.empty()");
 
-    fp::detail::diagnostic_printer printer(d);
-    printer.print(std::cout);
-    std::cout << std::endl;
-    std::cout << "=============================" << std::endl;
-
     std::cout << d << std::endl;
-    std::cout << "=============================" << std::endl;
 }

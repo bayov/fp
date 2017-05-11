@@ -92,6 +92,7 @@ constexpr auto blue =           value(34, 39);
 constexpr auto magenta =        value(35, 39);
 constexpr auto cyan =           value(36, 39);
 constexpr auto white =          value(37, 39);
+constexpr auto normal =         value(39, 39);
 
 namespace bright {
 constexpr auto black =          value(90, 39);

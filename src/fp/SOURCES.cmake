@@ -10,8 +10,8 @@ set(
     ast/node.h
     ast/postfix_op.h
     ast/prefix_op.h
+    common/detail/diagnostic_printer.cpp
     common/detail/diagnostic_printer.h
-    common/detail/diagnostic_printing.h
     common/diagnostic.cpp
     common/diagnostic.h
     common/diagnostic_report.cpp
