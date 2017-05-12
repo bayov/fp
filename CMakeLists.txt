@@ -14,9 +14,9 @@ add_definitions(-DBOOST_PP_VARIADICS)
 boost_package(preprocessor)
 boost_package(mpl DEPENDENCIES preprocessor)
 boost_package(iterator DEPENDENCIES core detail static_assert)
-boost_package(
-    range
-    DEPENDENCIES config assert concept_check utility type_traits mpl iterator
+boost_package(range DEPENDENCIES
+    config assert concept_check utility type_traits mpl iterator optional
+    throw_exception move
 )
 finalize_boost_packages(boost-1.64.0)
 

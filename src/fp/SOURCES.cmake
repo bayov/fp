@@ -66,6 +66,7 @@ set(
     util/context_value.h
     util/deref.h
     util/enum_class.h
+    util/join.h
     util/match.h
     util/named_tuple.h
     util/overloaded.h

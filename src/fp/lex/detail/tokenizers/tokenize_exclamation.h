@@ -6,12 +6,12 @@ namespace fp::lex::detail {
 
 /// Tokenize `!=` (token::NE).
 inline void tokenize_exclamation(tokenizer_state& s) {
-    if (s.next_is<'='>()) {
-        ++s.it;
+    ++s.it;
+    if (*s.it == '=') {
         s.tokenize_as<token::NE>();
     } else {
         s.error("Invalid symbol. Did you mean `not` or `!=`?");
-        s.tokenize_as<token::ERROR_OP>();
+        s.push<token::ERROR_OP>();
     }
 }
 

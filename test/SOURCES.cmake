@@ -5,8 +5,7 @@ set(
     include/assert_macro_eq.h
     include/assert_same.h
     include/catergorized_test.h
-    lex/test.cpp
-    lex/tokenize.cpp
+    lex/single_tokens.cpp
     parse/test.cpp
     util/box.cpp
     util/context_list.cpp

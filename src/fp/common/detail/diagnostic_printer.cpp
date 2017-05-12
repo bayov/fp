@@ -84,8 +84,8 @@ void diagnostic_printer::write_source() {
         WITH(m_t.color(GUTTER_COLOR)) {
             if (line_number - prev_line_number > 1) {
                 m_t << fill(m_gutter_width, "...") << std::endl;
-                m_t << fill(m_gutter_width, "") << " |" << std::endl;
             }
+            m_t << fill(m_gutter_width, "") << " |" << std::endl;
         }
         write_source_line(line_number);
     }
@@ -139,7 +139,9 @@ std::string diagnostic_printer::underlines(size_t n) const {
         }
     }
     if (d.source().line_number == n) {
-        r[d.source().symbols.begin() - lit] = '^';
+        auto pos = d.source().symbols.begin() - lit;
+        if (pos >= r.size()) { r.resize(pos + 1, ' '); }
+        r[pos] = '^';
     }
     return r;
 }
