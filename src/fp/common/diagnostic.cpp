@@ -20,7 +20,7 @@ const source_location& diagnostic::source() const { return m_source; }
 const std::string& diagnostic::text() const { return m_text; }
 
 auto diagnostic::supplements() const -> const std::list<supplement>& {
-    return m_source_supplements;
+    return m_supplements;
 }
 
 auto diagnostic::notes() const -> const std::list<note>& { return m_notes; }
@@ -30,7 +30,7 @@ auto diagnostic::fix_suggestions() const -> const std::list<fix_suggestion>& {
 }
 
 void diagnostic::add_supplement(source_location source, std::string text) {
-    m_source_supplements.emplace_back(std::move(source), std::move(text));
+    m_supplements.emplace_back(std::move(source), std::move(text));
 }
 
 void diagnostic::add_note(std::string text) {

@@ -70,7 +70,7 @@ private:
     fp::severity m_severity;
     source_location m_source;
     std::string m_text;
-    std::list<supplement> m_source_supplements;
+    std::list<supplement> m_supplements;
     std::list<note> m_notes;
     std::list<fix_suggestion> m_fix_suggestions;
 
