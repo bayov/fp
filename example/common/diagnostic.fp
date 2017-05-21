@@ -2,7 +2,7 @@ import std::Printable;
 import source_location;
 
 export as class diagnostic {
-    ::severity          variant { ERROR, WARNING };
+    ::severity =        variant { ERROR, WARNING };
     ::supplement =      (source: source_location, text: string);
     ::note =            (text: string, source: source_location?);
     ::fix_suggestion =  (source: source_location, replacement: input);
@@ -25,10 +25,10 @@ impl for diagnostic {
     };
 
     ::error(source: source_location, text: string) =>
-        diagnostic(::severity::ERROR, source, text);
+        diagnostic(::ERROR, source, text);
 
     ::warning(source: source_location, text: string) =>
-        diagnostic(::severity::WARNING, source, text);
+        diagnostic(::WARNING, source, text);
 
 };
 
@@ -45,13 +45,13 @@ impl for diagnostic {
 impl for diagnostic {
 
     add_supplement(source: source_location, text: string = "") =>
-        supplements.add({ source, text });
+        supplements.append({ source, text });
 
     add_note(text: string, source: source_location?) =>
-        notes.add({ text, source });
+        notes.append({ text, source });
 
     add_fix_suggestion(source: source_location, replacement: input) =>
-        fix_suggestion.add({ source, replacement });
+        fix_suggestion.append({ source, replacement });
 
 };
 
