@@ -13,7 +13,7 @@ public:
     using op_t = lex::token;
 
     binary_op(node lhs, lex::token_iterator it, node rhs) :
-        base_node(ast::tokens(lhs).begin(), ast::tokens(rhs).end()),
+        base_node(lhs.tokens().begin(), rhs.tokens().end()),
         m_lhs(std::move(lhs)),
         m_op(it),
         m_rhs(std::move(rhs))

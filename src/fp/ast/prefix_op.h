@@ -11,7 +11,7 @@ public:
     using op_t = lex::token;
 
     prefix_op(lex::token_iterator it, node rhs) :
-        base_node(it, ast::tokens(rhs).end()),
+        base_node(it, rhs.tokens().end()),
         m_rhs(std::move(rhs))
     {}
 

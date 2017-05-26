@@ -1,5 +1,6 @@
 #pragma once
 
+#include <fp/util/with.h>
 #include <fp/ast/node.h>
 #include <fp/parse/detail/parser_state.h>
 #include <fp/parse/detail/token_table_t.h>
@@ -13,7 +14,13 @@ using prefix_parser_t = ast::node (*)(parser_state&);
 
 inline ast::node prefix_parser_error(parser_state& s) {
     s.error();
-    throw std::invalid_argument("");
+    ++s.it;
+    return ast::make<ast::error>(s.it - 1, s.it);
+}
+
+inline ast::node prefix_parser_skip_error(parser_state& s) {
+    ++s.it;
+    return ast::make<ast::error>(s.it - 1, s.it);
 }
 
 constexpr auto prefix_parser_table = ([]() {
@@ -27,7 +34,20 @@ constexpr auto prefix_parser_table = ([]() {
     t[lex::token::BIT_AND] = parsers::prefix_op;
     t[lex::token::INC] = parsers::prefix_op;
     t[lex::token::DEC] = parsers::prefix_op;
+    t[lex::token::ERROR] = prefix_parser_skip_error;
     return t;
 })();
+
+ast::node parse_prefix(parser_state& s) {
+    ast::node node = prefix_parser_table[s.it->value](s);
+    if (node.is<ast::error>()) {
+        // try to recover from the error by parsing until succeeding, while
+        // ignoring all errors along the way to avoid diagnostics clutter
+        WITH(s.ignore_diagnostics_in_scope()) {
+            while (prefix_parser_table[s.it->value](s).is<ast::error>()) {}
+        }
+    }
+    return node;
+}
 
 } // namespace fp::parse::detail

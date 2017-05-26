@@ -11,7 +11,7 @@ inline void tokenize_exclamation(tokenizer_state& s) {
         s.tokenize_as<token::NE>();
     } else {
         s.error("Invalid symbol. Did you mean `not` or `!=`?");
-        s.push<token::ERROR_OP>();
+        s.push<token::ERROR>();
     }
 }
 

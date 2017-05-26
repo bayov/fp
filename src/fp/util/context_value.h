@@ -4,6 +4,26 @@
 
 namespace fp::util {
 
+namespace detail {
+
+template <class T, class TopScopeT>
+struct context_value_storage {
+
+    TopScopeT in_top_scope;
+    T* current;
+
+    explicit context_value_storage(TopScopeT&& v) :
+        in_top_scope(std::forward<TopScopeT>(v)),
+        current(&in_top_scope)
+    {}
+
+};
+
+template <class T>
+struct context_value_storage<T, void> { T* current; };
+
+} // namespace detail
+
 /**
  * A simple RAII context value holder.
  *
@@ -43,8 +63,12 @@ namespace fp::util {
  *
  *      }
  *
+ *      // to create a context value with a value in top scope, use `::with`
+ *      auto n = context_value<int>::with(5); // 5 is captured by value
+ *      auto n = context_value<int>::with(x); // x is captured by reference
+ *
  */
-template <class T>
+template <class T, class TopScopeT = void>
 class context_value {
 
     template <class U>
@@ -55,20 +79,25 @@ class context_value {
         U value_in_scope;
 
         in_scope(context_value& c, U&& v) :
-            cv(c), previous(c.m_current), value_in_scope(std::forward<U>(v))
+            cv(c),
+            previous(c.m_storage.current),
+            value_in_scope(std::forward<U>(v))
         {
-            cv.m_current = &value_in_scope;
+            cv.m_storage.current = &value_in_scope;
         }
 
-        ~in_scope() {
-            cv.m_current = previous;
-        }
+        ~in_scope() { cv.m_storage.current = previous; }
 
     };
 
 public:
 
     using value_type = T;
+
+    template <class U>
+    static context_value<T, U> with(U&& v) {
+        return context_value<T, U>(std::forward<U>(v));
+    }
 
     context_value() = default;
 
@@ -83,13 +112,20 @@ public:
 
     //@{
     /// @return The current value in context.
-    T& get() { return *m_current; }
-    const T& get() const { return *m_current; }
+    T& get() { return *m_storage.current; }
+    const T& get() const { return *m_storage.current; }
     //@}
 
 private:
 
-    T* m_current;
+    detail::context_value_storage<T, TopScopeT> m_storage;
+
+    /// Construct the context value with `v` in the top context.
+    template <class U = TopScopeT, class = std::enable_if_t<!std::is_void_v<U>>>
+    explicit context_value(U&& v) : m_storage(std::forward<U>(v)) {}
+
+    template <class, class>
+    friend class context_value;
 
 };
 

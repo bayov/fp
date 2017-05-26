@@ -3,6 +3,8 @@
 #include <variant>
 
 #include <fp/ast/base_node.h>
+#include <fp/ast/error.h>
+#include <fp/ast/empty.h>
 #include <fp/ast/identifier.h>
 #include <fp/ast/integer.h>
 #include <fp/ast/binary_op.h>
@@ -12,6 +14,8 @@
 namespace fp::ast::detail {
 
 using variant_node_t = std::variant<
+    error,
+    empty,
     identifier,
     integer,
     binary_op,

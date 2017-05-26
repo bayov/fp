@@ -52,7 +52,7 @@ inline void invalid_digit(
     d.add_supplement(s.location());
 
     s.report(std::move(d));
-    s.push<token::ERROR_NUMBER>();
+    s.push<token::ERROR>();
     throw digit_error();
 }
 

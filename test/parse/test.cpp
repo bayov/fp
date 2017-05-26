@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <fp/lex/tokenize.h>
-#include <fp/parse/detail/parser.h>
+#include <fp/parse/parse.h>
 #include <fp/util/match.h>
 
 namespace fp::parse {
@@ -9,14 +9,13 @@ namespace fp::parse {
 TEST(parse, test) {
     input_view symbols =
 R"fp(
-a, b for a + b
+1 + 2$3
 )fp";
 
     diagnostic_report diagnostics;
     auto tokens = lex::tokenize(symbols, diagnostics);
 
-    detail::parser parser;
-    ast::node ast = parser.parse(tokens);
+    ast::node ast = parse(tokens, diagnostics);
 
     std::string s("hello");
     std::cout << s;
@@ -30,9 +29,11 @@ a, b for a + b
     v.push_back("hello");
 
     std::function<void(const ast::node&)> print_ast = [&](const ast::node& n) {
-        util::match(n)(
+        n.match(
+            [&](const ast::error&) { std::cout << "ERROR"; },
+            [&](const ast::empty&) { std::cout << "EMPTY"; },
             [&](const ast::identifier& id) { std::cout << id.name(); },
-            [&](const ast::integer& n) { std::cout << n.value(); },
+            [&](const ast::integer& i) { std::cout << i.value(); },
             [&](const ast::binary_op& op) {
                 std::cout << "(";
                 print_ast(op.lhs());
@@ -58,36 +59,7 @@ a, b for a + b
     std::cout << std::endl << "------------------------" << std::endl;
     print_ast(ast);
     std::cout << std::endl << "------------------------" << std::endl;
-
-    for (auto& d : diagnostics.errors()) {
-        const auto& o = d.source();
-        std::cout << "line: " << o.line_number << std::endl << std::endl;
-
-        auto from_col = o.symbols.begin() - o.line;
-        auto to_col = from_col + (o.symbols.end() - o.symbols.begin());
-
-        input_view prefix_line(o.line, o.line + from_col);
-        input_view error_line(o.line + from_col, o.line + to_col);
-        std::cout << prefix_line;
-        if (error_line.size() != 0) {
-            std::cout << "\033[31m" << error_line << "\033[0m";
-        }
-        auto it = o.line + to_col;
-        while (it != symbols.end() && *it != '\n' && *it != '\r') { ++it; }
-        input_view suffix_line(o.line + to_col, it);
-        std::cout << suffix_line << std::endl;
-
-        for (size_t i = 0; i < from_col; ++i) { std::cout << " "; }
-        std::cout << "\033[31m" << "^";
-        if (from_col != to_col) {
-            for (size_t i = from_col; i < to_col - 1; ++i) { std::cout << "~"; }
-        }
-        std::cout << "\033[0m" << std::endl;
-
-        for (size_t i = 0; i < from_col; ++i) { std::cout << " "; }
-        std::cout << "\033[1m" << d.text() << "\033[0m" << std::endl;
-        std::cout << std::endl;
-    }
+    std::cout << diagnostics << std::endl;
 }
 
 } // namespace fp::lex

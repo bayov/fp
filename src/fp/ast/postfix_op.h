@@ -11,7 +11,7 @@ public:
     using op_t = lex::token;
 
     postfix_op(node lhs, lex::token_iterator it) :
-        base_node(ast::tokens(lhs).begin(), it + 1),
+        base_node(lhs.tokens().begin(), it + 1),
         m_lhs(std::move(lhs))
     {}
 

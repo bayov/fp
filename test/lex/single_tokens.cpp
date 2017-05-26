@@ -27,7 +27,7 @@ void assert_token(const input_view& in) {
         })
     );
     ASSERT_EQ(expected, actual);
-    ASSERT_EQ(in, tokens.front().source.symbols);
+    ASSERT_EQ(in, tokens.begin()->source.symbols);
 }
 
 TEST(single_tokens) {

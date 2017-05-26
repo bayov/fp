@@ -93,6 +93,9 @@ constexpr auto precedence_table_and_prefix = ([]() {
     t[lex::token::RANGE] = precedence;
     t[lex::token::CLOSED_RANGE] = precedence;
 
+    ++precedence;
+    t[lex::token::ERROR] = precedence;
+
     return std::make_pair(t, prefix_precedence);
 })();
 

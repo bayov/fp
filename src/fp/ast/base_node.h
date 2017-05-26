@@ -18,6 +18,8 @@ public:
         base_node(lex::token_view(from, to))
     {}
 
+    base_node(const base_node&) = delete;
+
     /// The node's source-location.
     const source_location& source() const { return m_source; }
 

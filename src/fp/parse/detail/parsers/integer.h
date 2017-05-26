@@ -5,8 +5,8 @@
 
 namespace fp::parse::detail::parsers {
 
-inline ast::node integer(parser_state& p) {
-    return ast::make<ast::integer>(p.it++);
+inline ast::node integer(parser_state& s) {
+    return ast::make<ast::integer>(s.it++);
 }
 
 } // namespace fp::parse::detail::parsers

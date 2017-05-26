@@ -6,8 +6,7 @@
 namespace fp::lex {
 
 token_list tokenize(const input_view& input, diagnostic_report& diagnostics) {
-    token_list tokens;
-    tokens.reserve(input.size());
+    token_list tokens(input);
     detail::tokenizer_state s(input, tokens, diagnostics);
     while (s.it != s.end) {
         s.start_next_token();

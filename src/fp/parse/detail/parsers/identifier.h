@@ -5,8 +5,8 @@
 
 namespace fp::parse::detail::parsers {
 
-inline ast::node identifier(parser_state& p) {
-    return ast::make<ast::identifier>(p.it++);
+inline ast::node identifier(parser_state& s) {
+    return ast::make<ast::identifier>(s.it++);
 }
 
 } // namespace fp::parse::detail::parsers

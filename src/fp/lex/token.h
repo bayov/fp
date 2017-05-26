@@ -14,6 +14,8 @@ using token_type = uint8_t;
 
 /// Enumeration of all tokens in the language.
 ENUM_CLASS(token, token_type,
+    HEAD,           ///< Dummy token, placed at the front of a @see token_list.
+
     QUOTE,          ///< "
     COMMA,          ///< ,
     ANNOTATION,     ///< :
@@ -101,10 +103,7 @@ ENUM_CLASS(token, token_type,
      */
     STRING,
 
-    // error tokens (these are useful for recovering from errors)
-    ERROR_IGNORE,   ///< Error token. Most likely should be ignored.
-    ERROR_OP,       ///< Error token. Most likely an operator of some kind.
-    ERROR_NUMBER    ///< Error token. Most likely supposed to be a number.
+    ERROR           ///< Error token
 );
 
 } // namespace fp::lex

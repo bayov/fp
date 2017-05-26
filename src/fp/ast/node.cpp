@@ -2,19 +2,14 @@
 
 namespace fp::ast {
 
-namespace detail {
-
-const base_node& base(const node& n) {
-    return std::visit(
-        [](const auto& v) -> const base_node& { return (const base_node&)(v); },
-        *n
-    );
+const base_node& node::as_base() const {
+    return visit([](const auto& n) -> const base_node& {
+        return (const base_node&)(n);
+    });
 }
 
-} // namespace detail
+const source_location& node::source() const { return as_base().source(); }
 
-const source_location& source(const node& n) { return base(n).source(); }
-
-const lex::token_view& tokens(const node& n) { return base(n).tokens(); }
+const lex::token_view& node::tokens() const { return as_base().tokens(); }
 
 } // namespace fp::ast

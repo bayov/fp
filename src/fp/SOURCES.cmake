@@ -4,6 +4,8 @@ set(
     ast/base_node.h
     ast/binary_op.h
     ast/detail/variant_node.h
+    ast/empty.h
+    ast/error.h
     ast/identifier.h
     ast/integer.h
     ast/node.cpp
@@ -40,8 +42,6 @@ set(
     lex/tokenize.cpp
     lex/tokenize.h
     parse/detail/infix_parser.h
-    parse/detail/parser.h
-    parse/detail/parser_state.cpp
     parse/detail/parser_state.h
     parse/detail/parsers/binary_op.h
     parse/detail/parsers/identifier.h
@@ -51,6 +51,8 @@ set(
     parse/detail/precedence.h
     parse/detail/prefix_parser.h
     parse/detail/token_table_t.h
+    parse/parse.cpp
+    parse/parse.h
     util/as_string.h
     util/box.h
     util/cast.h

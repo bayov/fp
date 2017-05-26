@@ -22,12 +22,7 @@ struct symbol_to_index {
 
 /// Tokenize the symbol as a token::ERROR, and report a diagnostic error.
 void error(tokenizer_state& s) {
-    s.tokenize_as<token::ERROR_IGNORE>();
-    s.error();
-}
-
-void error_op(tokenizer_state& s) {
-    s.tokenize_as<token::ERROR_OP>();
+    s.tokenize_as<token::ERROR>();
     s.error();
 }
 
@@ -165,10 +160,6 @@ constexpr auto tokenizers_table = ([]() {
     t['!' ] = tokenize_exclamation;
     t['#' ] = tokenize_comment;
     t['.' ] = tokenize_period;
-
-    // errors
-    t['$' ] = error_op;
-    t['\\'] = error_op;
 
     return t;
 })();
