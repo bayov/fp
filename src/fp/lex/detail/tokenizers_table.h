@@ -6,6 +6,7 @@
 #include <fp/lex/detail/tokenizers/tokenize_string.h>
 #include <fp/lex/detail/tokenizers/tokenize_comment.h>
 #include <fp/lex/detail/tokenizers/tokenize_binary_op.h>
+#include <fp/lex/detail/tokenizers/tokenize_colon.h>
 #include <fp/lex/detail/tokenizers/tokenize_period.h>
 #include <fp/lex/detail/tokenizers/tokenize_number.h>
 #include <fp/lex/detail/tokenizers/tokenize_keyword_or_identifier.h>
@@ -150,13 +151,13 @@ constexpr auto tokenizers_table = ([]() {
     t['[' ] = as<token::L_BRACKET>;
     t[']' ] = as<token::R_BRACKET>;
     t[',' ] = as<token::COMMA>;
-    t[':' ] = as<token::ANNOTATION>;
     t[';' ] = as<token::SEMICOLON>;
     t['?' ] = as<token::OPTIONAL>;
     t['@' ] = as<token::DECORATOR>;
     t['~' ] = as<token::BIT_NOT>;
 
     // misc
+    t[':' ] = tokenize_colon;
     t['!' ] = tokenize_exclamation;
     t['#' ] = tokenize_comment;
     t['.' ] = tokenize_period;

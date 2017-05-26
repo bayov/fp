@@ -10,6 +10,7 @@
 #include <fp/ast/binary_op.h>
 #include <fp/ast/postfix_op.h>
 #include <fp/ast/prefix_op.h>
+#include <fp/ast/import.h>
 
 namespace fp::ast::detail {
 
@@ -20,7 +21,8 @@ using variant_node_t = std::variant<
     integer,
     binary_op,
     postfix_op,
-    prefix_op
+    prefix_op,
+    import
 >;
 
 struct variant_node : variant_node_t { using variant_node_t::variant; };

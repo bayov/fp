@@ -33,6 +33,7 @@ void assert_token(const input_view& in) {
 TEST(single_tokens) {
     assert_token<token::COMMA>(",");
     assert_token<token::ANNOTATION>(":");
+    assert_token<token::SCOPE>("::");
     assert_token<token::SEMICOLON>(";");
     assert_token<token::OPTIONAL>("?");
     assert_token<token::DECORATOR>("@");

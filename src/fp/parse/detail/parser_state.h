@@ -69,6 +69,10 @@ public:
     /// @return An AST node produced from recursively parsing the input tokens.
     ast::node parse(precedence_t p) { return m_parse(*this, p); }
 
+    /// @return `true` if the current token is `TOKEN`.
+    template <lex::token TOKEN>
+    bool it_is() { return it != end && it->value == TOKEN; }
+
 private:
 
     parse_func m_parse;

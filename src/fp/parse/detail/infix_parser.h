@@ -27,6 +27,7 @@ constexpr auto infix_parser_table = ([]() {
     // binary-operators
     t[lex::token::COMMA] = parsers::binary_op;
     t[lex::token::ANNOTATION] = parsers::binary_op;
+    t[lex::token::SCOPE] = parsers::binary_op;
     t[lex::token::SEMICOLON] = parsers::binary_op;
     t[lex::token::MEMBER_ACCESS] = parsers::binary_op;
     t[lex::token::RANGE] = parsers::binary_op;

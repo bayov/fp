@@ -7,6 +7,7 @@ set(
     ast/empty.h
     ast/error.h
     ast/identifier.h
+    ast/import.h
     ast/integer.h
     ast/node.cpp
     ast/node.h
@@ -27,6 +28,7 @@ set(
     lex/detail/symbol_range.h
     lex/detail/tokenizer_state.h
     lex/detail/tokenizers/tokenize_binary_op.h
+    lex/detail/tokenizers/tokenize_colon.h
     lex/detail/tokenizers/tokenize_comment.h
     lex/detail/tokenizers/tokenize_exclamation.h
     lex/detail/tokenizers/tokenize_keyword_or_identifier.h
@@ -45,6 +47,7 @@ set(
     parse/detail/parser_state.h
     parse/detail/parsers/binary_op.h
     parse/detail/parsers/identifier.h
+    parse/detail/parsers/import.h
     parse/detail/parsers/integer.h
     parse/detail/parsers/postfix_op.h
     parse/detail/parsers/prefix_op.h

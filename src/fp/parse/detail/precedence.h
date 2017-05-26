@@ -82,6 +82,10 @@ constexpr auto precedence_table_and_prefix = ([]() {
     auto prefix_precedence = precedence;     // all prefix operators
 
     ++precedence;
+    t[lex::token::RANGE] = precedence;
+    t[lex::token::CLOSED_RANGE] = precedence;
+
+    ++precedence;
     t[lex::token::INC] = precedence;         // postfix increment
     t[lex::token::DEC] = precedence;         // postfix decrement
     t[lex::token::OPTIONAL] = precedence;
@@ -90,8 +94,7 @@ constexpr auto precedence_table_and_prefix = ([]() {
     t[lex::token::MEMBER_ACCESS] = precedence;
 
     ++precedence;
-    t[lex::token::RANGE] = precedence;
-    t[lex::token::CLOSED_RANGE] = precedence;
+    t[lex::token::SCOPE] = precedence;
 
     ++precedence;
     t[lex::token::ERROR] = precedence;

@@ -19,6 +19,7 @@ ENUM_CLASS(token, token_type,
     QUOTE,          ///< "
     COMMA,          ///< ,
     ANNOTATION,     ///< :
+    SCOPE,          ///< ::
     SEMICOLON,      ///< ;
     OPTIONAL,       ///< ?
     DECORATOR,      ///< @

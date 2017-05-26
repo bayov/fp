@@ -1,15 +1,16 @@
 #include <gtest/gtest.h>
 
+#include <fp/util/join.h>
 #include <fp/lex/tokenize.h>
 #include <fp/parse/parse.h>
-#include <fp/util/match.h>
 
 namespace fp::parse {
 
 TEST(parse, test) {
     input_view symbols =
 R"fp(
-1 + 2$3
+import hello::3;
+import hagai::akibayov::;
 )fp";
 
     diagnostic_report diagnostics;
@@ -51,6 +52,11 @@ R"fp(
                 std::cout << "(";
                 print_ast(op.lhs());
                 std::cout << op.op_symbols();
+                std::cout << ")";
+            },
+            [&](const ast::import& import) {
+                std::cout << "(import ";
+                std::cout << util::join(import.identifiers(), "::");
                 std::cout << ")";
             }
         );
