@@ -2,19 +2,11 @@
 
 #include <cstdint>
 
-#include <fp/util/enum_class.h>
-#include <fp/lex/keywords.h>
-
 namespace fp::lex {
 
-#define FP_TOKEN_ENUMERATOR(enumerator, _) enumerator
-
-/// The actual type used to represent a @ref token.
-using token_type = uint8_t;
-
 /// Enumeration of all tokens in the language.
-ENUM_CLASS(token, token_type,
-    HEAD,           ///< Dummy token, placed at the front of a @see token_list.
+enum class token : uint8_t {
+    ERROR,          ///< Error token, representing a lexical analysis error.
 
     QUOTE,          ///< "
     COMMA,          ///< ,
@@ -37,7 +29,33 @@ ENUM_CLASS(token, token_type,
     R_BRACE,        ///< }
 
     // keywords
-    FP_KEYWORDS_ENUM(FP_TOKEN_ENUMERATOR),
+    AND,
+    AS,
+    BREAK,
+    CASE,
+    CATCH,
+    CLASS,
+    CONCEPT,
+    CONTINUE,
+    DEFAULT,
+    DO,
+    ELSE,
+    ENUM,
+    EXPORT,
+    FOR,
+    IF,
+    IMPLICIT,
+    IMPORT,
+    IN,
+    MUT,
+    NOT,
+    OF,
+    OR,
+    RETURN,
+    SWITCH,
+    THROW,
+    TRY,
+    WHILE,
 
     // arrows
     TYPE_ARROW,     ///< ->
@@ -86,7 +104,7 @@ ENUM_CLASS(token, token_type,
     COMMENT,        ///< # some comment...
     IDENTIFIER,     ///< some_identifier, Can_Be_CAPITALIZED
     INTEGER,        ///< 42, 0xFF, 0b11, 1`000`000, ...
-    FLOAT,          ///< 3.14, 1.23e-10, ...
+    REAL,           ///< 3.14, 1.23e-10, ...
     CHAR,           ///< 'a'
 
     /**
@@ -102,9 +120,7 @@ ENUM_CLASS(token, token_type,
      *            ^~~~~~                                      ^~~~~~
      *            "one plus one is "                          "."
      */
-    STRING,
-
-    ERROR           ///< Error token
-);
+    STRING
+};
 
 } // namespace fp::lex

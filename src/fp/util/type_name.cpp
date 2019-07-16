@@ -1,6 +1,5 @@
-#include <memory>
-#include <cassert>
 #include <cxxabi.h>
+#include <memory>
 
 #include "type_name.h"
 
@@ -22,7 +21,10 @@ std::string demangle(const char* name) {
                 '"' + std::string(name) + "\" is not a valid mangled name"
             );
         default:
-            assert(false);
+            throw std::runtime_error(
+                "abi::__cxa_demangle returned invalid status: " +
+                std::to_string(status)
+            );
     }
 }
 

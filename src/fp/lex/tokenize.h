@@ -1,21 +1,25 @@
 #pragma once
 
-#include <fp/common/input.h>
-#include <fp/common/diagnostic_report.h>
-#include <fp/lex/token_list.h>
+#include <fp/source_code.h>
+//#include <fp/common/diagnostic_report.h>
+#include <fp/lex/tokenized_list.h>
+#include <fp/source_code.h>
 
 namespace fp::lex {
 
+namespace diagnostic { struct report {}; }
+
 /**
- * Tokenize the given input.
+ * Tokenize the given source code.
  *
- * When encountering an error, a diagnostic will be reported and an error token
- * will be added to the result.
+ * All encountered problems during tokenization will be reported to the given
+ * diagnostic::report, and a token::ERROR will be appended to the resulting
+ * list.
  *
- * @throws compilation_error
- *      Thrown when the maximum allowed errors is reached (as set by the given
- *      @ref diagnostic_report).
+ * @throws fp::compilation_error
+ *     Thrown when the maximum number of allowed errors is reached (as set by
+ *     the given diagnostic::report).
  */
-token_list tokenize(const input_view&, diagnostic_report&);
+tokenized_list tokenize(const source_view&, diagnostic::report&);
 
 } // namespace fp::lex
