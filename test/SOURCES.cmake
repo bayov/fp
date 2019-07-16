@@ -6,6 +6,7 @@ set(
     include/test-util/catergorized_test.h
     util/pp_seq.cpp
     util/record.cpp
+    util/table.cpp
     util/type_name.cpp
     PARENT_SCOPE
 )

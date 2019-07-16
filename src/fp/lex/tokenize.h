@@ -1,13 +1,10 @@
 #pragma once
 
 #include <fp/source_code.h>
-//#include <fp/common/diagnostic_report.h>
+#include <fp/diagnostic/report.h>
 #include <fp/lex/tokenized_list.h>
-#include <fp/source_code.h>
 
 namespace fp::lex {
-
-namespace diagnostic { struct report {}; }
 
 /**
  * Tokenize the given source code.

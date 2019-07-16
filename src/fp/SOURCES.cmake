@@ -14,9 +14,11 @@ set(
     literal_types.h
     source_code.cpp
     source_code.h
+    util/cast.h
     util/pp_seq.h
     util/print_separated.h
     util/record.h
+    util/table.h
     util/to_string.h
     util/type_constant.h
     util/type_name.cpp
