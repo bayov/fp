@@ -36,7 +36,7 @@ using token_attribute_t = typename detail::attr_helper<TOKEN>::type;
 
 /// The attribute value of a lex::token (see lex::token_attribute_t).
 using attribute = std::variant<
-    source_view, integer_t, real_t, char_t, std::string
+    std::monostate, source_view, integer_t, real_t, char_t, std::string
 >;
 
 } // namespace fp::lex

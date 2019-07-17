@@ -19,6 +19,11 @@ using source_view = std::basic_string_view<source_char>;
 /// Iterator pointing to a character in the source code.
 using source_iterator = source_view::iterator;
 
+/// Construct a fp::source_view from the characters in range `[from, to)`.
+inline source_view make_source_view(source_iterator from, source_iterator to) {
+    return source_view(from, to - from);
+}
+
 /**
  * Information about a location in a piece of source code. Each compiler element
  * will hold an instance of this to keep track of its origin in the source code.

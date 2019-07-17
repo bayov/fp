@@ -7,6 +7,11 @@ set(
     diagnostic/report.cpp
     diagnostic/report.h
     lex/attribute.h
+    lex/detail/tokenization_state.h
+    lex/detail/tokenizers/stray_character.h
+    lex/detail/tokenizers/string.h
+    lex/detail/tokenizers/whitespace.h
+    lex/detail/tokenizers_table.h
     lex/token.h
     lex/tokenize.h
     lex/tokenized_list.cpp

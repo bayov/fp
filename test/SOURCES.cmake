@@ -4,6 +4,7 @@ set(
     include/test-util/assert_macro_eq.h
     include/test-util/assert_type_eq.h
     include/test-util/catergorized_test.h
+    lex/temp.cpp
     util/pp_seq.cpp
     util/record.cpp
     util/table.cpp
