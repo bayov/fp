@@ -47,6 +47,6 @@ private:
 // *
 // * To disable colors, you can use fp::util::color::disable_in_scope.
 // */
-//std::ostream& operator<<(std::ostream&, const diagnostic_report&);
+//std::ostream& operator<<(std::ostream&, const report&);
 
 } // namespace fp::diagnostic

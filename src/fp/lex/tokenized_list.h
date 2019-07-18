@@ -1,4 +1,6 @@
 #pragma once
+
+#include <ostream>
 #include <vector>
 
 #include <fp/util/record.h>
@@ -13,9 +15,11 @@ namespace fp::lex {
 /// A token with attached attribute, originating from a source location.
 FP_RECORD(tokenized_token,
     (lex::token         , token    )
-    (lex::attribute     , attribute)
+    (lex::attribute_t   , attribute)
     (fp::source_location, source_location)
 );
+
+std::ostream& operator<<(std::ostream&, const tokenized_token&);
 
 /// A list of tokenized tokens.
 using tokenized_list = std::vector<tokenized_token>;

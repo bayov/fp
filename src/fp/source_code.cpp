@@ -1,6 +1,6 @@
 #include "source_code.h"
 
-namespace fp::lex {
+namespace fp {
 
 source_location merge(
     const source_location& first,
@@ -12,4 +12,4 @@ source_location merge(
     return merged;
 }
 
-} // namespace namespace fp::lex
+} // namespace namespace fp

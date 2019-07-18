@@ -7,12 +7,15 @@ set(
     diagnostic/report.cpp
     diagnostic/report.h
     lex/attribute.h
+    lex/detail/string_interpolation_stack.h
     lex/detail/tokenization_state.h
+    lex/detail/tokenizers/character_and_string.h
     lex/detail/tokenizers/stray_character.h
-    lex/detail/tokenizers/string.h
     lex/detail/tokenizers/whitespace.h
     lex/detail/tokenizers_table.h
+    lex/token.cpp
     lex/token.h
+    lex/tokenize.cpp
     lex/tokenize.h
     lex/tokenized_list.cpp
     lex/tokenized_list.h
@@ -20,6 +23,8 @@ set(
     source_code.cpp
     source_code.h
     util/cast.h
+    util/match.h
+    util/overloaded.h
     util/pp_seq.h
     util/print_separated.h
     util/record.h

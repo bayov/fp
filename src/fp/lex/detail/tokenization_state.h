@@ -1,11 +1,10 @@
 #pragma once
 
-#include <deque>
-
 #include <fp/literal_types.h>
 #include <fp/source_code.h>
 #include <fp/diagnostic/report.h>
 #include <fp/lex/tokenized_list.h>
+#include <fp/lex/detail/string_interpolation_stack.h>
 
 namespace fp::lex::detail {
 
@@ -15,35 +14,8 @@ struct tokenization_state {
     source_iterator next;   ///< Points to the next character in the source.
     source_iterator end;    ///< Points to the end of the source.
 
-    /**
-     * This stack keeps tracks of our current string interpolation "frame".
-     *
-     * For example, a stack of size 1 means we are currently inside a string
-     * interpolation:
-     *
-     *      "one plus one plus million is {1 + 1 + 1`000`000}"
-     *                                    |--(we are here)--|
-     *
-     * While a stack of size 2 means we are inside a second string
-     * interpolation:
-     *
-     *      "hello, { "from the other {"side of the plant"}..."} "
-     *              |-(depth 1)-------|                   |-----|
-     *                                |-(depth 2)---------|
-     *
-     * A stack of size zero, of course, means we are not inside any string
-     * interpolation.
-     *
-     * Additionally, each element in the stack (`size_t`) keeps track of how
-     * many non-string-interpolation left-braces are currently open.
-     * Encountering a right-brace will pop the current string interpolation
-     * frame from the stack only when there are 0 open left-braces:
-     *
-     *      "look, {"a wild brace:" { 3 { 4 } 1 + 1 } "bla" }"
-     *             |----------------v---v---v-------v-------|
-     *               open braces:   1   2   1       0
-     */
-    std::deque<size_t> string_interpolation_stack;
+    /// See detail::string_interpolation_stack for details.
+    detail::string_interpolation_stack string_interpolation_stack;
 
     tokenization_state(
         source_view source,
@@ -64,14 +36,21 @@ struct tokenization_state {
         report_error(token_begin_, next, std::move(text));
     }
 
-    /// Reports a diagnostic::error for characters `[from, to)`.
+    //@{
+    /// Reports a diagnostic::error for the given source code section.
+    void report_error(source_view source_section, std::string text) {
+        report_problem(
+            diagnostic::error(location(source_section), std::move(text))
+        );
+    }
     void report_error(
         source_iterator from,
         source_iterator to,
         std::string text
     ) {
-        report_problem(diagnostic::error(location(from, to), std::move(text)));
+        report_error(make_source_view(from, to), std::move(text));
     }
+    //@}
 
     /// Report the given diagnostic::problem.
     void report_problem(diagnostic::problem p) { report_.add(std::move(p)); }
@@ -81,15 +60,23 @@ struct tokenization_state {
         return location(token_begin_, next);
     }
 
-    /// Returns the source location of `[from, to)` in the current line.
-    source_location location(source_iterator from, source_iterator to) {
+    //@{
+    /**
+     * Returns the source location of the given source code section, filling in
+     * missing details using available line information.
+     */
+    source_location location(source_view source_section) {
         return source_location {
-            .chars = make_source_view(from, to),
+            .chars = source_section,
             .source_code = source,
             .line = line_begin_,
             .line_number = line_number_
         };
     }
+    source_location location(source_iterator from, source_iterator to) {
+        return location(make_source_view(from, to));
+    }
+    //}
 
 //    /// @return The current token's symbols.
 //    input_view token_symbols() const { return { m_token, it }; }
@@ -145,6 +132,10 @@ struct tokenization_state {
             .source_location = current_token_location()
         });
     }
+
+    /// Push `TOKEN` with a dummy error attribute value.
+    template <token TOKEN>
+    void push_dummy() { push<TOKEN>(token_dummy_value<TOKEN>); }
 
     /// Consume the next character and tokenize it as `TOKEN`.
     template <token TOKEN>

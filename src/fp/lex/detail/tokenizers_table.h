@@ -3,14 +3,14 @@
 #include <fp/util/table.h>
 #include <fp/lex/detail/tokenization_state.h>
 #include <fp/lex/detail/tokenizers/stray_character.h>
-#include <fp/lex/detail/tokenizers/string.h>
+#include <fp/lex/detail/tokenizers/character_and_string.h>
 #include <fp/lex/detail/tokenizers/whitespace.h>
 
 namespace fp::lex::detail {
 
 /**
  * A "tokenizer" is a function that consumes a specific character that appears
- * next in the source code (and possibly more) in order to create a new token.
+ * next in the source code (and possibly more) in order to create new tokens.
  *
  * Such functions are stored as part of a dispatch table of tokenizers from each
  * possible ASCII character: detail::tokenizers_table.

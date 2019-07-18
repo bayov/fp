@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <ostream>
+#include <string_view>
 
 namespace fp::lex {
 
@@ -122,5 +124,24 @@ enum class token : uint8_t {
      */
     STRING
 };
+
+/**
+ * Returns a string representation for a lex::token.
+ *
+ * For syntactic tokens, their respective symbol is returned (e.g., for
+ * token::PLUS, "+" is returned).
+ *
+ * For keyword tokens, the keyword is returned (e.g., for token::IMPORT,
+ * "import" is returned).
+ *
+ * For tokens with attributes attached, their enumerator name is returned (e.g.,
+ * for token::INTEGER, "INTEGER" is returned).
+ *
+ * For token::ERROR, "ERROR" is returned.
+ */
+std::string_view token_string_representation(token);
+
+/// Prints a lex::token using lex::token_string_representation.
+std::ostream& operator<<(std::ostream&, token);
 
 } // namespace fp::lex
