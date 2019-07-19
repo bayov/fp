@@ -128,20 +128,11 @@ enum class token : uint8_t {
 /**
  * Returns a string representation for a lex::token.
  *
- * For syntactic tokens, their respective symbol is returned (e.g., for
- * token::PLUS, "+" is returned).
- *
- * For keyword tokens, the keyword is returned (e.g., for token::IMPORT,
- * "import" is returned).
- *
- * For tokens with attributes attached, their enumerator name is returned (e.g.,
- * for token::INTEGER, "INTEGER" is returned).
- *
- * For token::ERROR, "ERROR" is returned.
+ * E.g., for token::PLUS, "PLUS" will be returned.
  */
-std::string_view token_string_representation(token);
+std::string_view token_name(token);
 
-/// Prints a lex::token using lex::token_string_representation.
+/// Prints a lex::token using lex::token_name.
 std::ostream& operator<<(std::ostream&, token);
 
 } // namespace fp::lex

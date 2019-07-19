@@ -12,9 +12,16 @@
 
 namespace fp::lex {
 
-/// A token with attached attribute, originating from a source location.
+/**
+ * A token with attached attribute, originating from a source location.
+ *
+ * When the field `dummy` is true, the token is a dummy error token that was
+ * created after encountering a syntax error (useful for error recovery).
+ * In this case, its attribute value is invalid and should be ignored.
+ */
 FP_RECORD(tokenized_token,
     (lex::token         , token    )
+    (bool               , dummy    )
     (lex::attribute_t   , attribute)
     (fp::source_location, source_location)
 );

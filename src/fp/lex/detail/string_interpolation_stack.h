@@ -60,8 +60,23 @@ struct string_interpolation_stack {
         size_t open_left_braces = 0;
     };
 
-    /// Returns the current frame. Undefined behaviour when stack is empty.
+    bool empty() const { return stack_.empty(); }
+
+    /// Returns the current frame. Undefined behaviour when empty.
     frame& current_frame() { return stack_.back(); }
+
+    /// Pushes a new frame to the stack given an iterator to its opening-quote.
+    void push(source_iterator opening_quote) {
+        stack_.push_back(frame { opening_quote });
+    }
+
+    /// Pop the current frame off the stack. Undefined behaviour when empty.
+    void pop() { stack_.pop_back(); }
+
+    /// Returns true if we're currently tokenizing string characters.
+    bool in_string_context() {
+        return !stack_.empty() && current_frame().open_left_braces == 0;
+    }
 
 private:
     std::deque<frame> stack_;

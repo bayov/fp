@@ -39,31 +39,4 @@ using attribute_t = std::variant<
     std::monostate, source_view, integer_t, real_t, char_t, std::string
 >;
 
-namespace detail {
-
-template <token> struct token_dummy_value_helper;
-
-template <>
-struct token_dummy_value_helper<token::CHAR> {
-    static constexpr token_attribute_t<token::CHAR> value = -1;
-};
-
-template <>
-struct token_dummy_value_helper<token::STRING> {
-    static constexpr const char* value = "<dummy>";
-};
-
-
-} // namespace detail
-
-/**
- * A dummy attribute value for a lex::token.
- *
- * To improve error recovery, we still produce tokens when encountering an
- * error. In such cases, we assign this dummy attribute value to the token.
- */
-template <token TOKEN>
-constexpr auto token_dummy_value =
-    detail::token_dummy_value_helper<TOKEN>::value;
-
 } // namespace fp::lex

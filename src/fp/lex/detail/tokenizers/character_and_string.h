@@ -76,6 +76,9 @@ std::optional<char_t> consume_char(
     // consume the character that appears after the backslash
     ++it;
 
+    // a left-brace escape sequence is only valid inside a string
+    if (QUOTE == '"' && content[1] == '{') { return '{'; }
+
     switch (content[1]) {
         case QUOTE: return QUOTE;
         case '\\':  return '\\';
@@ -111,7 +114,7 @@ inline void report_missing_terminating_quote(
 }
 
 /// Tokenizes a single character (token::CHAR).
-inline void tokenize_char(tokenization_state& s) {
+inline void tokenize_character(tokenization_state& s) {
     // skip over opening quote
     source_iterator opening_quote = s.next;
     ++s.next;
@@ -124,7 +127,6 @@ inline void tokenize_char(tokenization_state& s) {
     if (!s.next_is<'\''>()) {
         report_missing_terminating_quote<'\''>(s, opening_quote);
         s.push_dummy<token::CHAR>();
-        s.push<token::ERROR>(); // for error recovery in later stages
         return;
     }
 
@@ -150,6 +152,15 @@ inline void tokenize_char(tokenization_state& s) {
         return;
     }
 
+    if (*char_value > 127) {
+        s.report_error(
+            quoted_content.begin(), quoted_content.begin() + 1,
+            "unicode character literals are not supported yet"
+        );
+        s.push_dummy<token::CHAR>();
+        return;
+    }
+
     // a character literal must contain exactly one character!
     if (consume_end != quoted_content.end()) {
         s.report_error("character literal contains more than one character");
@@ -161,11 +172,17 @@ inline void tokenize_char(tokenization_state& s) {
 }
 
 /**
- * Tokenizes the next characters as token::STRING and then a terminating `"`
- * or `{` (token::QUOTE or token::L_BRACE).
+ * Tokenizes the upcoming characters as a token::STRING, upto a terminating
+ * double-quote `"` or left-brace `{`.
  *
- * If the string is empty no token::STRING will be pushed (but a terminating
- * token::QUOTE or token::L_BRACE will be pushed regardless).
+ * Entering this function necessarily means that we're currently in a string
+ * context, i.e., the following preconditions hold:
+ * ~~~{.cpp}
+ * s.string_interpolation_stack.empty() == false;
+ * s.string_interpolation_stack.current_frame().open_left_braces == 0;
+ * ~~~
+ *
+ * If the string is empty, then no token::STRING will be pushed.
  */
 inline void tokenize_string(tokenization_state& s) {
     // set the tokenization iterator to the end of the quoted content
@@ -180,9 +197,11 @@ inline void tokenize_string(tokenization_state& s) {
         if (!quoted_content.empty()) {
             s.push_dummy<token::STRING>();
         }
-        s.push<token::ERROR>();
         return;
     }
+
+    // if the quoted content is empty, do nothing
+    if (quoted_content.empty()) { return; }
 
     // parse the quoted content into the string token's `value`.
     token_attribute_t<token::STRING> value;
@@ -202,14 +221,64 @@ inline void tokenize_string(tokenization_state& s) {
         }
 
         if (*char_value > 127) {
-            s.report_error("unicode string literals are not supported yet");
+            s.report_error(
+                quoted_content.begin() - 1, quoted_content.begin(),
+                "unicode string literals are not supported yet"
+            );
             s.push_dummy<token::STRING>();
+            return;
         }
 
         value += char(*char_value);
     }
 
     s.push<token::STRING>(std::move(value));
+}
+
+/**
+ * Tokenizes a double-quote (token::QUOTE), a string section (token::STRING) if
+ * it's not empty, and a terminator (either token::QUOTE or token::L_BRACE).
+ */
+inline void tokenize_double_quote(tokenization_state& s) {
+    if (s.string_interpolation_stack.in_string_context()) {
+        // we're in a string context, so `s.next` is a closing-quote
+        s.string_interpolation_stack.pop();
+        s.consume_and_push<token::QUOTE>();
+    } else {
+        // we're not in a string context, so `s.next` is an opening-quote
+        s.string_interpolation_stack.push(s.next);
+        s.consume_and_push<token::QUOTE>();
+        s.begin_next_token();
+        tokenize_string(s);
+    }
+}
+
+/**
+ * Tokenizes a left-brace (token::L_BRACE). If we're currently in a string
+ * context, this starts a string interpolation.
+ */
+inline void tokenize_left_brace(tokenization_state& s) {
+    s.consume_and_push<token::L_BRACE>();
+    if (!s.string_interpolation_stack.empty()) {
+        s.string_interpolation_stack.current_frame().open_left_braces += 1;
+    }
+}
+
+/**
+ * Tokenizes a right-brace (token::R_BRACE). Also updates the open left-braces
+ * count when inside a string interpolation.
+ */
+inline void tokenize_right_brace(tokenization_state& s) {
+    s.consume_and_push<token::R_BRACE>();
+    auto& sis = s.string_interpolation_stack;
+    if (!sis.empty()) {
+        sis.current_frame().open_left_braces -= 1;
+        if (sis.current_frame().open_left_braces == 0) {
+            // back to string context! Woohoo!
+            s.begin_next_token();
+            tokenize_string(s);
+        }
+    }
 }
 
 } // namespace fp::lex::detail

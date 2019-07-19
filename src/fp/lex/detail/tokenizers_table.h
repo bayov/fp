@@ -65,10 +65,10 @@ constexpr auto tokenizers_table = tokenizers_table_t([](auto& t) {
     t[' ' ] = ignore;          // (0x20) space
 
     // string
-    t['\''] = tokenize_char;
-//    t['"' ] = tokenizer::quote;
-//    t['{' ] = tokenizer::left_brace;
-//    t['}' ] = tokenizer::right_brace;
+    t['\''] = tokenize_character;
+    t['"' ] = tokenize_double_quote;
+    t['{' ] = tokenize_left_brace;
+    t['}' ] = tokenize_right_brace;
 
 //    // number
 //    t['0' ] = tokenizer::number;

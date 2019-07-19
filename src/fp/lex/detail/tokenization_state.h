@@ -55,11 +55,6 @@ struct tokenization_state {
     /// Report the given diagnostic::problem.
     void report_problem(diagnostic::problem p) { report_.add(std::move(p)); }
 
-    /// Returns the source location of the current token.
-    source_location current_token_location() {
-        return location(token_begin_, next);
-    }
-
     //@{
     /**
      * Returns the source location of the given source code section, filling in
@@ -78,8 +73,10 @@ struct tokenization_state {
     }
     //}
 
-//    /// @return The current token's symbols.
-//    input_view token_symbols() const { return { m_token, it }; }
+    /// Returns the source location of the current token.
+    source_location current_token_location() {
+        return location(token_begin_, next);
+    }
 
     /**
      * Indicates that the next character is the beginning of the next token that
@@ -101,15 +98,6 @@ struct tokenization_state {
         return next_is_impl<CHARS...>(indices{});
     }
 
-//    /// Push a new token to the list, with `args` forwarded to its attribute.
-//    template <token TOKEN, class... Args>
-//    void push(Args&&... args) {
-//        m_tokens.push_back<TOKEN>(
-//            location(),
-//            attribute_t<TOKEN>(std::forward<Args>(args)...)
-//        );
-//    }
-
     /// Push `TOKEN` to the output list (token_attribute_t<TOKEN> must be void).
     template <token TOKEN>
     void push() {
@@ -119,6 +107,7 @@ struct tokenization_state {
         );
         tokens_.push_back({
             .token = TOKEN,
+            .dummy = false,
             .source_location = current_token_location()
         });
     }
@@ -128,14 +117,21 @@ struct tokenization_state {
     void push(token_attribute_t<TOKEN> attribute) {
         tokens_.push_back({
             .token = TOKEN,
+            .dummy = false,
             .attribute = std::move(attribute),
             .source_location = current_token_location()
         });
     }
 
-    /// Push `TOKEN` with a dummy error attribute value.
+    /// Push a dummy error `TOKEN`.
     template <token TOKEN>
-    void push_dummy() { push<TOKEN>(token_dummy_value<TOKEN>); }
+    void push_dummy() {
+        tokens_.push_back({
+            .token = TOKEN,
+            .dummy = true,
+            .source_location = current_token_location()
+        });
+    }
 
     /// Consume the next character and tokenize it as `TOKEN`.
     template <token TOKEN>
