@@ -16,7 +16,7 @@ inline void line_feed(tokenization_state& s) {
 /// Just like tokenizer::line_feed, but also skips a CRLF combination ("\r\n").
 inline void carriage_return(tokenization_state& s) {
     ++s.next; // skip '\r'
-    if (s.next_is<'\n'>()) { ++s.next; }
+    if (s.next_is('\n')) { ++s.next; }
     s.begin_new_line();
 }
 

@@ -15,8 +15,7 @@ namespace detail {
 template <token> struct attr_helper               { using type = void       ; };
 template <> struct attr_helper<token::COMMENT   > { using type = source_view; };
 template <> struct attr_helper<token::IDENTIFIER> { using type = source_view; };
-template <> struct attr_helper<token::INTEGER   > { using type = integer_t  ; };
-template <> struct attr_helper<token::REAL      > { using type = real_t     ; };
+template <> struct attr_helper<token::NUMBER    > { using type = source_view; };
 template <> struct attr_helper<token::CHAR      > { using type = char_t     ; };
 template <> struct attr_helper<token::STRING    > { using type = std::string; };
 
@@ -35,8 +34,7 @@ template <token TOKEN>
 using token_attribute_t = typename detail::attr_helper<TOKEN>::type;
 
 /// The attribute value of a lex::token (see lex::token_attribute_t).
-using attribute_t = std::variant<
-    std::monostate, source_view, integer_t, real_t, char_t, std::string
->;
+using attribute_t =
+    std::variant<std::monostate, source_view, char_t, std::string>;
 
 } // namespace fp::lex

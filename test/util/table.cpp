@@ -1,8 +1,6 @@
+#include <gtest/gtest.h>
+
 #include <fp/util/table.h>
-
-#include <test-util/catergorized_test.h>
-
-#define TEST(what) CATEGORIZED_TEST(util, table, what)
 
 namespace fp::util {
 
@@ -18,7 +16,7 @@ constexpr auto my_dispatch_table = table<char, handler_t, 100>([](auto& t) {
     t['*'] = times_two;
 });
 
-TEST(basic_usage) {
+TEST(util_table, basic_usage) {
     ASSERT_EQ(42, my_dispatch_table['c'](42));
     ASSERT_EQ(43, my_dispatch_table['1'](42));
     ASSERT_EQ(84, my_dispatch_table['*'](42));
@@ -40,7 +38,7 @@ constexpr auto my_string_table =
         t[24] = "twenty-four";
     });
 
-TEST(of_values_with_key_index) {
+TEST(util_table, of_values_with_key_index) {
     ASSERT_EQ("default-value", my_string_table[11]);
     ASSERT_EQ("default-value", my_string_table[111]);
     ASSERT_EQ("forty-two"    , my_string_table[42]);

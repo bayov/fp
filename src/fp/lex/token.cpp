@@ -101,8 +101,7 @@ std::string_view token_name(token t) {
         // containing attributes
         case token::COMMENT:        return "COMMENT";
         case token::IDENTIFIER:     return "IDENTIFIER";
-        case token::INTEGER:        return "INTEGER";
-        case token::REAL:           return "REAL";
+        case token::NUMBER:         return "NUMBER";
         case token::CHAR:           return "CHAR";
         case token::STRING:         return "STRING";
     }

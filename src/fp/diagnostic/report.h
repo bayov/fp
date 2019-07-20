@@ -20,10 +20,10 @@ struct report {
     void set_max_errors(size_t n) { max_errors_ = n; }
 
     /// Returns the list of accumulated warnings.
-    const std::list<problem>& warnings() const { return warnings_; }
+    std::list<problem>& warnings() { return warnings_; }
 
     /// Returns the list of accumulated errors.
-    const std::list<problem>& errors() const { return errors_; }
+    std::list<problem>& errors() { return errors_; }
 
     /**
      * Append a new diagnostic::problem to the report.

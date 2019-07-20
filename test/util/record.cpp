@@ -1,16 +1,15 @@
+#include <gtest/gtest.h>
+
 #include <fp/util/record.h>
 #include <fp/util/to_string.h>
 
 #include <test-util/assert_type_eq.h>
-#include <test-util/catergorized_test.h>
 
 namespace fp::util {
 
-#define TEST(what) CATEGORIZED_TEST(util, record_fields, what)
-
 FP_RECORD(person, (std::string, name)(size_t, born_in));
 
-TEST(basic_usage) {
+TEST(util_record, basic_usage) {
     person p { .name = "Bjarne Stroustrup", .born_in = 1950 };
     ASSERT_EQ("Bjarne Stroustrup", p.name);
     ASSERT_EQ(1950u, p.born_in);
@@ -18,7 +17,7 @@ TEST(basic_usage) {
     ASSERT_TYPE_EQ(size_t, person::born_in_t);
 }
 
-TEST(equality_comparable) {
+TEST(util_record, equality_comparable) {
     person p1 { .name = "Bjarne Stroustrup", .born_in = 1950 };
     person p2 { .name = "Bjarne Stroustrup", .born_in = 1951 };
     ASSERT_FALSE(p1 == p2);
@@ -27,7 +26,7 @@ TEST(equality_comparable) {
     ASSERT_TRUE(p1 == p2);
 }
 
-TEST(ostreamable) {
+TEST(util_record, ostreamable) {
     person p { .name = "Bjarne Stroustrup", .born_in = 1950 };
     ASSERT_EQ("{ name: Bjarne Stroustrup, born_in: 1950 }", to_string(p));
 }

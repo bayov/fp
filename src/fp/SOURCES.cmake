@@ -7,9 +7,13 @@ set(
     diagnostic/report.cpp
     diagnostic/report.h
     lex/attribute.h
+    lex/detail/characters_range.h
     lex/detail/string_interpolation_stack.h
     lex/detail/tokenization_state.h
+    lex/detail/tokenizers/character_and_string.cpp
     lex/detail/tokenizers/character_and_string.h
+    lex/detail/tokenizers/number.cpp
+    lex/detail/tokenizers/number.h
     lex/detail/tokenizers/stray_character.h
     lex/detail/tokenizers/whitespace.h
     lex/detail/tokenizers_table.h
@@ -20,7 +24,6 @@ set(
     lex/tokenized_list.cpp
     lex/tokenized_list.h
     literal_types.h
-    source_code.cpp
     source_code.h
     util/cast.h
     util/match.h
@@ -28,6 +31,7 @@ set(
     util/pp_seq.h
     util/print_separated.h
     util/record.h
+    util/static_string_view.h
     util/table.h
     util/to_string.h
     util/type_constant.h

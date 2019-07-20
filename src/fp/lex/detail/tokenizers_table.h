@@ -2,8 +2,9 @@
 
 #include <fp/util/table.h>
 #include <fp/lex/detail/tokenization_state.h>
-#include <fp/lex/detail/tokenizers/stray_character.h>
 #include <fp/lex/detail/tokenizers/character_and_string.h>
+#include <fp/lex/detail/tokenizers/number.h>
+#include <fp/lex/detail/tokenizers/stray_character.h>
 #include <fp/lex/detail/tokenizers/whitespace.h>
 
 namespace fp::lex::detail {
@@ -70,18 +71,18 @@ constexpr auto tokenizers_table = tokenizers_table_t([](auto& t) {
     t['{' ] = tokenize_left_brace;
     t['}' ] = tokenize_right_brace;
 
-//    // number
-//    t['0' ] = tokenizer::number;
-//    t['1' ] = tokenizer::number;
-//    t['2' ] = tokenizer::number;
-//    t['3' ] = tokenizer::number;
-//    t['4' ] = tokenizer::number;
-//    t['5' ] = tokenizer::number;
-//    t['6' ] = tokenizer::number;
-//    t['7' ] = tokenizer::number;
-//    t['8' ] = tokenizer::number;
-//    t['9' ] = tokenizer::number;
-//
+    // number
+    t['0' ] = tokenize_number_with_zero_prefix;
+    t['1' ] = tokenize_number_with_no_zero_prefix;
+    t['2' ] = tokenize_number_with_no_zero_prefix;
+    t['3' ] = tokenize_number_with_no_zero_prefix;
+    t['4' ] = tokenize_number_with_no_zero_prefix;
+    t['5' ] = tokenize_number_with_no_zero_prefix;
+    t['6' ] = tokenize_number_with_no_zero_prefix;
+    t['7' ] = tokenize_number_with_no_zero_prefix;
+    t['8' ] = tokenize_number_with_no_zero_prefix;
+    t['9' ] = tokenize_number_with_no_zero_prefix;
+
 //    // identifiers and keywords
 //    t['A' ] = tokenizer::identifier;
 //    t['B' ] = tokenizer::identifier;

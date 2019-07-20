@@ -66,13 +66,13 @@ struct problem {
     }
 
     /// Add a supplemental source location.
-    void add_supplement(fp::source_location source, std::string text = "");
+    problem& add_supplement(fp::source_location source, std::string text = "");
 
     /// Add a note, without referring to any source code location.
-    void add_note(std::string text);
+    problem& add_note(std::string text);
 
     /// Add a note with a reference to a source location.
-    void add_note(std::string text, fp::source_location);
+    problem& add_note(std::string text, fp::source_location);
 
     /**
      * Add a suggestion for a possible fix.
@@ -80,7 +80,7 @@ struct problem {
      * The format is a suggestion to replace the given `source_location` with
      * the code given in `replacement`.
      */
-    void add_fix_suggestion(fp::source_location, source_code replacement);
+    problem& add_fix_suggestion(fp::source_location, source_code replacement);
 
 private:
     diagnostic::severity      severity_;

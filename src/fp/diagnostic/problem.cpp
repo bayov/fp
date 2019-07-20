@@ -5,25 +5,29 @@
 
 namespace fp::diagnostic {
 
-void problem::add_supplement(fp::source_location source, std::string text) {
+problem& problem::add_supplement(fp::source_location source, std::string text) {
     supplements_.push_back(supplement { std::move(source), std::move(text) });
+    return *this;
 }
 
-void problem::add_note(std::string text) {
+problem& problem::add_note(std::string text) {
     notes_.push_back(note { std::move(text) });
+    return *this;
 }
 
-void problem::add_note(std::string text, fp::source_location source) {
+problem& problem::add_note(std::string text, fp::source_location source) {
     notes_.push_back(note { std::move(text), std::move(source) });
+    return *this;
 }
 
-void problem::add_fix_suggestion(
+problem& problem::add_fix_suggestion(
     fp::source_location source,
     source_code replacement
 ) {
     fix_suggestions_.push_back(
         fix_suggestion { std::move(source), std::move(replacement) }
     );
+    return *this;
 }
 
 problem::problem(

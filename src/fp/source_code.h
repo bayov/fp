@@ -20,8 +20,16 @@ using source_view = std::basic_string_view<source_char>;
 using source_iterator = source_view::iterator;
 
 /// Construct a fp::source_view from the characters in range `[from, to)`.
-inline source_view make_source_view(source_iterator from, source_iterator to) {
+constexpr source_view make_source_view(
+    source_iterator from,
+    source_iterator to
+) {
     return source_view(from, to - from);
+}
+
+/// Returns a merged source code section. `first` must appear before `second`.
+constexpr source_view merge(source_view first, source_view second) {
+    return make_source_view(first.begin(), second.end());
 }
 
 /**
@@ -40,16 +48,18 @@ FP_RECORD(source_location,
 );
 
 /**
- * Returns a merged source location from the two given locations `first` and
- * `second`. The result is all characters between the first character in `first`
- * to the last character in `second`.
+ * Like fp::merge(source_view, source_view), but combines fp::source_location
+ * instances.
  *
- * Assumes that both locations originated from the same source_code, so
- * `first.source_code` is used.
+ * All other fields are taken from the `first` source location.
  */
-source_location merge(
+constexpr source_location merge(
     const source_location& first,
     const source_location& second
-);
+) {
+    source_location merged = first;
+    merged.chars = merge(first.chars, second.chars);
+    return merged;
+}
 
 } // namespace fp
