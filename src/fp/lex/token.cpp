@@ -108,8 +108,8 @@ std::string_view token_name(token t) {
         case token::BIT_AND:        return "BIT_AND";
         case token::BIT_OR:         return "BIT_OR";
         case token::XOR:            return "XOR";
-        case token::LSHIFT:         return "LSHIFT";
-        case token::RSHIFT:         return "RSHIFT";
+        case token::SHL:            return "SHL";
+        case token::SHR:            return "SHR";
 
         // assignments
         case token::ASSIGN:         return "ASSIGN";
@@ -122,8 +122,8 @@ std::string_view token_name(token t) {
         case token::BIT_AND_ASSIGN: return "BIT_AND_ASSIGN";
         case token::BIT_OR_ASSIGN:  return "BIT_OR_ASSIGN";
         case token::XOR_ASSIGN:     return "XOR_ASSIGN";
-        case token::LSHIFT_ASSIGN:  return "LSHIFT_ASSIGN";
-        case token::RSHIFT_ASSIGN:  return "RSHIFT_ASSIGN";
+        case token::SHL_ASSIGN:     return "SHL_ASSIGN";
+        case token::SHR_ASSIGN:     return "SHR_ASSIGN";
 
         // comparisons
         case token::EQ:             return "EQ";

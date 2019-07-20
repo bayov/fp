@@ -70,12 +70,12 @@ enum class token : uint8_t {
     MUL,            ///< *
     DIV,            ///< /
     MOD,            ///< %
-    POW,            ///< **
+    POW,            ///< ^
     BIT_AND,        ///< &
     BIT_OR,         ///< |
-    XOR,            ///< ^
-    LSHIFT,         ///< <<
-    RSHIFT,         ///< >>
+    XOR,            ///< TBD: Maybe a keyword `xor`? But then we have `xor=`
+    SHL,            ///< <<
+    SHR,            ///< >>
 
     // assignments
     ASSIGN,         ///< =
@@ -84,12 +84,12 @@ enum class token : uint8_t {
     MUL_ASSIGN,     ///< *=
     DIV_ASSIGN,     ///< /=
     MOD_ASSIGN,     ///< %=
-    POW_ASSIGN,     ///< **=
+    POW_ASSIGN,     ///< ^=
     BIT_AND_ASSIGN, ///< &=
     BIT_OR_ASSIGN,  ///< |=
-    XOR_ASSIGN,     ///< ^=
-    LSHIFT_ASSIGN,  ///< <<=
-    RSHIFT_ASSIGN,  ///< >>=
+    XOR_ASSIGN,     ///< TBD...
+    SHL_ASSIGN,     ///< <<=
+    SHR_ASSIGN,     ///< >>=
 
     // comparisons
     EQ,             ///< ==

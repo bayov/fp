@@ -12,9 +12,13 @@ set(
     lex/detail/tokenization_state.h
     lex/detail/tokenizers/character_and_string.cpp
     lex/detail/tokenizers/character_and_string.h
+    lex/detail/tokenizers/colon.h
+    lex/detail/tokenizers/comment.h
     lex/detail/tokenizers/keyword_or_identifier.h
     lex/detail/tokenizers/number.cpp
     lex/detail/tokenizers/number.h
+    lex/detail/tokenizers/operations.h
+    lex/detail/tokenizers/period.h
     lex/detail/tokenizers/stray_character.h
     lex/detail/tokenizers/whitespace.h
     lex/detail/tokenizers_table.h

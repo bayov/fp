@@ -3,9 +3,13 @@
 #include <fp/util/table.h>
 #include <fp/lex/detail/tokenization_state.h>
 #include <fp/lex/detail/tokenizers/character_and_string.h>
-#include <fp/lex/detail/tokenizers/number.h>
-#include <fp/lex/detail/tokenizers/stray_character.h>
+#include <fp/lex/detail/tokenizers/colon.h>
+#include <fp/lex/detail/tokenizers/comment.h>
 #include <fp/lex/detail/tokenizers/keyword_or_identifier.h>
+#include <fp/lex/detail/tokenizers/number.h>
+#include <fp/lex/detail/tokenizers/operations.h>
+#include <fp/lex/detail/tokenizers/period.h>
+#include <fp/lex/detail/tokenizers/stray_character.h>
 #include <fp/lex/detail/tokenizers/whitespace.h>
 
 namespace fp::lex::detail {
@@ -28,16 +32,10 @@ struct source_char_to_index {
         return size_t((unsigned char)c);
     }
 };
-//
-///// Like @ref line_feed, but skips over CRLF (`\r\n`) when encountered.
-//inline void carriage_return(tokenizer_state& s) {
-//    if (s.next_is<'\n'>()) { ++s.it; }
-//    line_feed(s);
-//}
-//
-///// Tokenize the symbol as `TOKEN`.
-//template <token TOKEN>
-//void as(tokenizer_state& s) { s.tokenize_as<TOKEN>(); }
+
+///// Tokenizes the symbol as `TOKEN`.
+template <token TOKEN>
+void consume_and_push(tokenization_state& s) { s.consume_and_push(TOKEN); }
 
 using tokenizers_table_t = util::table<
     source_char,         // key
@@ -138,36 +136,36 @@ constexpr auto tokenizers_table = tokenizers_table_t([](auto& t) {
     t['x' ] = tokenize_keyword_or_identifier;
     t['y' ] = tokenize_keyword_or_identifier;
     t['z' ] = tokenize_keyword_or_identifier;
-//
+
 //    // binary-operators
-//    t['+' ] = tokenizer::plus;
-//    t['-' ] = tokenizer::minus;
-//    t['*' ] = TOKENIZE_BINARY_OPS(MUL, '*', POW);
-//    t['/' ] = TOKENIZE_BINARY_OP(DIV);
-//    t['%' ] = TOKENIZE_BINARY_OP(MOD);
-//    t['&' ] = TOKENIZE_BINARY_OP(BIT_AND);
-//    t['|' ] = TOKENIZE_BINARY_OP(BIT_OR);
-//    t['^' ] = TOKENIZE_BINARY_OP(XOR);
-//    t['<' ] = TOKENIZE_COMPARISON_OR_BITSHIFT(LT, '<', LSHIFT);
-//    t['>' ] = TOKENIZE_COMPARISON_OR_BITSHIFT(GT, '>', RSHIFT);
-//    t['=' ] = tokenize_eq;
-//
-//    // as-is
-//    t['(' ] = as<token::L_PAREN>;
-//    t[')' ] = as<token::R_PAREN>;
-//    t['[' ] = as<token::L_BRACKET>;
-//    t[']' ] = as<token::R_BRACKET>;
-//    t[',' ] = as<token::COMMA>;
-//    t[';' ] = as<token::SEMICOLON>;
-//    t['?' ] = as<token::OPTIONAL>;
-//    t['@' ] = as<token::DECORATOR>;
-//    t['~' ] = as<token::BIT_NOT>;
-//
-//    // misc
-//    t[':' ] = tokenize_colon;
-//    t['!' ] = tokenize_exclamation;
-//    t['#' ] = tokenize_comment;
-//    t['.' ] = tokenize_period;
+    t['+' ] = tokenize_plus;
+    t['-' ] = tokenize_minus_or_type_arrow;
+    t['*' ] = tokenize_binary_op<token::MUL,     token::MUL_ASSIGN    >;
+    t['/' ] = tokenize_binary_op<token::DIV,     token::DIV_ASSIGN    >;
+    t['%' ] = tokenize_binary_op<token::MOD,     token::MOD_ASSIGN    >;
+    t['^' ] = tokenize_binary_op<token::POW,     token::POW_ASSIGN    >;
+    t['&' ] = tokenize_binary_op<token::BIT_AND, token::BIT_AND_ASSIGN>;
+    t['|' ] = tokenize_binary_op<token::BIT_OR,  token::BIT_OR_ASSIGN >;
+    t['<' ] = tokenize_gt_or_shl;
+    t['>' ] = tokenize_lt_or_shr;
+    t['=' ] = tokenize_eq_or_lambda_arrow;
+    t['!' ] = tokenize_not_eq;
+
+    // single-character simple tokens
+    t['(' ] = consume_and_push<token::L_PAREN>;
+    t[')' ] = consume_and_push<token::R_PAREN>;
+    t['[' ] = consume_and_push<token::L_BRACKET>;
+    t[']' ] = consume_and_push<token::R_BRACKET>;
+    t[',' ] = consume_and_push<token::COMMA>;
+    t[';' ] = consume_and_push<token::SEMICOLON>;
+    t['?' ] = consume_and_push<token::OPTIONAL>;
+    t['@' ] = consume_and_push<token::DECORATOR>;
+    t['~' ] = consume_and_push<token::BIT_NOT>;
+
+    // misc
+    t[':' ] = tokenize_colon;
+    t['#' ] = tokenize_comment;
+    t['.' ] = tokenize_period;
 
     return t;
 });
