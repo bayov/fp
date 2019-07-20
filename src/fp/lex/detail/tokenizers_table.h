@@ -5,6 +5,7 @@
 #include <fp/lex/detail/tokenizers/character_and_string.h>
 #include <fp/lex/detail/tokenizers/number.h>
 #include <fp/lex/detail/tokenizers/stray_character.h>
+#include <fp/lex/detail/tokenizers/keyword_or_identifier.h>
 #include <fp/lex/detail/tokenizers/whitespace.h>
 
 namespace fp::lex::detail {
@@ -84,59 +85,59 @@ constexpr auto tokenizers_table = tokenizers_table_t([](auto& t) {
     t['9' ] = tokenize_number_with_no_zero_prefix;
 
 //    // identifiers and keywords
-//    t['A' ] = tokenizer::identifier;
-//    t['B' ] = tokenizer::identifier;
-//    t['C' ] = tokenizer::identifier;
-//    t['D' ] = tokenizer::identifier;
-//    t['E' ] = tokenizer::identifier;
-//    t['F' ] = tokenizer::identifier;
-//    t['G' ] = tokenizer::identifier;
-//    t['H' ] = tokenizer::identifier;
-//    t['I' ] = tokenizer::identifier;
-//    t['J' ] = tokenizer::identifier;
-//    t['K' ] = tokenizer::identifier;
-//    t['L' ] = tokenizer::identifier;
-//    t['M' ] = tokenizer::identifier;
-//    t['N' ] = tokenizer::identifier;
-//    t['O' ] = tokenizer::identifier;
-//    t['P' ] = tokenizer::identifier;
-//    t['Q' ] = tokenizer::identifier;
-//    t['R' ] = tokenizer::identifier;
-//    t['S' ] = tokenizer::identifier;
-//    t['T' ] = tokenizer::identifier;
-//    t['U' ] = tokenizer::identifier;
-//    t['V' ] = tokenizer::identifier;
-//    t['W' ] = tokenizer::identifier;
-//    t['X' ] = tokenizer::identifier;
-//    t['Y' ] = tokenizer::identifier;
-//    t['Z' ] = tokenizer::identifier;
-//    t['_' ] = tokenizer::identifier;
-//    t['a' ] = tokenizer::keyword_or_identifier;
-//    t['b' ] = tokenizer::keyword_or_identifier;
-//    t['c' ] = tokenizer::keyword_or_identifier;
-//    t['d' ] = tokenizer::keyword_or_identifier;
-//    t['e' ] = tokenizer::keyword_or_identifier;
-//    t['f' ] = tokenizer::keyword_or_identifier;
-//    t['g' ] = tokenizer::keyword_or_identifier;
-//    t['h' ] = tokenizer::keyword_or_identifier;
-//    t['i' ] = tokenizer::keyword_or_identifier;
-//    t['j' ] = tokenizer::keyword_or_identifier;
-//    t['k' ] = tokenizer::keyword_or_identifier;
-//    t['l' ] = tokenizer::keyword_or_identifier;
-//    t['m' ] = tokenizer::keyword_or_identifier;
-//    t['n' ] = tokenizer::keyword_or_identifier;
-//    t['o' ] = tokenizer::keyword_or_identifier;
-//    t['p' ] = tokenizer::keyword_or_identifier;
-//    t['q' ] = tokenizer::keyword_or_identifier;
-//    t['r' ] = tokenizer::keyword_or_identifier;
-//    t['s' ] = tokenizer::keyword_or_identifier;
-//    t['t' ] = tokenizer::keyword_or_identifier;
-//    t['u' ] = tokenizer::keyword_or_identifier;
-//    t['v' ] = tokenizer::keyword_or_identifier;
-//    t['w' ] = tokenizer::keyword_or_identifier;
-//    t['x' ] = tokenizer::keyword_or_identifier;
-//    t['y' ] = tokenizer::keyword_or_identifier;
-//    t['z' ] = tokenizer::keyword_or_identifier;
+    t['A' ] = tokenize_keyword_or_identifier;
+    t['B' ] = tokenize_keyword_or_identifier;
+    t['C' ] = tokenize_keyword_or_identifier;
+    t['D' ] = tokenize_keyword_or_identifier;
+    t['E' ] = tokenize_keyword_or_identifier;
+    t['F' ] = tokenize_keyword_or_identifier;
+    t['G' ] = tokenize_keyword_or_identifier;
+    t['H' ] = tokenize_keyword_or_identifier;
+    t['I' ] = tokenize_keyword_or_identifier;
+    t['J' ] = tokenize_keyword_or_identifier;
+    t['K' ] = tokenize_keyword_or_identifier;
+    t['L' ] = tokenize_keyword_or_identifier;
+    t['M' ] = tokenize_keyword_or_identifier;
+    t['N' ] = tokenize_keyword_or_identifier;
+    t['O' ] = tokenize_keyword_or_identifier;
+    t['P' ] = tokenize_keyword_or_identifier;
+    t['Q' ] = tokenize_keyword_or_identifier;
+    t['R' ] = tokenize_keyword_or_identifier;
+    t['S' ] = tokenize_keyword_or_identifier;
+    t['T' ] = tokenize_keyword_or_identifier;
+    t['U' ] = tokenize_keyword_or_identifier;
+    t['V' ] = tokenize_keyword_or_identifier;
+    t['W' ] = tokenize_keyword_or_identifier;
+    t['X' ] = tokenize_keyword_or_identifier;
+    t['Y' ] = tokenize_keyword_or_identifier;
+    t['Z' ] = tokenize_keyword_or_identifier;
+    t['_' ] = tokenize_keyword_or_identifier;
+    t['a' ] = tokenize_keyword_or_identifier;
+    t['b' ] = tokenize_keyword_or_identifier;
+    t['c' ] = tokenize_keyword_or_identifier;
+    t['d' ] = tokenize_keyword_or_identifier;
+    t['e' ] = tokenize_keyword_or_identifier;
+    t['f' ] = tokenize_keyword_or_identifier;
+    t['g' ] = tokenize_keyword_or_identifier;
+    t['h' ] = tokenize_keyword_or_identifier;
+    t['i' ] = tokenize_keyword_or_identifier;
+    t['j' ] = tokenize_keyword_or_identifier;
+    t['k' ] = tokenize_keyword_or_identifier;
+    t['l' ] = tokenize_keyword_or_identifier;
+    t['m' ] = tokenize_keyword_or_identifier;
+    t['n' ] = tokenize_keyword_or_identifier;
+    t['o' ] = tokenize_keyword_or_identifier;
+    t['p' ] = tokenize_keyword_or_identifier;
+    t['q' ] = tokenize_keyword_or_identifier;
+    t['r' ] = tokenize_keyword_or_identifier;
+    t['s' ] = tokenize_keyword_or_identifier;
+    t['t' ] = tokenize_keyword_or_identifier;
+    t['u' ] = tokenize_keyword_or_identifier;
+    t['v' ] = tokenize_keyword_or_identifier;
+    t['w' ] = tokenize_keyword_or_identifier;
+    t['x' ] = tokenize_keyword_or_identifier;
+    t['y' ] = tokenize_keyword_or_identifier;
+    t['z' ] = tokenize_keyword_or_identifier;
 //
 //    // binary-operators
 //    t['+' ] = tokenizer::plus;

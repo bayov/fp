@@ -6,7 +6,7 @@ namespace fp::lex::detail {
 
 /// Push a token::ERROR and report a diagnostic::error.
 inline void stray_character(tokenization_state& s) {
-    s.consume_and_push<token::ERROR>();
+    s.consume_and_push(token::ERROR);
     s.report_error("stray character in source code");
 }
 

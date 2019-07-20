@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <ostream>
 #include <string_view>
+#include <unordered_map>
 
 namespace fp::lex {
 
@@ -123,6 +124,9 @@ enum class token : uint8_t {
      */
     STRING
 };
+
+/// A mapping too all keyword tokens from their string representation.
+extern std::unordered_map<std::string_view, token> keywords_map;
 
 /**
  * Returns a string representation for a lex::token.

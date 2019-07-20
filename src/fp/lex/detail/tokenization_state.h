@@ -107,15 +107,10 @@ struct tokenization_state {
         return make_source_view(next, end).starts_with(chars);
     }
 
-    /// Push `TOKEN` to the output list (token_attribute_t<TOKEN> must be void).
-    template <token TOKEN>
-    void push() {
-        static_assert(
-            std::is_void_v<token_attribute_t<TOKEN>>,
-            "The given `TOKEN` has a non-empty attribute."
-        );
+    /// Push the token to the output list (token_attribute_t must be void).
+    void push(token t) {
         tokens_.push_back({
-            .token = TOKEN,
+            .token = t,
             .dummy = false,
             .source_location = current_token_location()
         });
@@ -141,11 +136,10 @@ struct tokenization_state {
         });
     }
 
-    /// Consume the next character and tokenize it as `TOKEN`.
-    template <token TOKEN>
-    void consume_and_push() {
+    /// Consume the next character and tokenize it as the given token.
+    void consume_and_push(token t) {
         ++next;
-        push<TOKEN>();
+        push(t);
     }
 
 private:

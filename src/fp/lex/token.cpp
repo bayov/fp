@@ -2,6 +2,45 @@
 
 namespace fp::lex {
 
+namespace detail {
+
+static std::unordered_map<std::string_view, token> create_keywords_map() {
+    return {
+        {"and",      token::AND     },
+        {"as",       token::AS      },
+        {"break",    token::BREAK   },
+        {"case",     token::CASE    },
+        {"catch",    token::CATCH   },
+        {"class",    token::CLASS   },
+        {"concept",  token::CONCEPT },
+        {"continue", token::CONTINUE},
+        {"default",  token::DEFAULT },
+        {"do",       token::DO      },
+        {"else",     token::ELSE    },
+        {"enum",     token::ENUM    },
+        {"export",   token::EXPORT  },
+        {"for",      token::FOR     },
+        {"if",       token::IF      },
+        {"implicit", token::IMPLICIT},
+        {"import",   token::IMPORT  },
+        {"in",       token::IN      },
+        {"mut",      token::MUT     },
+        {"not",      token::NOT     },
+        {"of",       token::OF      },
+        {"or",       token::OR      },
+        {"return",   token::RETURN  },
+        {"switch",   token::SWITCH  },
+        {"throw",    token::THROW   },
+        {"try",      token::TRY     },
+        {"while",    token::WHILE   }
+    };
+}
+
+} // namespace detail
+
+std::unordered_map<std::string_view, token> keywords_map =
+    detail::create_keywords_map();
+
 std::string_view token_name(token t) {
     switch (t) {
         case token::ERROR:          return "ERROR";

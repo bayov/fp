@@ -236,25 +236,25 @@ void tokenize_double_quote(tokenization_state& s) {
     if (s.string_interpolation_stack.in_string_context()) {
         // we're in a string context, so `s.next` is a closing-quote
         s.string_interpolation_stack.pop();
-        s.consume_and_push<token::QUOTE>();
+        s.consume_and_push(token::QUOTE);
     } else {
         // we're not in a string context, so `s.next` is an opening-quote
         s.string_interpolation_stack.push(s.next);
-        s.consume_and_push<token::QUOTE>();
+        s.consume_and_push(token::QUOTE);
         s.begin_next_token();
         tokenize_string(s);
     }
 }
 
 void tokenize_left_brace(tokenization_state& s) {
-    s.consume_and_push<token::L_BRACE>();
+    s.consume_and_push(token::L_BRACE);
     if (!s.string_interpolation_stack.empty()) {
         s.string_interpolation_stack.current_frame().open_left_braces += 1;
     }
 }
 
 void tokenize_right_brace(tokenization_state& s) {
-    s.consume_and_push<token::R_BRACE>();
+    s.consume_and_push(token::R_BRACE);
     auto& sis = s.string_interpolation_stack;
     if (!sis.empty()) {
         sis.current_frame().open_left_braces -= 1;
