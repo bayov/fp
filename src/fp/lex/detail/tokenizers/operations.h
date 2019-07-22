@@ -22,6 +22,7 @@ void tokenize_binary_op(tokenization_state& s) {
 /// Tokenizes one of `+`, `++`, or `+=`.
 void tokenize_plus(tokenization_state& s) {
     if (s.next_is("++")) {
+        ++s.next;
         s.consume_and_push(token::INC);
     } else {
         tokenize_binary_op<token::PLUS, token::PLUS_ASSIGN>(s);
@@ -31,8 +32,10 @@ void tokenize_plus(tokenization_state& s) {
 /// Tokenizes one of `-`, `--`, `->`, or `-=`.
 void tokenize_minus_or_type_arrow(tokenization_state& s) {
     if (s.next_is("--")) {
+        ++s.next;
         s.consume_and_push(token::DEC);
     } else if (s.next_is("->")) {
+        ++s.next;
         s.consume_and_push(token::TYPE_ARROW);
     } else {
         tokenize_binary_op<token::MINUS, token::MINUS_ASSIGN>(s);
@@ -40,28 +43,29 @@ void tokenize_minus_or_type_arrow(tokenization_state& s) {
 }
 
 /// Tokenizes one of `<`, `<=`, `<<`, or `<<=`.
-void tokenize_gt_or_shl(tokenization_state& s) {
+void tokenize_lt_or_shl(tokenization_state& s) {
     if (s.next_is("<<")) {
         ++s.next;
         tokenize_binary_op<token::SHL, token::SHL_ASSIGN>(s);
     } else {
-        tokenize_binary_op<token::GT, token::GTE>(s);
+        tokenize_binary_op<token::LT, token::LTE>(s);
     }
 }
 
 /// Tokenizes one of `>`, `>=`, `>>`, or `>>=`.
-void tokenize_lt_or_shr(tokenization_state& s) {
+void tokenize_gt_or_shr(tokenization_state& s) {
     if (s.next_is(">>")) {
         ++s.next;
         tokenize_binary_op<token::SHR, token::SHR_ASSIGN>(s);
     } else {
-        tokenize_binary_op<token::LT, token::LTE>(s);
+        tokenize_binary_op<token::GT, token::GTE>(s);
     }
 }
 
 /// Tokenizes one of `=`, `=>`, or `==`.
 void tokenize_eq_or_lambda_arrow(tokenization_state& s) {
     if (s.next_is("=>")) {
+        ++s.next;
         s.consume_and_push(token::LAMBDA_ARROW);
     } else {
         tokenize_binary_op<token::ASSIGN, token::EQ>(s);

@@ -110,8 +110,9 @@ static void validate_no_digit_separator_next_to_exponent(
     source_view number,
     source_view exponent
 ) {
+    if (exponent.empty()) { return; }
     source_iterator separator_adjacent_to_exp = number.end();
-    if (!exponent.empty() && number.back() == '\'') {
+    if (number.back() == '\'') {
         separator_adjacent_to_exp = number.end() - 1;
     } else if (exponent[1] == '\'') {
         separator_adjacent_to_exp = exponent.begin() + 1;

@@ -118,9 +118,9 @@ enum class token : uint8_t {
      *      "one plus one is {1 + 1}."
      *
      * will be tokenized as:
-     *      QUOTE STRING L_BRACE INTEGER PLUS INTEGER R_BRACE STRING QUOTE
-     *            ^~~~~~                                      ^~~~~~
-     *            "one plus one is "                          "."
+     *      QUOTE STRING L_BRACE NUMBER PLUS NUMBER R_BRACE STRING QUOTE
+     *            ^~~~~~                                    ^~~~~~
+     *            "one plus one is "                        "."
      */
     STRING
 };

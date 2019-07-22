@@ -146,8 +146,8 @@ constexpr auto tokenizers_table = tokenizers_table_t([](auto& t) {
     t['^' ] = tokenize_binary_op<token::POW,     token::POW_ASSIGN    >;
     t['&' ] = tokenize_binary_op<token::BIT_AND, token::BIT_AND_ASSIGN>;
     t['|' ] = tokenize_binary_op<token::BIT_OR,  token::BIT_OR_ASSIGN >;
-    t['<' ] = tokenize_gt_or_shl;
-    t['>' ] = tokenize_lt_or_shr;
+    t['<' ] = tokenize_lt_or_shl;
+    t['>' ] = tokenize_gt_or_shr;
     t['=' ] = tokenize_eq_or_lambda_arrow;
     t['!' ] = tokenize_not_eq;
 
