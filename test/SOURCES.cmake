@@ -3,6 +3,8 @@ set(
     SOURCES
     include/test-util/assert_macro_eq.h
     include/test-util/assert_type_eq.h
+    lex/single_tokens.cpp
+    util/context_value.cpp
     util/match.cpp
     util/pp_seq.cpp
     util/record.cpp

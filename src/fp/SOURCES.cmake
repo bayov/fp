@@ -31,6 +31,7 @@ set(
     literal_types.h
     source_code.h
     util/cast.h
+    util/context_value.h
     util/match.h
     util/overloaded.h
     util/pp_seq.h
@@ -43,5 +44,6 @@ set(
     util/type_name.cpp
     util/type_name.h
     util/vector_view.h
+    util/with.h
     PARENT_SCOPE
 )
