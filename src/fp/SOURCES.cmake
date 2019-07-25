@@ -31,6 +31,9 @@ set(
     literal_types.h
     source_code.h
     util/cast.h
+    util/console/ansi_codes.h
+    util/console/ansi_support.cpp
+    util/console/ansi_support.h
     util/context_value.h
     util/match.h
     util/overloaded.h

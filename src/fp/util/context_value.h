@@ -1,6 +1,6 @@
 #pragma once
 
-#include <optional>
+#include <variant>
 
 namespace fp::util {
 
@@ -85,7 +85,11 @@ public:
 
     template <class U>
     explicit context_value(U&& initial_value) :
-        initial_value(std::in_place, *this, std::forward<U>(initial_value))
+        initial_context(
+            std::in_place_type<context<U>>,
+            *this,
+            std::forward<U>(initial_value)
+        )
     {}
 
     context_value(const context_value&)     = delete;
@@ -93,7 +97,7 @@ public:
     context_value& operator=(context_value) = delete;
 
     template <class ScopeT>
-    context<ScopeT> operator=(ScopeT&& value) {
+    [[nodiscard]] context<ScopeT> operator=(ScopeT&& value) {
         return {*this, std::forward<ScopeT>(value)};
     }
 
@@ -117,8 +121,17 @@ private:
     node* first_context_node   = nullptr;
     node* current_context_node = nullptr;
 
+    //@{
     /// Only used when context_value is constructed with an initial-value.
-    std::optional<context<T>> initial_value;
+    using non_const_type = std::remove_const_t<T>;
+    using initial_context_t = std::variant<
+        std::monostate,
+        context<non_const_type>,
+        context<non_const_type&>,
+        context<const non_const_type&>
+    >;
+    initial_context_t initial_context;
+    //@}
 
     struct node {
         context_value& cv;
