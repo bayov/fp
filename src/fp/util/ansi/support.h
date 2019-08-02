@@ -2,20 +2,20 @@
 
 #include <fp/util/context_value.h>
 
-namespace fp::util::console {
+namespace fp::util::ansi {
 
 /// Returns `true` if the output-stream (std::cout) supports ANSI escape codes.
-bool is_ansi_terminal_available();
+bool is_available();
 
 /**
  * Returns `true` if ANSI escape codes are currently enabled.
  *
- * ANSI is initially enabled when console::is_ansi_terminal_available() returns
- * `true`. It can be disabled or enabled manually by calling
- * console::disable_ansi_globally() or console::enable_ansi_globally().
+ * ANSI is initially enabled when util::is_available() return `true`. It can be
+ * disabled or enabled manually by calling ansi::disable_globally() or
+ * ansi::enable_globally().
  *
  * This global state can be overridden in local contexts by assigning `true` or
- * `false` to console::use_ansi (this override mechanism is thread-local).
+ * `false` to ansi::use_in_context (this override mechanism is thread-local).
  *
  * Example:
  * ~~~{.cpp}
@@ -33,13 +33,13 @@ bool is_ansi_terminal_available();
  * assert(console::ansi_enabled() == false);
  * ~~~
  */
-bool ansi_enabled();
+bool is_enabled();
 
 //@{
 /// See color::enabled().
-void enable_ansi_globally();
-void disable_ansi_globally();
-extern thread_local context_value<const bool> use_ansi;
+void enable_globally();
+void disable_globally();
+extern thread_local context_value<const bool> use_in_context;
 //@}
 
-} // namespace fp::util::console
+} // namespace fp::util::ansi
