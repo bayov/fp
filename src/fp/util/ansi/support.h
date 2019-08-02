@@ -20,17 +20,17 @@ bool is_available();
  * Example:
  * ~~~{.cpp}
  * // assume color support is initially enabled
- * assert(console::ansi_enabled() == true);
+ * assert(ansi::is_enabled() == true);
  *
- * console::disable_ansi_globally();
- * assert(console::ansi_enabled() == false);
+ * ansi::disable_globally();
+ * assert(ansi::is_enabled() == false);
  *
  * // enable locally (for current thread only)
- * FP_WITH(console::use_ansi = true) {
- *     assert(console::ansi_enabled() == true);
+ * FP_WITH(ansi::use_in_context = true) {
+ *     assert(ansi::is_enabled() == true);
  * }
  * // previous state is restored when going out of scope
- * assert(console::ansi_enabled() == false);
+ * assert(ansi::ansi_enabled() == false);
  * ~~~
  */
 bool is_enabled();
