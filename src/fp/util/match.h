@@ -10,15 +10,19 @@ namespace detail {
 
 template <class Variant>
 struct matcher {
-    constexpr explicit matcher(Variant& v) : variant_(v) {}
+    constexpr explicit matcher(Variant v)
+        : variant_(std::forward<Variant>(v)) {}
 
     template <class... Fs>
-    constexpr auto operator()(Fs&&... fs) && {
-        return std::visit(overloaded { std::forward<Fs>(fs)... }, variant_);
+    constexpr decltype(auto) operator()(Fs&&... fs) && {
+        return std::visit(
+            overloaded { std::forward<Fs>(fs)... },
+            std::forward<Variant>(variant_)
+        );
     }
 
 private:
-    Variant& variant_;
+    Variant variant_;
 };
 
 } // namespace detail
@@ -30,7 +34,7 @@ private:
  * std::variant<int, std::string> w("hello");
  *
  * auto s = match(w)(
- *     [](int) { return "int"; }
+ *     [](int) { return "int"; },
  *     [](std::string) { return "string"; }
  * );
  * assert(s == "string");
@@ -39,8 +43,8 @@ private:
  * Note: `[](auto&&) { ... }` can be used as a "default match clause".
  */
 template <class Variant>
-constexpr detail::matcher<Variant> match(Variant& v) {
-    return detail::matcher<Variant>(v);
+constexpr detail::matcher<Variant> match(Variant&& v) {
+    return detail::matcher<Variant>(std::forward<Variant>(v));
 }
 
 } // namespace fp::util

@@ -23,6 +23,15 @@ struct tokenized_token {
     bool                dummy;
     lex::attribute_t    attribute;
     fp::source_location source_location;
+
+    /**
+     * Returns the attached attribute, assuming that `token == TOKEN`. If this
+     * assumption is not respected, a std::bad_variant_access will be thrown.
+     */
+    template <lex::token TOKEN>
+    const token_attribute_t<TOKEN>& get_attribute() const {
+        return std::get<token_attribute_t<TOKEN>>(attribute);
+    }
 };
 
 /// A list of tokenized tokens.
