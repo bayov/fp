@@ -68,7 +68,7 @@ TEST(lex, single_tokens) {
     assert_single_token<token::CLASS>("class");
     assert_single_token<token::CONCEPT>("concept");
     assert_single_token<token::CONTINUE>("continue");
-    assert_single_token<token::DEFAULT>("dexfault");
+    assert_single_token<token::DEFAULT>("default");
     assert_single_token<token::DO>("do");
     assert_single_token<token::ELSE>("else");
     assert_single_token<token::ENUM>("enum");
