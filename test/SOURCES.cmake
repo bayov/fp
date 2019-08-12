@@ -7,7 +7,6 @@ set(
     util/context_value.cpp
     util/match.cpp
     util/pp_seq.cpp
-    util/record.cpp
     util/table.cpp
     util/type_name.cpp
     PARENT_SCOPE

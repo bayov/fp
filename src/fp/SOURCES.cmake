@@ -42,7 +42,6 @@ set(
     util/overloaded.h
     util/pp_seq.h
     util/print_separated.h
-    util/record.h
     util/static_string_view.h
     util/table.h
     util/to_string.h
