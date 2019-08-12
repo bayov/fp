@@ -6,7 +6,6 @@ set(
     lex/single_tokens.cpp
     util/context_value.cpp
     util/match.cpp
-    util/pp_seq.cpp
     util/table.cpp
     util/type_name.cpp
     PARENT_SCOPE

@@ -40,7 +40,6 @@ set(
     util/context_value.h
     util/match.h
     util/overloaded.h
-    util/pp_seq.h
     util/print_separated.h
     util/static_string_view.h
     util/table.h
