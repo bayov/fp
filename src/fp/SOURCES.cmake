@@ -42,8 +42,7 @@ set(
     util/overloaded.h
         util/table.h
     util/to_string.h
-    util/type_constant.h
-    util/type_name.cpp
+        util/type_name.cpp
     util/type_name.h
     util/vector_view.h
     util/with.h
