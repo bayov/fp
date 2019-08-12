@@ -89,7 +89,7 @@ static void validate_decimal_point(source_view number, source_view exponent) {
     size_t exp_decimal_point_pos = exponent.find('.');
     if (exp_decimal_point_pos != exponent.npos) {
         throw number_error(
-            number.substr(exp_decimal_point_pos, 1),
+            exponent.substr(exp_decimal_point_pos, 1),
             "decimal-point in exponent"
         );
     }
@@ -236,7 +236,7 @@ void tokenize_number(tokenization_state& s, std::string_view base_name) {
         validate_no_underscores(number, exponent);
         validate_digits<Digits>(number, base_name);
     } catch (number_error& e) {
-        s.report_error(e.source_section, std::move(e.text))
+        s.report_error(std::move(e.text), e.source_section)
             .add_supplement(s.current_token_location());
         s.push_dummy(token::NUMBER);
         return;

@@ -16,6 +16,6 @@ namespace fp::lex {
  *     Thrown when the maximum number of allowed errors is reached (as set by
  *     the given diagnostic::report).
  */
-tokenized_list tokenize(source_view, diagnostic::report&);
+tokenized_list tokenize(const source_file&, diagnostic::report&);
 
 } // namespace fp::lex

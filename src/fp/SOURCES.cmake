@@ -2,6 +2,8 @@
 set(
     SOURCES
     compilation_error.h
+    diagnostic/print/to_ostream.cpp
+    diagnostic/print/to_ostream.h
     diagnostic/problem.cpp
     diagnostic/problem.h
     diagnostic/report.cpp
@@ -29,6 +31,7 @@ set(
     lex/tokenized_list.cpp
     lex/tokenized_list.h
     literal_types.h
+    source_code.cpp
     source_code.h
     util/ansi/codes.h
     util/ansi/support.cpp

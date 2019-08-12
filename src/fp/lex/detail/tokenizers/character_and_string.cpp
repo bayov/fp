@@ -18,9 +18,9 @@ namespace fp::lex::detail {
  * @param end
  *      Iterator to the end of the source code.
  */
-template <source_char QUOTE>
+template <char QUOTE>
 source_view quoted_content(source_iterator begin, source_iterator end) {
-    constexpr auto is_terminator = [](source_char c) {
+    constexpr auto is_terminator = [](char c) {
         return c == QUOTE || (QUOTE == '"' && c == '{');
     };
     source_iterator it = begin;
@@ -83,7 +83,7 @@ std::optional<char_t> consume_char(
         case '0':   return '\0';
     }
 
-    s.report_error(content.begin(), it, "invalid escape sequence")
+    s.report_error("invalid escape sequence", content.begin(), it)
         .add_supplement(s.current_token_location());
     return std::nullopt;
 }

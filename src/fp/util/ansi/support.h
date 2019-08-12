@@ -15,7 +15,7 @@ bool is_available();
  * ansi::enable_globally().
  *
  * This global state can be overridden in local contexts by assigning `true` or
- * `false` to ansi::use_in_context (this override mechanism is thread-local).
+ * `false` to ansi::enable_in_context (this override mechanism is thread-local).
  *
  * Example:
  * ~~~{.cpp}
@@ -26,7 +26,7 @@ bool is_available();
  * assert(ansi::is_enabled() == false);
  *
  * // enable locally (for current thread only)
- * FP_WITH(ansi::use_in_context = true) {
+ * FP_WITH(ansi::enable_in_context = true) {
  *     assert(ansi::is_enabled() == true);
  * }
  * // previous state is restored when going out of scope
@@ -39,7 +39,7 @@ bool is_enabled();
 /// See color::enabled().
 void enable_globally();
 void disable_globally();
-extern thread_local context_value<const bool> use_in_context;
+extern thread_local context_value<const bool> enable_in_context;
 //@}
 
 } // namespace fp::util::ansi

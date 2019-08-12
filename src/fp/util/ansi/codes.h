@@ -15,6 +15,11 @@ inline std::ostream& operator<<(std::ostream& os, graphics_code c) {
     return os << "\033[" << uint16_t(c.number) << 'm';
 }
 
+inline bool operator==(graphics_code c1, graphics_code c2) {
+    return c1.number == c2.number;
+}
+inline bool operator!=(graphics_code c1, graphics_code c2) { return !(c1 == c2); }
+
 constexpr auto reset             = graphics_code {   0 };
 constexpr auto bold              = graphics_code {   1 };
 constexpr auto faint             = graphics_code {   2 };

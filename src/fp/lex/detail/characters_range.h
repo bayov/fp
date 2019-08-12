@@ -6,23 +6,21 @@
 namespace fp::lex::detail {
 
 /// A compile-time range of source code characters.
-template <source_char FROM, source_char TO>
+template <char FROM, char TO>
 struct characters_range {
-    static constexpr bool contain(source_char c) {
-        return FROM <= c && c <= TO;
-    }
+    static constexpr bool contain(char c) { return FROM <= c && c <= TO; }
 };
 
 /// Just like detail::characters_range, but contains one specific character.
-template <source_char CHARACTER>
+template <char CHARACTER>
 struct specific_character {
-    static constexpr bool contain(source_char c) { return c == CHARACTER; }
+    static constexpr bool contain(char c) { return c == CHARACTER; }
 };
 
 /// Contains multiple compile-time characters ranges (detail::characters_range).
 template <class... CharacterRanges>
 struct composite_characters_range {
-    static constexpr bool contain(source_char s) {
+    static constexpr bool contain(char s) {
         return (... || CharacterRanges::contain(s));
     }
 };

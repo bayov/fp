@@ -13,6 +13,11 @@ std::ostream& operator<<(std::ostream& os, const tokenized_token& t) {
     return os;
 }
 
+std::ostream& operator<<(std::ostream& os, const tokenized_list& tokens) {
+    for (const auto& t : tokens) { os << t << '\n'; }
+    return os;
+}
+
 source_location get_source_location(tokenized_view tokens) {
     if (tokens.empty()) {
         throw std::invalid_argument(

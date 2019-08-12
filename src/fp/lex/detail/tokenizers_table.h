@@ -27,8 +27,8 @@ using tokenizer_t = void (*)(tokenization_state&);
  * Maps an ASCII character (-128...127) to an index (0...255) in the tokenizers
  * dispatch table: detail::tokenizers_table.
  */
-struct source_char_to_index {
-    constexpr size_t operator()(source_char c) const {
+struct char_to_index {
+    constexpr size_t operator()(char c) const {
         return size_t((unsigned char)c);
     }
 };
@@ -38,10 +38,10 @@ template <token TOKEN>
 void consume_and_push(tokenization_state& s) { s.consume_and_push(TOKEN); }
 
 using tokenizers_table_t = util::table<
-    source_char,         // key
+    char,                // key
     tokenizer_t,         // value
     256,                 // number of entries
-    source_char_to_index // maps key to table entry index
+    char_to_index        // maps key to table entry index
 >;
 
 /**

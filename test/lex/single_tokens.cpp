@@ -1,24 +1,26 @@
 #include <gtest/gtest.h>
 
+#include <fp/diagnostic/print/to_ostream.h>
 #include <fp/lex/tokenize.h>
 
 namespace fp::lex {
 
 template <token EXPECTED_TOKEN>
-void assert_single_token(const source_view& source) {
+void assert_single_token(std::string_view source_str) {
     std::string_view name = token_name(EXPECTED_TOKEN);
     diagnostic::report report;
-    tokenized_list tokens = tokenize(source, report);
+    fp::source_file file("single-token-test.fp", source_str);
+
+    tokenized_list tokens = tokenize(file, report);
     if (!report.errors().empty() || !report.warnings().empty()) {
-        // TODO: Add printing of diagnostic reports
-//        util::console::color::disable_in_scope disable_colors{};
-//        FAIL() << report;
-        FAIL() << name << report.errors().front().text();
+        diagnostic::print::to_ostream(std::cout, report);
+        FAIL() << name;
     }
-    // TODO: Add printing of tokenized_list
-    ASSERT_EQ(1u, tokens.size()) << name/* << tokens*/;
-    ASSERT_EQ(token_name(EXPECTED_TOKEN), token_name(tokens[0].token));
+
+    ASSERT_EQ(1u, tokens.size()) << name << tokens;
+    ASSERT_EQ(EXPECTED_TOKEN, tokens[0].token);
     ASSERT_FALSE(tokens[0].dummy) << name;
+
     using attribute_t = token_attribute_t<EXPECTED_TOKEN>;
     using expected_attribute_t = std::conditional_t<
         std::is_void_v<attribute_t>,
@@ -28,13 +30,12 @@ void assert_single_token(const source_view& source) {
     ASSERT_TRUE(std::holds_alternative<expected_attribute_t>(
         tokens[0].attribute
     )) << name;
-    source_location expected_source_location {
-        .chars = source,
-        .source_code = source,
-        .line = source.begin(),
-        .line_number = 1
-    };
-    ASSERT_EQ(expected_source_location, tokens[0].source_location) << name;
+
+    const auto& location = tokens[0].source_location;
+    ASSERT_EQ(file.content        , location.chars      ) << name;
+    ASSERT_EQ(file                , location.file       ) << name;
+    ASSERT_EQ(file.content.begin(), location.line       ) << name;
+    ASSERT_EQ(1u                  , location.line_number) << name;
 }
 
 TEST(lex, single_tokens) {
@@ -67,7 +68,7 @@ TEST(lex, single_tokens) {
     assert_single_token<token::CLASS>("class");
     assert_single_token<token::CONCEPT>("concept");
     assert_single_token<token::CONTINUE>("continue");
-    assert_single_token<token::DEFAULT>("default");
+    assert_single_token<token::DEFAULT>("dexfault");
     assert_single_token<token::DO>("do");
     assert_single_token<token::ELSE>("else");
     assert_single_token<token::ENUM>("enum");

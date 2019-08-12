@@ -10,51 +10,46 @@ namespace fp::lex::detail {
 
 /// The internal state being kept during tokenization.
 struct tokenization_state {
-    source_view     source; ///< The source code being tokenized.
-    source_iterator next;   ///< Points to the next character in the source.
-    source_iterator end;    ///< Points to the end of the source.
+    const source_file& file; ///< The source file being tokenized.
+    source_iterator    next; ///< Points to the next character in the source.
+    source_iterator    end;  ///< Points to the end of the source.
 
     /// See detail::string_interpolation_stack for details.
     detail::string_interpolation_stack string_interpolation_stack;
 
     tokenization_state(
-        source_view source,
+        const source_file& source,
         tokenized_list& output_tokens_list,
         diagnostic::report& report
     ) :
-        source(source),
-        next(source.begin()),
-        end(source.end()),
+        file(source),
+        next(source.content.begin()),
+        end(source.content.end()),
         tokens_(output_tokens_list),
         report_(report),
         token_begin_(next),
         line_begin_(next)
     {}
 
-    //@{
-    /// Reports a diagnostic::error for the given source code section.
-    diagnostic::problem& report_error(
-        source_view source_section,
-        std::string text
-    ) {
-        report_problem(
-            diagnostic::error(location(source_section), std::move(text))
-        );
-        return report_.errors().back();
-    }
-    diagnostic::problem& report_error(
-        source_iterator from,
-        source_iterator to,
-        std::string text
-    ) {
-        return report_error(make_source_view(from, to), std::move(text));
-    }
-    //@}
-
     /// Reports a diagnostic::error for the current token.
     diagnostic::problem& report_error(std::string text) {
-        return report_error(token_begin_, next, std::move(text));
+         report_problem(diagnostic::error(std::move(text)));
+         return report_.errors().back();
     }
+
+    //@{
+    /// Reports a diagnostic::error for the given source code section.
+    diagnostic::problem& report_error(std::string text, source_view section) {
+        return report_error(std::move(text)).add_primary(location(section));
+    }
+    diagnostic::problem& report_error(
+        std::string text,
+        source_iterator from,
+        source_iterator to
+    ) {
+        return report_error(std::move(text), make_source_view(from, to));
+    }
+    //@}
 
     /// Report the given diagnostic::problem.
     void report_problem(diagnostic::problem p) { report_.add(std::move(p)); }
@@ -67,7 +62,7 @@ struct tokenization_state {
     source_location location(source_view source_section) {
         return source_location {
             .chars = source_section,
-            .source_code = source,
+            .file = file,
             .line = line_begin_,
             .line_number = line_number_
         };
@@ -100,7 +95,7 @@ struct tokenization_state {
     }
 
     /// Returns `true` if the the next character in the source is `c`.
-    bool next_is(source_char c) const { return next != end && *next == c; }
+    bool next_is(char c) const { return next != end && *next == c; }
 
     /// Returns `true` if the the next characters in the source are `chars`.
     bool next_is(source_view chars) const {

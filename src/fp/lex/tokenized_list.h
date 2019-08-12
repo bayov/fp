@@ -3,7 +3,6 @@
 #include <ostream>
 #include <vector>
 
-#include <fp/util/record.h>
 #include <fp/util/vector_view.h>
 #include <fp/source_code.h>
 
@@ -19,17 +18,18 @@ namespace fp::lex {
  * created after encountering a syntax error (useful for error recovery).
  * In this case, its attribute value is invalid and should be ignored.
  */
-FP_RECORD(tokenized_token,
-    (lex::token         , token    )
-    (bool               , dummy    )
-    (lex::attribute_t   , attribute)
-    (fp::source_location, source_location)
-);
-
-std::ostream& operator<<(std::ostream&, const tokenized_token&);
+struct tokenized_token {
+    lex::token          token;
+    bool                dummy;
+    lex::attribute_t    attribute;
+    fp::source_location source_location;
+};
 
 /// A list of tokenized tokens.
 using tokenized_list = std::vector<tokenized_token>;
+
+std::ostream& operator<<(std::ostream&, const tokenized_token&);
+std::ostream& operator<<(std::ostream&, const tokenized_list&);
 
 /// A reference to a section of lex::tokenized_list.
 using tokenized_view = util::vector_view<tokenized_token>;

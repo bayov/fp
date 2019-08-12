@@ -35,12 +35,12 @@ bool is_available() {
     return b;
 }
 
-bool is_enabled() { return use_in_context.get(); }
+bool is_enabled() { return enable_in_context.get(); }
 
 void enable_globally() { detail::is_enabled_flag() = true; }
 void disable_globally() { detail::is_enabled_flag() = false; }
 
 thread_local context_value<const bool>
-use_in_context(detail::is_enabled_flag());
+enable_in_context(detail::is_enabled_flag());
 
 } // namespace fp::util::ansi
