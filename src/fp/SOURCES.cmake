@@ -41,7 +41,6 @@ set(
     util/match.h
     util/overloaded.h
     util/print_separated.h
-    util/static_string_view.h
     util/table.h
     util/to_string.h
     util/type_constant.h
