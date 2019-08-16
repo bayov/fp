@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <ostream>
 #include <string_view>
+#include <unordered_set>
 #include <unordered_map>
 
 namespace fp::lex {
@@ -65,8 +66,8 @@ enum class token : uint8_t {
     LAMBDA_ARROW,   ///< =>
 
     // arithmetic
-    PLUS,           ///< +
-    MINUS,          ///< -
+    ADD,            ///< +
+    SUB,            ///< -
     MUL,            ///< *
     DIV,            ///< /
     MOD,            ///< %
@@ -79,8 +80,8 @@ enum class token : uint8_t {
 
     // assignments
     ASSIGN,         ///< =
-    PLUS_ASSIGN,    ///< +=
-    MINUS_ASSIGN,   ///< -=
+    ADD_ASSIGN,     ///< +=
+    SUB_ASSIGN,     ///< -=
     MUL_ASSIGN,     ///< *=
     DIV_ASSIGN,     ///< /=
     MOD_ASSIGN,     ///< %=
@@ -118,20 +119,38 @@ enum class token : uint8_t {
      *      "one plus one is {1 + 1}."
      *
      * will be tokenized as:
-     *      QUOTE STRING L_BRACE NUMBER PLUS NUMBER R_BRACE STRING QUOTE
-     *            ^~~~~~                                    ^~~~~~
-     *            "one plus one is "                        "."
+     *      QUOTE STRING L_BRACE NUMBER ADD NUMBER R_BRACE STRING QUOTE
+     *            ------                                   ------
+     *            |                                        |
+     *            "one plus one is "                       "."
      */
-    STRING
+    STRING,
+
+    /**
+     * This is not an actual token, but a placeholder used to store the number
+     * of available tokens. Use lex::n_tokens to access it.
+     *
+     * This must appear as the last token.
+     */
+    _n_tokens
 };
 
-/// A mapping too all keyword tokens from their string representation.
+/// The number of available tokens (in lex::token).
+constexpr size_t n_tokens = size_t(token::_n_tokens);
+
+/// The set of all keyword tokens.
+extern std::unordered_set<token> keywords;
+
+/// A mapping to all keyword tokens from their string representation.
 extern std::unordered_map<std::string_view, token> keywords_map;
+
+/// Returns `true` if the token is a keyword token.
+bool is_keyword(token);
 
 /**
  * Returns a string representation for a lex::token.
  *
- * E.g., for token::PLUS, "PLUS" will be returned.
+ * E.g., for token::ADD, "ADD" will be returned.
  */
 std::string_view token_name(token);
 

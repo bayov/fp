@@ -4,10 +4,10 @@
 #include <memory>
 
 #include <fp/util/overloaded.h>
-#include <fp/ast/detail/base_node.h>
-#include <fp/ast/detail/variant_node.h>
+#include <fp/lex/tokenized_list.h>
+#include <fp/syntax/ast/detail/variant_node.h>
 
-namespace fp::ast {
+namespace fp::syntax::ast {
 
 /**
  * Represents an AST node.
@@ -15,11 +15,18 @@ namespace fp::ast {
  * An AST can be produced from by calling syntax::parse.
  */
 struct node {
-    /// Returns the location of this node in the source code.
-    const fp::source_location& source_location() const;
+    template <class NodeType>
+    static node make(NodeType&& n) {
+        return node(std::make_unique<detail::variant_node>(
+            std::forward<NodeType>(n)
+        ));
+    }
 
     /// Returns the tokens that this node originates from.
-    const lex::tokenized_view& tokens() const;
+    lex::tokenized_view tokens() const;
+
+    /// Returns the location of this node in the source code.
+    const fp::source_location& source_location() const;
 
     /// Returns true if this node is of the given type (e.g. ast::identifier).
     template <class NodeType>
@@ -72,19 +79,25 @@ struct node {
 private:
     std::unique_ptr<detail::variant_node> variant_node;
 
+    explicit node(std::unique_ptr<detail::variant_node>);
+
     // delays evaluation of the incomplete type detail::variant_node
     template <class N = node>
     const detail::variant_node& get_variant() const {
         return *((const N&)(*this)).variant_node;
     }
-
-    const detail::base_node& get_base_node() const;
 };
 
-} // namespace fp::ast
+} // namespace fp::syntax::ast
 
 // all node types must be included here to ensure that detail::variant_node
 // becomes a complete type
-#include <fp/ast/types/binary_op.h>
-#include <fp/ast/types/identifier.h>
-#include <fp/ast/types/number.h>
+#include <fp/syntax/ast/types/binary_op.inl>
+#include <fp/syntax/ast/types/empty.inl>
+#include <fp/syntax/ast/types/error.inl>
+#include <fp/syntax/ast/types/identifier.inl>
+
+static_assert(
+    sizeof(fp::syntax::ast::detail::variant_node) > 0,
+    "The definition of the variant must be complete (include all node types)"
+);

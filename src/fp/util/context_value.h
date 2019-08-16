@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <variant>
 
 namespace fp::util {
@@ -103,8 +104,8 @@ public:
 
     T& get() const { return *current_value; }
 
-    iterator begin() const { return iterator(first_context_node); }
-    iterator   end() const { return iterator(nullptr           ); }
+    iterator begin() { return iterator(first_context_node); }
+    iterator   end() { return iterator(nullptr           ); }
 
 private:
     /**
@@ -187,13 +188,13 @@ public:
     struct iterator {
         using iterator_category = std::input_iterator_tag;
         using value_type        = T;
-        using difference_type   = ssize_t;
-        using pointer           = const T*;
-        using reference         = const T&;
+        using difference_type   = std::ptrdiff_t;
+        using pointer           = T*;
+        using reference         = T&;
 
         explicit iterator(node* n) : n(n) {}
 
-        const T& operator*() const { return *n->value; }
+        T& operator*() { return *n->value; }
 
         iterator& operator++() { n = n->next; return *this; }
 

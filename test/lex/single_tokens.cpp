@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <fp/diagnostic/print/to_ostream.h>
+#include <fp/diagnostic/print/to_terminal.h>
 #include <fp/lex/tokenize.h>
 
 namespace fp::lex {
@@ -93,8 +93,8 @@ TEST(lex, single_tokens) {
     assert_single_token<token::LAMBDA_ARROW>("=>");
 
     // arithmetic
-    assert_single_token<token::PLUS>("+");
-    assert_single_token<token::MINUS>("-");
+    assert_single_token<token::ADD>("+");
+    assert_single_token<token::SUB>("-");
     assert_single_token<token::MUL>("*");
     assert_single_token<token::DIV>("/");
     assert_single_token<token::MOD>("%");
@@ -108,8 +108,8 @@ TEST(lex, single_tokens) {
 
     // assignments
     assert_single_token<token::ASSIGN>("=");
-    assert_single_token<token::PLUS_ASSIGN>("+=");
-    assert_single_token<token::MINUS_ASSIGN>("-=");
+    assert_single_token<token::ADD_ASSIGN>("+=");
+    assert_single_token<token::SUB_ASSIGN>("-=");
     assert_single_token<token::MUL_ASSIGN>("*=");
     assert_single_token<token::DIV_ASSIGN>("/=");
     assert_single_token<token::MOD_ASSIGN>("%=");

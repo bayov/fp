@@ -25,7 +25,7 @@ void tokenize_plus(tokenization_state& s) {
         ++s.next;
         s.consume_and_push(token::INC);
     } else {
-        tokenize_binary_op<token::PLUS, token::PLUS_ASSIGN>(s);
+        tokenize_binary_op<token::ADD, token::ADD_ASSIGN>(s);
     }
 }
 
@@ -38,7 +38,7 @@ void tokenize_minus_or_type_arrow(tokenization_state& s) {
         ++s.next;
         s.consume_and_push(token::TYPE_ARROW);
     } else {
-        tokenize_binary_op<token::MINUS, token::MINUS_ASSIGN>(s);
+        tokenize_binary_op<token::SUB, token::SUB_ASSIGN>(s);
     }
 }
 

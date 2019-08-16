@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ostream>
+
 #include <fp/diagnostic/report.h>
 
 namespace fp::diagnostic::print {
@@ -12,8 +14,8 @@ namespace fp::diagnostic::print {
  * If ansi::is_enabled() is true then the report will be augmented with ANSI
  * escape codes.
  */
-void to_ostream(std::ostream&, const diagnostic::problem&);
-void to_ostream(std::ostream&, const diagnostic::report&);
+void to_terminal(std::ostream&, const diagnostic::problem&);
+void to_terminal(std::ostream&, const diagnostic::report&);
 //@}
 
 } // namespace fp::diagnostic::print

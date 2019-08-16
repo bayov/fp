@@ -1,29 +1,30 @@
 #pragma once
 
-#include <string>
+#include <string_view>
 
 namespace fp::util {
 
-/// Returns a demangled C++ type name from the given mangled `name`.
-std::string demangle(const char* name);
+namespace detail {
 
-/// Returns a demangled type name for type `T`.
 template <class T>
-std::string type_name() { return demangle(typeid(T).name()); }
-
-namespace detail { template <class> struct qualified_type_name_box {}; }
-
-/// Returns a qualified type name for type `T`.
-template <class T>
-std::string qualified_type_name() {
-    std::string name = type_name<detail::qualified_type_name_box<T>>();
-    name.erase(0, sizeof("fp::util::detail::qualified_type_name_box"));
-    name.erase(name.size() - 1);
-    return name;
+constexpr std::string_view type_name() {
+#if defined(__GNUC__) && __GNUC__ >= 9
+    std::string_view name(__PRETTY_FUNCTION__);
+    name = name.substr(sizeof(
+        "constexpr std::string_view fp::util::detail::type_name() [with T ="
+    ));
+    size_t i = 1;
+    while (name[i] != ';') { ++i; }
+    return name.substr(0, i);
+#else
+    static_assert(false, "Unsupported compiler");
+#endif
 }
 
-/// Returns a demangled type name for value `v`.
+} // namespace detail
+
+/// The name of the given type `T`.
 template <class T>
-std::string type_name(const T& v) { return demangle(typeid(v).name()); }
+constexpr std::string_view type_name = detail::type_name<T>();
 
 } // namespace fp::util

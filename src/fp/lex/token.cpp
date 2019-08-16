@@ -41,6 +41,14 @@ static std::unordered_map<std::string_view, token> create_keywords_map() {
 std::unordered_map<std::string_view, token> keywords_map =
     detail::create_keywords_map();
 
+std::unordered_set<token> keywords = []() {
+    std::unordered_set<token> result;
+    for (const auto& [_, t] : keywords_map) { result.insert(t); }
+    return result;
+}();
+
+bool is_keyword(token t) { return keywords.count(t) > 0; }
+
 std::string_view token_name(token t) {
     switch (t) {
         case token::ERROR:          return "ERROR";
@@ -99,8 +107,8 @@ std::string_view token_name(token t) {
         case token::LAMBDA_ARROW:   return "LAMBDA_ARROW";
 
         // arithmetic
-        case token::PLUS:           return "PLUS";
-        case token::MINUS:          return "MINUS";
+        case token::ADD:            return "ADD";
+        case token::SUB:            return "SUB";
         case token::MUL:            return "MUL";
         case token::DIV:            return "DIV";
         case token::MOD:            return "MOD";
@@ -113,8 +121,8 @@ std::string_view token_name(token t) {
 
         // assignments
         case token::ASSIGN:         return "ASSIGN";
-        case token::PLUS_ASSIGN:    return "PLUS_ASSIGN";
-        case token::MINUS_ASSIGN:   return "MINUS_ASSIGN";
+        case token::ADD_ASSIGN:     return "ADD_ASSIGN";
+        case token::SUB_ASSIGN:     return "SUB_ASSIGN";
         case token::MUL_ASSIGN:     return "MUL_ASSIGN";
         case token::DIV_ASSIGN:     return "DIV_ASSIGN";
         case token::MOD_ASSIGN:     return "MOD_ASSIGN";
@@ -143,6 +151,8 @@ std::string_view token_name(token t) {
         case token::NUMBER:         return "NUMBER";
         case token::CHAR:           return "CHAR";
         case token::STRING:         return "STRING";
+
+        case token::_n_tokens:      return "_n_tokens";
     }
     throw std::runtime_error("should not reach here");
 }

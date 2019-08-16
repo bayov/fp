@@ -1,11 +1,11 @@
 #pragma once
 
-#include <fp/ast/detail/base_node.h>
-#include <fp/ast/node.h>
+#include <fp/syntax/ast/detail/base_node.h>
+#include <fp/syntax/ast/node.h>
 
-namespace fp::ast {
+namespace fp::syntax::ast {
 
-struct binary_op : public detail::base_node {
+struct binary_op : public detail::base_node<binary_op> {
     node lhs;
     node rhs;
     
@@ -26,4 +26,4 @@ private:
     lex::token_iterator op_token_it;
 };
 
-} // namespace fp::ast
+} // namespace fp::syntax::ast

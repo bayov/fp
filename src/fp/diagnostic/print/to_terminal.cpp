@@ -6,7 +6,7 @@
 #include <fp/util/match.h>
 #include <fp/util/ansi/codes.h>
 
-#include "to_ostream.h"
+#include "to_terminal.h"
 
 namespace fp::diagnostic::print {
 
@@ -331,7 +331,7 @@ static void print_file_locations(
     print_gutter(os, line_number_width); os << '\n';
 }
 
-void to_ostream(std::ostream& os, const diagnostic::problem& problem) {
+void to_terminal(std::ostream& os, const diagnostic::problem& problem) {
     if (problem.severity() == severity::ERROR) {
         os << bold << red << "error: " << reset;
     } else {
@@ -348,9 +348,9 @@ void to_ostream(std::ostream& os, const diagnostic::problem& problem) {
     os << reset << std::endl;
 }
 
-void to_ostream(std::ostream& os, const diagnostic::report& report) {
-    for (const auto& error : report.errors()) { to_ostream(os, error); }
-    for (const auto& warning : report.warnings()) { to_ostream(os, warning); }
+void to_terminal(std::ostream& os, const diagnostic::report& report) {
+    for (const auto& error : report.errors()) { to_terminal(os, error); }
+    for (const auto& warning : report.warnings()) { to_terminal(os, warning); }
 }
 
 } // namespace fp::diagnostic::print

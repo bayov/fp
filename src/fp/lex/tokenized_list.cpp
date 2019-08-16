@@ -1,20 +1,6 @@
-#include <iomanip>
-
 #include "tokenized_list.h"
 
 namespace fp::lex {
-
-std::ostream& operator<<(std::ostream& os, const tokenized_token& t) {
-    os << std::setw(14) << std::left << t.token << " : ";
-    os << t.source_location.chars;
-    if (t.dummy) { os << " (dummy)"; }
-    return os;
-}
-
-std::ostream& operator<<(std::ostream& os, const tokenized_list& tokens) {
-    for (const auto& t : tokens) { os << t << '\n'; }
-    return os;
-}
 
 source_location get_source_location(tokenized_view tokens) {
     if (tokens.empty()) {

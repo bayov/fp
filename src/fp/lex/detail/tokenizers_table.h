@@ -38,10 +38,10 @@ template <token TOKEN>
 void consume_and_push(tokenization_state& s) { s.consume_and_push(TOKEN); }
 
 using tokenizers_table_t = util::table<
-    char,                // key
-    tokenizer_t,         // value
-    256,                 // number of entries
-    char_to_index        // maps key to table entry index
+    char,         // key
+    tokenizer_t,  // value
+    256,          // number of entries
+    char_to_index // maps key to table entry index
 >;
 
 /**

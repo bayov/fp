@@ -18,20 +18,20 @@ struct tokenization_state {
     detail::string_interpolation_stack string_interpolation_stack;
 
     tokenization_state(
-        const source_file& source,
+        const source_file& file,
         tokenized_list& output_tokens_list,
         diagnostic::report& report
     ) :
-        file(source),
-        next(source.content.begin()),
-        end(source.content.end()),
+        file(file),
+        next(file.content.begin()),
+        end(file.content.end()),
         tokens_(output_tokens_list),
         report_(report),
         token_begin_(next),
         line_begin_(next)
     {}
 
-    /// Reports a diagnostic::error for the current token.
+    /// Reports a diagnostic::error with the given `text`.
     diagnostic::problem& report_error(std::string text) {
          report_problem(diagnostic::error(std::move(text)));
          return report_.errors().back();
@@ -51,7 +51,7 @@ struct tokenization_state {
     }
     //@}
 
-    /// Report the given diagnostic::problem.
+    /// Reports the given diagnostic::problem.
     void report_problem(diagnostic::problem p) { report_.add(std::move(p)); }
 
     //@{
@@ -140,7 +140,7 @@ struct tokenization_state {
 private:
     tokenized_list& tokens_; ///< The list of tokens produced so far.
 
-    /// Any problems encountered during tokenization should be reported here.
+    /// Any problems encountered during tokenization is reported here.
     diagnostic::report& report_;
 
     /**

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <fp/ast/detail/base_node.h>
+#include <fp/syntax/ast/detail/base_node.h>
 
-namespace fp::ast {
+namespace fp::syntax::ast {
 
-struct identifier : detail::base_node {
+struct identifier : detail::base_node<identifier> {
     source_view chars;
 
     identifier(lex::token_iterator identifier_token_it) :
@@ -13,4 +13,4 @@ struct identifier : detail::base_node {
     {}
 };
 
-} // namespace fp::ast
+} // namespace fp::syntax::ast

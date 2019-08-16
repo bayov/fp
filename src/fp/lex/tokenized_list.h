@@ -1,6 +1,5 @@
 #pragma once
 
-#include <ostream>
 #include <vector>
 
 #include <fp/util/vector_view.h>
@@ -36,9 +35,6 @@ struct tokenized_token {
 
 /// A list of tokenized tokens.
 using tokenized_list = std::vector<tokenized_token>;
-
-std::ostream& operator<<(std::ostream&, const tokenized_token&);
-std::ostream& operator<<(std::ostream&, const tokenized_list&);
 
 /// A reference to a section of lex::tokenized_list.
 using tokenized_view = util::vector_view<tokenized_token>;
