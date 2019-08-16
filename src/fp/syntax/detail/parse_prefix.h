@@ -2,6 +2,7 @@
 
 #include <fp/syntax/detail/parsing_state.h>
 #include <fp/syntax/detail/token_table_t.h>
+#include <fp/syntax/detail/parsers/single_token.h>
 
 namespace fp::syntax::detail {
 
@@ -21,11 +22,11 @@ inline ast::node parse_prefix_error(parsing_state& s) {
 constexpr auto prefix_parser_table = token_table_t<prefix_parser_t>([](auto& t) {
     t.set_default(parse_prefix_error);
 
-//    // identifiers and literals
-//    t[lex::token::IDENTIFIER] = parsers::identifier;
-//    t[lex::token::INTEGER] = parsers::integer;
-//
-//    // language constructs
+    // identifiers and literals
+    t[lex::token::IDENTIFIER] = parse_single_token<ast::identifier>;
+    t[lex::token::NUMBER] = parse_single_token<ast::number>;
+
+    // language constructs
 //    t[lex::token::IMPORT] = parsers::import;
 //
 //    // prefix-operators

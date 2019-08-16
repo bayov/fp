@@ -2,17 +2,16 @@
 
 #include <fp/syntax/detail/parsing_state.h>
 #include <fp/syntax/detail/token_table_t.h>
-//#include <fp/parse/detail/parsers/binary_op.h>
-//#include <fp/parse/detail/parsers/postfix_op.h>
 
 namespace fp::syntax::detail {
 
 using infix_parser_t = ast::node (*)(parsing_state&, ast::node);
 
-inline ast::node parse_infix_error(parsing_state& s, ast::node) {
-    s.report_error("Invalid token");
+inline ast::node parse_infix_error(parsing_state& s, ast::node lhs) {
+    s.report_error("invalid token")
+        .add_primary(s.next->source_location);
     ++s.next;
-    return ast::error(s.next - 1, s.next);
+    return ast::infix_error(std::move(lhs), s.next - 1);
 }
 
 //inline ast::node infix_parser_skip_error(parsing_state& s, ast::node) {

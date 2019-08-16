@@ -12,10 +12,10 @@ namespace detail {
 static ast::node parse(parsing_state& s, precedence_t p) {
     if (s.next == s.end) { return ast::empty(s.end, s.end); }
     ast::node lhs = parse_prefix(s);
-    while (p < precedence_table[s.next->token]) {
+    while (s.next != s.end && p < precedence_table[s.next->token]) {
         lhs = parse_infix(s, std::move(lhs));
     }
-    return ast::error(s.next, s.next + 1);
+    return lhs;
 }
 
 } // namespace detail

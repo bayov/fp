@@ -17,10 +17,10 @@ set(
     lex/detail/tokenizers/colon.h
     lex/detail/tokenizers/comment.h
     lex/detail/tokenizers/keyword_or_identifier.h
-    lex/detail/tokenizers/number.cpp
     lex/detail/tokenizers/number.h
     lex/detail/tokenizers/operations.h
     lex/detail/tokenizers/period.h
+    lex/detail/tokenizers/single_token.cpp
     lex/detail/tokenizers/stray_character.h
     lex/detail/tokenizers/whitespace.h
     lex/detail/tokenizers_table.h
@@ -39,10 +39,11 @@ set(
     syntax/ast/detail/variant_node.h
     syntax/ast/node.cpp
     syntax/ast/node.h
-    syntax/ast/print/to_terminal_as_tree.cpp
-    syntax/ast/print/to_terminal_as_tree.h
+    syntax/ast/print/to_terminal.cpp
+    syntax/ast/print/to_terminal.h
     syntax/detail/parse_infix.h
     syntax/detail/parse_prefix.h
+        syntax/detail/parsers/single_token.h
     syntax/detail/parsing_state.h
     syntax/detail/precedence.h
     syntax/detail/token_table_t.h

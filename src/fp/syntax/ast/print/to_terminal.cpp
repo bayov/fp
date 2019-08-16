@@ -4,7 +4,7 @@
 #include <fp/util/type_name.h>
 #include <fp/lex/print/to_terminal.h>
 
-#include "to_terminal_as_tree.h"
+#include "to_terminal.h"
 
 namespace fp::syntax::ast::print {
 
@@ -48,6 +48,18 @@ struct Visitor {
 
     void print(const ast::identifier& identifier) {
         print_node_name("identifier", magenta, identifier.chars);
+    }
+
+    void print(const ast::infix_error& infix_error) {
+        os << red << "infix_error";
+        os << default_color << ": token::";
+        lex::print::to_terminal(os, infix_error.invalid_infix_token);
+        os << '\n';
+        print_children(infix_error.lhs);
+    }
+
+    void print(const ast::number& number) {
+        print_node_name("number", blue, number.chars);
     }
 
 private:
@@ -124,7 +136,7 @@ private:
     }
 };
 
-void to_terminal_as_tree(std::ostream& os, const ast::node& node) {
+void to_terminal(std::ostream& os, const ast::node& node) {
     node.visit(Visitor(os));
 }
 

@@ -12,6 +12,6 @@ namespace fp::syntax::ast::print {
  * If ansi::is_enabled() is true then the AST text will be augmented with ANSI
  * escape codes.
  */
-void to_terminal_as_tree(std::ostream&, const node&);
+void to_terminal(std::ostream&, const node&);
 
 } // namespace fp::syntax::ast::print

@@ -96,6 +96,8 @@ private:
 #include <fp/syntax/ast/types/empty.inl>
 #include <fp/syntax/ast/types/error.inl>
 #include <fp/syntax/ast/types/identifier.inl>
+#include <fp/syntax/ast/types/infix_error.inl>
+#include <fp/syntax/ast/types/number.inl>
 
 static_assert(
     sizeof(fp::syntax::ast::detail::variant_node) > 0,

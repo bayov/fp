@@ -4,12 +4,12 @@
 
 namespace fp::syntax::ast {
 
-struct identifier : detail::base_node<identifier> {
+struct number : detail::base_node<number> {
     source_view chars;
 
-    identifier(lex::token_iterator token_it) :
+    explicit number(lex::token_iterator token_it) :
         base_node(token_it, token_it + 1),
-        chars(token_it->get_attribute<lex::token::IDENTIFIER>())
+        chars(token_it->get_attribute<lex::token::NUMBER>())
     {}
 };
 

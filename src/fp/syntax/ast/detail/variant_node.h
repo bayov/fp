@@ -16,6 +16,8 @@ struct binary_op;
 struct empty;
 struct error;
 struct identifier;
+struct infix_error;
+struct number;
 
 } // namespace fp::syntax::ast
 
@@ -25,7 +27,9 @@ using variant_node = std::variant<
     binary_op,
     empty,
     error,
-    identifier
+    identifier,
+    infix_error,
+    number
 >;
 
 } // namespace fp::syntax::ast::detail
