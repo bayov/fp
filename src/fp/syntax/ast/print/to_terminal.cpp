@@ -62,6 +62,12 @@ struct Visitor {
         print_node_name("number", blue, number.chars);
     }
 
+    void print(const ast::prefix_op& prefix_op) {
+        std::string_view op = prefix_op.op_source_location().chars;
+        print_node_name("prefix_op", default_color, op);
+        print_children(prefix_op.rhs);
+    }
+
 private:
     enum class child_context {
         YET_TO_BE_PRINTED,

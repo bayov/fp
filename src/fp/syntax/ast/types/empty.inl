@@ -14,8 +14,8 @@ namespace fp::syntax::ast {
  * Note that since ast::empty::tokens() is an empty list, calling
  * ast::empty::source_location() will result in an exception being thrown.
  */
-struct empty : detail::base_node<error> {
-    using detail::base_node<error>::base_node;
+struct empty : detail::base_node<empty> {
+    using detail::base_node<empty>::base_node;
 };
 
 } // namespace fp::syntax::ast

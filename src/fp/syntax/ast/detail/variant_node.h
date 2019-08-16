@@ -18,6 +18,7 @@ struct error;
 struct identifier;
 struct infix_error;
 struct number;
+struct prefix_op;
 
 } // namespace fp::syntax::ast
 
@@ -29,7 +30,8 @@ using variant_node = std::variant<
     error,
     identifier,
     infix_error,
-    number
+    number,
+    prefix_op
 >;
 
 } // namespace fp::syntax::ast::detail
