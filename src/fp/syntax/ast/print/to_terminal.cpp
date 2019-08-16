@@ -138,6 +138,7 @@ private:
 
 void to_terminal(std::ostream& os, const ast::node& node) {
     node.visit(Visitor(os));
+    os << reset;
 }
 
 } // namespace fp::syntax::ast::print

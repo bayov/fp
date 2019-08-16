@@ -19,13 +19,14 @@ void to_terminal(std::ostream& os, const token& t) {
             color = cyan;
     }
     if (is_keyword(t)) { color = yellow; }
-    os << color << token_name(t);
+    os << color << token_name(t) << reset;
 }
 
 void to_terminal(std::ostream& os, const tokenized_token& t) {
     to_terminal(os, t.token);
     os << grey << " (" << t.source_location.chars << ')';
     if (t.dummy && t.token != token::ERROR) { os << red << " [dummy]"; }
+    os << reset;
 }
 
 void to_terminal(std::ostream& os, const tokenized_list& tokens) {

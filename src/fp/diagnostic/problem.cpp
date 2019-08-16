@@ -23,6 +23,14 @@ problem& problem::add_supplement(
     return *this;
 }
 
+problem& problem::add_contextual(fp::source_location location) {
+    locations_.push_back(diagnostic::location {
+        .kind = location_kind::CONTEXTUAL,
+        .source_location = std::move(location)
+    });
+    return *this;
+}
+
 problem::problem(diagnostic::severity severity, std::string text) :
     severity_(severity), text_(std::move(text)) {}
 

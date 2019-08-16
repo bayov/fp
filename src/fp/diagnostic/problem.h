@@ -11,13 +11,17 @@ namespace fp::diagnostic {
 enum class severity { WARNING, ERROR };
 
 /// @see diagnostic::location.
-enum class location_kind { PRIMARY, SUPPLEMENT };
+enum class location_kind { PRIMARY, SUPPLEMENT, CONTEXTUAL };
 
 /**
  * A source code location that is relevant to a reported diagnostic::problem.
  *
  * A location of kind `PRIMARY` is the primary location of the problem (or one
  * of several such), while a `SUPPLEMENT` is a relevant addition.
+ *
+ * `CONTEXTUAL` locations are simply pieces of code that can provide additional
+ * context when printed alongside other locations. They are not labeled in any
+ * special way (and their `text` is always empty).
  */
 struct location {
     location_kind       kind;
@@ -39,10 +43,13 @@ struct problem {
     const std::vector<location>& locations() const { return locations_; }
 
     /// Add a primary source location.
-    problem& add_primary(fp::source_location source, std::string text = "");
+    problem& add_primary(fp::source_location, std::string text = "");
 
     /// Add a supplemental source location.
-    problem& add_supplement(fp::source_location source, std::string text = "");
+    problem& add_supplement(fp::source_location, std::string text = "");
+
+    /// Add a contextual source location.
+    problem& add_contextual(fp::source_location);
 
 private:
     diagnostic::severity  severity_;

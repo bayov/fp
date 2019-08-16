@@ -42,27 +42,32 @@ struct sorted_source_locations {
      void set(const diagnostic::problem& problem) {
          locations_by_file.clear();
 
-        // add primary locations first, the supplemental ones
-        for (const auto& loc : problem.locations()) {
-            if (loc.kind == location_kind::PRIMARY) {
-                get_file(loc.source_location.file).add(loc);
-            }
-        }
-        for (const auto& loc : problem.locations()) {
-            if (loc.kind == location_kind::SUPPLEMENT) {
-                get_file(loc.source_location.file).add(loc);
-            }
-        }
-        // sort all locations
-        for (auto& [_1, locations, _2] : locations_by_file) {
-            std::sort(
-                locations.begin(), locations.end(),
-                [](const auto& loc1, const auto& loc2) {
-                    return loc1->source_location.chars.begin() <
-                           loc2->source_location.chars.begin();
-                }
-            );
-        }
+         for (const auto& loc : problem.locations()) {
+             if (loc.kind == location_kind::PRIMARY) {
+                 get_file(loc.source_location.file).add(loc);
+             }
+         }
+         for (const auto& loc : problem.locations()) {
+             if (loc.kind != location_kind::SUPPLEMENT) {
+                 get_file(loc.source_location.file).add(loc);
+             }
+         }
+         for (const auto& loc : problem.locations()) {
+             if (loc.kind == location_kind::CONTEXTUAL) {
+                 get_file(loc.source_location.file).add(loc);
+             }
+         }
+
+         // sort all locations
+         for (auto& [_1, locations, _2] : locations_by_file) {
+             std::sort(
+                 locations.begin(), locations.end(),
+                 [](const auto& loc1, const auto& loc2) {
+                     return loc1->source_location.chars.begin() <
+                            loc2->source_location.chars.begin();
+                 }
+             );
+         }
     }
 
 private:
@@ -98,6 +103,7 @@ struct labeled_code {
         for (const auto& loc : file_locations.locations) {
             const auto& sl = loc->source_location;
             for_each_line(sl, [&](auto& line) {
+                if (loc->kind == location_kind::CONTEXTUAL) { return; }
                 size_t column_start =
                     line.number == sl.line_number ?
                     (sl.chars.begin() - sl.line) :
@@ -190,6 +196,12 @@ static void print_labeled_line(
     const labeled_code::line& line,
     size_t line_number_width
 ) {
+    print_gutter(os, line_number_width, line.number);
+    if (line.labels.empty()) {
+        os << default_color << line.content;
+        return;
+    }
+
     // storing anything other than a ANSI foreground color here will not work
     // with the current code. So don't do that.
     thread_local std::vector<graphics_code> color_per_char;
@@ -209,7 +221,6 @@ static void print_labeled_line(
         }
     }
 
-    print_gutter(os, line_number_width, line.number);
     os << default_color;
     graphics_code current_color = default_color;
     size_t last_print_index = 0;
@@ -337,7 +348,7 @@ void to_terminal(std::ostream& os, const diagnostic::problem& problem) {
     } else {
         os << bold << yellow << "warning: " << reset;
     }
-    os << problem.text() << "\n\n";
+    os << problem.text() << "\n";
 
     thread_local sorted_source_locations sorted_locations;
     sorted_locations.set(problem);

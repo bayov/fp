@@ -1,23 +1,21 @@
 #pragma once
 
+#include <fp/util/with.h>
 #include <fp/syntax/detail/parsing_state.h>
 #include <fp/syntax/detail/token_table_t.h>
+#include <fp/syntax/detail/parse_prefix.h>
 
 namespace fp::syntax::detail {
 
-using infix_parser_t = ast::node (*)(parsing_state&, ast::node);
+using infix_parser_t = ast::node (*)(parsing_state&, ast::node lhs);
 
 inline ast::node parse_infix_error(parsing_state& s, ast::node lhs) {
-    s.report_error("invalid token")
-        .add_primary(s.next->source_location);
+    s.report_error("unexpected token")
+        .add_primary(s.next->source_location)
+        .add_contextual(lhs.source_location());
     ++s.next;
     return ast::infix_error(std::move(lhs), s.next - 1);
 }
-
-//inline ast::node infix_parser_skip_error(parsing_state& s, ast::node) {
-//    ++s.it;
-//    return ast::make<ast::error>(s.it - 1, s.it);
-//}
 
 constexpr auto infix_parser_table = token_table_t<infix_parser_t>([](auto& t) {
      t.set_default(parse_infix_error);
@@ -72,20 +70,7 @@ constexpr auto infix_parser_table = token_table_t<infix_parser_t>([](auto& t) {
 });
 
 inline ast::node parse_infix(parsing_state& s, ast::node lhs) {
-    ast::node node = infix_parser_table[s.next->token](s, std::move(lhs));
-//    if (node.is<ast::error>()) {
-//        // try to recover from the error by skipping over all non-infix tokens,
-//        // while ignoring all errors along the way to avoid diagnostics clutter
-//        WITH(s.ignore_diagnostics_in_scope()) {
-//            while (
-//                s.it != s.end &&
-//                infix_parser_table[s.it->value] == infix_parser_error
-//            ) {
-//                prefix_parser_table[s.it->value](s);
-//            }
-//        }
-//    }
-    return node;
+    return infix_parser_table[s.next->token](s, std::move(lhs));
 }
 
 } // namespace fp::syntax::detail

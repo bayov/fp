@@ -1,5 +1,6 @@
 #pragma once
 
+#include <fp/util/context_value.h>
 #include <fp/diagnostic/report.h>
 #include <fp/lex/tokenized_list.h>
 #include <fp/syntax/ast/node.h>
@@ -23,28 +24,23 @@ struct parsing_state {
         next(tokens.begin()),
         end(tokens.end()),
         parse_(parse),
-        report_(report)
+        report(report)
     {}
-
-    /// Reports a diagnostic::error for the next token.
-//    diagnostic::problem& report_error(std::string text = "Invalid token") {
-//        ...
-//    }
 
     /// Reports a diagnostic::error with the given `text`.
     diagnostic::problem& report_error(std::string text) {
-         report_problem(diagnostic::error(std::move(text)));
-         return report_.errors().back();
+         return report_problem(diagnostic::error(std::move(text)));
     }
 
     /// Reports the given diagnostic::problem.
-    void report_problem(diagnostic::problem p) {
-//        if (m_ignore_diagnostics.get()) { return; }
-        report_.add(std::move(p));
+    diagnostic::problem& report_problem(diagnostic::problem p) {
+        if (ignore_diagnostics.get()) { return dummy_problem; }
+        report.add(std::move(p));
+        return report.errors().back();
     }
 
-    /// Ignore all reported diagnostics in scope.
-//    auto ignore_diagnostics_in_scope() { return m_ignore_diagnostics(true); }
+    /// Ignores all reported diagnostics in scope.
+    auto ignore_diagnostics_in_scope() { return ignore_diagnostics = true; }
 
     /**
      * Returns the source location of the next token, or the end of the input
@@ -79,11 +75,16 @@ private:
     parse_function_t parse_;
 
     /// Any problems encountered during parsing is reported here.
-    diagnostic::report& report_;
+    diagnostic::report& report;
 
-//    util::context_value<bool, bool> m_ignore_diagnostics =
-//        util::context_value<bool>::with(false);
+    util::context_value<bool> ignore_diagnostics =
+        util::context_value<bool>(false);
 
+    /**
+     * When ignoring diagnostics (using ignore_diagnostics_in_scope()), this
+     * dummy problem will be returned.
+     */
+    diagnostic::problem dummy_problem = diagnostic::error("dummy");
 };
 
 } // namespace fp::syntax::detail
