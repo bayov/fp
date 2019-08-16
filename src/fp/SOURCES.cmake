@@ -43,6 +43,7 @@ set(
     syntax/ast/print/to_terminal.h
     syntax/detail/parse_infix.h
     syntax/detail/parse_prefix.h
+    syntax/detail/parsers/binary_op.h
     syntax/detail/parsers/single_token.h
     syntax/detail/parsing_state.h
     syntax/detail/precedence.h

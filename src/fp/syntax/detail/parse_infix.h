@@ -4,11 +4,13 @@
 #include <fp/syntax/detail/parsing_state.h>
 #include <fp/syntax/detail/token_table_t.h>
 #include <fp/syntax/detail/parse_prefix.h>
+#include <fp/syntax/detail/parsers/binary_op.h>
 
 namespace fp::syntax::detail {
 
 using infix_parser_t = ast::node (*)(parsing_state&, ast::node lhs);
 
+/// Parses the next token as an ast::infix_error.
 inline ast::node parse_infix_error(parsing_state& s, ast::node lhs) {
     s.report_error("unexpected token")
         .add_primary(s.next->source_location)
@@ -20,46 +22,46 @@ inline ast::node parse_infix_error(parsing_state& s, ast::node lhs) {
 constexpr auto infix_parser_table = token_table_t<infix_parser_t>([](auto& t) {
      t.set_default(parse_infix_error);
 
-//    // binary-operators
-//    t[lex::token::COMMA] = parsers::binary_op;
-//    t[lex::token::ANNOTATION] = parsers::binary_op;
-//    t[lex::token::SCOPE] = parsers::binary_op;
-//    t[lex::token::SEMICOLON] = parsers::binary_op;
-//    t[lex::token::MEMBER_ACCESS] = parsers::binary_op;
-//    t[lex::token::RANGE] = parsers::binary_op;
-//    t[lex::token::CLOSED_RANGE] = parsers::binary_op;
-//    t[lex::token::TYPE_ARROW] = parsers::binary_op;
-//    t[lex::token::LAMBDA_ARROW] = parsers::binary_op;
-//    t[lex::token::PLUS] = parsers::binary_op;
-//    t[lex::token::MINUS] = parsers::binary_op;
-//    t[lex::token::MUL] = parsers::binary_op;
-//    t[lex::token::DIV] = parsers::binary_op;
-//    t[lex::token::MOD] = parsers::binary_op;
-//    t[lex::token::POW] = parsers::binary_op;
-//    t[lex::token::BIT_AND] = parsers::binary_op;
-//    t[lex::token::BIT_OR] = parsers::binary_op;
-//    t[lex::token::XOR] = parsers::binary_op;
-//    t[lex::token::LSHIFT] = parsers::binary_op;
-//    t[lex::token::RSHIFT] = parsers::binary_op;
-//    t[lex::token::ASSIGN] = parsers::binary_op;
-//    t[lex::token::PLUS_ASSIGN] = parsers::binary_op;
-//    t[lex::token::MINUS_ASSIGN] = parsers::binary_op;
-//    t[lex::token::MUL_ASSIGN] = parsers::binary_op;
-//    t[lex::token::DIV_ASSIGN] = parsers::binary_op;
-//    t[lex::token::MOD_ASSIGN] = parsers::binary_op;
-//    t[lex::token::POW_ASSIGN] = parsers::binary_op;
-//    t[lex::token::BIT_AND_ASSIGN] = parsers::binary_op;
-//    t[lex::token::BIT_OR_ASSIGN] = parsers::binary_op;
-//    t[lex::token::XOR_ASSIGN] = parsers::binary_op;
-//    t[lex::token::LSHIFT_ASSIGN] = parsers::binary_op;
-//    t[lex::token::RSHIFT_ASSIGN] = parsers::binary_op;
-//    t[lex::token::EQ] = parsers::binary_op;
-//    t[lex::token::NE] = parsers::binary_op;
-//    t[lex::token::LT] = parsers::binary_op;
-//    t[lex::token::GT] = parsers::binary_op;
-//    t[lex::token::LTE] = parsers::binary_op;
-//    t[lex::token::GTE] = parsers::binary_op;
-//
+    // binary-operators
+    t[lex::token::COMMA]          = parse_binary_op;
+    t[lex::token::ANNOTATION]     = parse_binary_op;
+    t[lex::token::SCOPE]          = parse_binary_op;
+    t[lex::token::SEMICOLON]      = parse_binary_op;
+    t[lex::token::MEMBER_ACCESS]  = parse_binary_op;
+    t[lex::token::RANGE]          = parse_binary_op;
+    t[lex::token::CLOSED_RANGE]   = parse_binary_op;
+    t[lex::token::TYPE_ARROW]     = parse_binary_op;
+    t[lex::token::LAMBDA_ARROW]   = parse_binary_op;
+    t[lex::token::ADD]            = parse_binary_op;
+    t[lex::token::SUB]            = parse_binary_op;
+    t[lex::token::MUL]            = parse_binary_op;
+    t[lex::token::DIV]            = parse_binary_op;
+    t[lex::token::MOD]            = parse_binary_op;
+    t[lex::token::POW]            = parse_binary_op;
+    t[lex::token::BIT_AND]        = parse_binary_op;
+    t[lex::token::BIT_OR]         = parse_binary_op;
+    t[lex::token::XOR]            = parse_binary_op;
+    t[lex::token::SHL]            = parse_binary_op;
+    t[lex::token::SHR]            = parse_binary_op;
+    t[lex::token::ASSIGN]         = parse_binary_op;
+    t[lex::token::ADD_ASSIGN]     = parse_binary_op;
+    t[lex::token::SUB_ASSIGN]     = parse_binary_op;
+    t[lex::token::MUL_ASSIGN]     = parse_binary_op;
+    t[lex::token::DIV_ASSIGN]     = parse_binary_op;
+    t[lex::token::MOD_ASSIGN]     = parse_binary_op;
+    t[lex::token::POW_ASSIGN]     = parse_binary_op;
+    t[lex::token::BIT_AND_ASSIGN] = parse_binary_op;
+    t[lex::token::BIT_OR_ASSIGN]  = parse_binary_op;
+    t[lex::token::XOR_ASSIGN]     = parse_binary_op;
+    t[lex::token::SHL_ASSIGN]     = parse_binary_op;
+    t[lex::token::SHR_ASSIGN]     = parse_binary_op;
+    t[lex::token::EQ]             = parse_binary_op;
+    t[lex::token::NE]             = parse_binary_op;
+    t[lex::token::LT]             = parse_binary_op;
+    t[lex::token::GT]             = parse_binary_op;
+    t[lex::token::LTE]            = parse_binary_op;
+    t[lex::token::GTE]            = parse_binary_op;
+
 //    // postfix-operators
 //    t[lex::token::OPTIONAL] = parsers::postfix_op;
 //    t[lex::token::INC] = parsers::postfix_op;
