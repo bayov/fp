@@ -96,6 +96,7 @@ private:
 #include <fp/syntax/ast/types/empty.inl>
 #include <fp/syntax/ast/types/error.inl>
 #include <fp/syntax/ast/types/identifier.inl>
+#include <fp/syntax/ast/types/if.inl>
 #include <fp/syntax/ast/types/infix_error.inl>
 #include <fp/syntax/ast/types/number.inl>
 #include <fp/syntax/ast/types/postfix_op.inl>

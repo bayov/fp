@@ -49,6 +49,14 @@ struct Visitor {
         print_node_line(identifier, magenta, identifier.chars);
     }
 
+    void print(const ast::if_& if_) {
+        os << yellow << "ast::if\n";
+        print_children(
+            annotated_child { "condition", if_.condition },
+            annotated_child { "body", if_.body }
+        );
+    }
+
     void print(const ast::infix_error& infix_error) {
         os << red << "ast::infix_error";
         os << default_color << ": ";
@@ -123,11 +131,6 @@ private:
     struct annotated_child {
         std::string_view annotation;
         const ast::node& node;
-
-        annotated_child(const ast::node& node) : annotation(""), node(node) {}
-
-        annotated_child(std::string_view annotation, const ast::node& node)
-            : annotation(annotation), node(node) {}
     };
 
     template <class Child, class... Childs>

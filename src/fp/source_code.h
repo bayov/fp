@@ -59,6 +59,26 @@ struct source_location {
     source_iterator line;
     /// The line number of the location relative to `file`.
     size_t line_number;
+
+    //@{
+    /**
+     * Returns a slice of the source-location starting from iterator `first`,
+     * and continuing up to character `last`. If `last` is not given, the slice
+     * will continue until `chars.end()`.
+     *
+     * This function assumes that `first` and `last` are valid iterators to the
+     * `chars` source-view.
+     */
+    source_location slice(source_iterator first) const;
+    source_location slice(source_iterator first, source_iterator last) const;
+    //@}
+
+    /**
+     * Returns a slice to one after the last character in the source-location.
+     *
+     * Equivalent to `location.slice(location.chars.end())`.
+     */
+     source_location slice_end() const;
 };
 
 /**

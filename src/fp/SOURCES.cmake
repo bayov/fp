@@ -44,6 +44,7 @@ set(
     syntax/detail/parse_infix.h
     syntax/detail/parse_prefix.h
     syntax/detail/parsers/binary_op.h
+    syntax/detail/parsers/if.h
     syntax/detail/parsers/postfix_op.h
     syntax/detail/parsers/prefix_op.h
     syntax/detail/parsers/single_token.h

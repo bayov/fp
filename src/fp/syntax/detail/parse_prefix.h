@@ -2,6 +2,7 @@
 
 #include <fp/syntax/detail/parsing_state.h>
 #include <fp/syntax/detail/token_table_t.h>
+#include <fp/syntax/detail/parsers/if.h>
 #include <fp/syntax/detail/parsers/prefix_op.h>
 #include <fp/syntax/detail/parsers/single_token.h>
 
@@ -21,6 +22,9 @@ constexpr auto prefix_parser_table = token_table_t<prefix_parser_t>([](auto& t) 
     // identifiers and literals
     t[lex::token::IDENTIFIER] = parse_single_token<ast::identifier>;
     t[lex::token::NUMBER] = parse_single_token<ast::number>;
+
+    // flow control
+    t[lex::token::IF] = parse_if;
 
     // language constructs
 //    t[lex::token::IMPORT] = parsers::import;

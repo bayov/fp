@@ -16,6 +16,7 @@ struct binary_op;
 struct empty;
 struct error;
 struct identifier;
+struct if_;
 struct infix_error;
 struct number;
 struct postfix_op;
@@ -30,6 +31,7 @@ using variant_node = std::variant<
     empty,
     error,
     identifier,
+    if_,
     infix_error,
     number,
     postfix_op,

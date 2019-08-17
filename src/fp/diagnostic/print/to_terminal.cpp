@@ -48,7 +48,7 @@ struct sorted_source_locations {
              }
          }
          for (const auto& loc : problem.locations()) {
-             if (loc.kind != location_kind::SUPPLEMENT) {
+             if (loc.kind == location_kind::SUPPLEMENT) {
                  get_file(loc.source_location.file).add(loc);
              }
          }
@@ -261,7 +261,22 @@ static void print_labeled_line(
         }
     };
 
-    for (; i < line.content.size(); ++i) {
+    // we're going to use `color_per_char` again to print underlines, but using
+    // it as is, we're going to miss printing underlines for zero-length source-
+    // locations. So we'll just add those locations now.
+    for (const auto& label : line.labels) {
+        if (label.column_start == label.column_end) {
+            // sometimes the zero-length location is after the line's end. So
+            // we need to extend the vector
+            if (label.column_start >= color_per_char.size()) {
+                color_per_char.resize(label.column_start + 1, default_color);
+            }
+            color_per_char[label.column_start] =
+                (label.kind == location_kind::PRIMARY ? red : cyan);
+        }
+    }
+
+    for (; i < color_per_char.size(); ++i) {
         if (color_per_char[i] != current_color) {
             print_underline();
             last_print_index = i;
@@ -338,6 +353,7 @@ static void print_file_locations(
         }
         print_labeled_line(os, line, line_number_width);
         os << '\n';
+        previous_line_number = line.number;
     }
     print_gutter(os, line_number_width); os << '\n';
 }
