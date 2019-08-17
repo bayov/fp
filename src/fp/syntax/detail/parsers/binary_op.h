@@ -35,7 +35,7 @@ ast::node parse_binary_op(parsing_state& s, ast::node lhs) {
     precedence_t p = precedence_table[op->token];
     if (associativity_table[op->token] == associativity::RIGHT) { --p; }
     ast::node rhs = s.parse(p);
-    return ast::binary_op(op, std::move(lhs), std::move(rhs));
+    return ast::binary_op(std::move(lhs), op, std::move(rhs));
 }
 
 } // namespace fp::syntax::detail

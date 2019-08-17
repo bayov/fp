@@ -23,23 +23,22 @@ struct Visitor {
 
     void print(const ast::binary_op& binary_op) {
         std::string_view op = binary_op.op_source_location().chars;
-        print_node_name("binary_op", default_color, op);
+        print_node_line(binary_op, default_color, op);
         print_children(binary_op.lhs, binary_op.rhs);
     }
 
     void print(const ast::empty& error) {
-        os << default_color << "empty AST";
+        os << default_color << "ast::empty";
     }
 
     void print(const ast::error& error) {
-        os << red << "error";
+        os << red << "ast::error";
         if (!error.tokens().empty()) {
             os << default_color << ": ";
             bool first = true;
             for (const auto& t : error.tokens()) {
                 if (!first) { os << ", "; }
                 first = false;
-                os << default_color << "token::";
                 lex::print::to_terminal(os, t);
             }
         }
@@ -47,24 +46,30 @@ struct Visitor {
     }
 
     void print(const ast::identifier& identifier) {
-        print_node_name("identifier", magenta, identifier.chars);
+        print_node_line(identifier, magenta, identifier.chars);
     }
 
     void print(const ast::infix_error& infix_error) {
-        os << red << "infix_error";
-        os << default_color << ": token::";
+        os << red << "ast::infix_error";
+        os << default_color << ": ";
         lex::print::to_terminal(os, infix_error.invalid_infix_token);
         os << '\n';
         print_children(infix_error.lhs);
     }
 
     void print(const ast::number& number) {
-        print_node_name("number", blue, number.chars);
+        print_node_line(number, blue, number.chars);
+    }
+
+    void print(const ast::postfix_op& postfix_op) {
+        std::string_view op = postfix_op.op_source_location().chars;
+        print_node_line(postfix_op, default_color, op);
+        print_children(postfix_op.lhs);
     }
 
     void print(const ast::prefix_op& prefix_op) {
         std::string_view op = prefix_op.op_source_location().chars;
-        print_node_name("prefix_op", default_color, op);
+        print_node_line(prefix_op, default_color, op);
         print_children(prefix_op.rhs);
     }
 
@@ -102,13 +107,16 @@ private:
         }
     }
 
-    void print_node_name(
-        const std::string_view& name,
+    template <class Node>
+    void print_node_line(
+        const Node& node,
         graphics_code color,
         std::string_view extra = ""
     ) {
-        os << color << name;
-        if (!extra.empty()) { os << grey << " (" << extra << ')'; }
+        os << color << extra;
+        std::string_view node_name =
+            util::type_name<Node>.substr(sizeof("fp::syntax::") - 1);
+        if (!extra.empty()) { os << grey << " (" << node_name << ')'; }
         os << '\n';
     }
 

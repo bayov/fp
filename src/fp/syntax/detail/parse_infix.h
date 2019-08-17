@@ -1,10 +1,10 @@
 #pragma once
 
-#include <fp/util/with.h>
 #include <fp/syntax/detail/parsing_state.h>
 #include <fp/syntax/detail/token_table_t.h>
 #include <fp/syntax/detail/parse_prefix.h>
 #include <fp/syntax/detail/parsers/binary_op.h>
+#include <fp/syntax/detail/parsers/postfix_op.h>
 
 namespace fp::syntax::detail {
 
@@ -62,11 +62,11 @@ constexpr auto infix_parser_table = token_table_t<infix_parser_t>([](auto& t) {
     t[lex::token::LTE]            = parse_binary_op;
     t[lex::token::GTE]            = parse_binary_op;
 
-//    // postfix-operators
-//    t[lex::token::OPTIONAL] = parsers::postfix_op;
-//    t[lex::token::INC] = parsers::postfix_op;
-//    t[lex::token::DEC] = parsers::postfix_op;
-//
+    // postfix-operators
+    t[lex::token::OPTIONAL] = parse_postfix_op;
+    t[lex::token::INC]      = parse_postfix_op;
+    t[lex::token::DEC]      = parse_postfix_op;
+
 //    // error
 //    t[lex::token::ERROR] = infix_parser_skip_error;
 });

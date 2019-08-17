@@ -5,14 +5,12 @@
 
 namespace fp::syntax::ast {
 
-struct binary_op : public detail::base_node<binary_op> {
+struct postfix_op : public detail::base_node<postfix_op> {
     node lhs;
-    node rhs;
-    
-    binary_op(node lhs, lex::token_iterator op_token_it, node rhs) :
-        base_node(lhs.tokens().begin(), rhs.tokens().end()),
+
+    postfix_op(node lhs, lex::token_iterator op_token_it) :
+        base_node(lhs.tokens().begin(), op_token_it + 1),
         lhs(std::move(lhs)),
-        rhs(std::move(rhs)),
         op_token_it(op_token_it)
     {}
 
