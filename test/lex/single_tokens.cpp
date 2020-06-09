@@ -17,7 +17,10 @@ void assert_single_token(std::string_view source_str) {
         FAIL() << name;
     }
 
-    ASSERT_EQ(1u, tokens.size()) << name << tokens;
+    ASSERT_EQ(1u, tokens.size()) << "\n"
+        << "Expected single token: token::" << name << "\n"
+        << "But received " << tokens.size() << " tokens:\n"
+        << tokens;
     ASSERT_EQ(EXPECTED_TOKEN, tokens[0].token);
     ASSERT_FALSE(tokens[0].dummy) << name;
 
