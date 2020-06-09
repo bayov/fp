@@ -10,7 +10,7 @@ bool is_available();
 /**
  * Returns `true` if ANSI escape codes are currently enabled.
  *
- * ANSI is initially enabled when util::is_available() return `true`. It can be
+ * ANSI is initially enabled when util::is_available() returns `true`. It can be
  * disabled or enabled manually by calling ansi::disable_globally() or
  * ansi::enable_globally().
  *
