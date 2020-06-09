@@ -28,7 +28,7 @@ void to_terminal(std::ostream& os, const tokenized_token& t) {
     os << reset;
 }
 
-void to_terminal(std::ostream& os, const tokenized_list& tokens) {
+void to_terminal(std::ostream& os, tokenized_view tokens) {
     for (const auto& t : tokens) {
         to_terminal(os, t);
         os << '\n';

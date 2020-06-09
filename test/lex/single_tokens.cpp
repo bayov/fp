@@ -13,7 +13,7 @@ void assert_single_token(std::string_view source_str) {
 
     tokenized_list tokens = tokenize(file, report);
     if (!report.errors().empty() || !report.warnings().empty()) {
-        diagnostic::print::to_ostream(std::cout, report);
+        diagnostic::print::to_terminal(std::cout, report);
         FAIL() << name;
     }
 

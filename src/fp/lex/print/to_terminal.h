@@ -14,7 +14,7 @@ namespace fp::lex::print {
  * escape codes.
  */
 void to_terminal(std::ostream&, const tokenized_token&);
-void to_terminal(std::ostream&, const tokenized_list&);
+void to_terminal(std::ostream&, tokenized_view);
 //@}
 
 } // namespace fp::lex::print

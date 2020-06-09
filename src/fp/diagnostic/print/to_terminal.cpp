@@ -98,11 +98,15 @@ struct labeled_code {
 
     std::vector<line> lines;
 
-    void set(const sorted_source_locations::locations_in_file& file_locations) {
+    void set(sorted_source_locations::locations_in_file& file_locations) {
         lines.clear();
         for (const auto& loc : file_locations.locations) {
             const auto& sl = loc->source_location;
             for_each_line(sl, [&](auto& line) {
+                file_locations.max_line_number_width = std::max(
+                    file_locations.max_line_number_width,
+                    line_number_width(line.number)
+                );
                 if (loc->kind == location_kind::CONTEXTUAL) { return; }
                 size_t column_start =
                     line.number == sl.line_number ?
@@ -186,8 +190,8 @@ static void print_gutter(
     size_t line_number_width,
     std::optional<size_t> line_number = std::nullopt
 ) {
-    os << ' ' << std::setw(line_number_width);
-    line_number ? os << white << *line_number : os << ' ';
+    os << ' ' << white << std::setw(line_number_width);
+    line_number ? os << *line_number : os << ' ';
     os << grey << " | ";
 }
 
@@ -336,10 +340,10 @@ static void print_labeled_line(
 
 static void print_file_locations(
     std::ostream& os,
-    const sorted_source_locations::locations_in_file& file_locations
+    sorted_source_locations::locations_in_file& file_locations
 ) {
     const auto& [file, locations_by_line, line_number_width] = file_locations;
-    os << blue << italic << file.name << italic_off <<'\n';
+    os << blue << italic << file.name << italic_off << '\n';
     thread_local labeled_code lc;
     lc.set(file_locations);
 
@@ -368,7 +372,7 @@ void to_terminal(std::ostream& os, const diagnostic::problem& problem) {
 
     thread_local sorted_source_locations sorted_locations;
     sorted_locations.set(problem);
-    for (const auto& file_locations : sorted_locations.locations_by_file) {
+    for (auto& file_locations : sorted_locations.locations_by_file) {
         print_file_locations(os, file_locations);
     }
 

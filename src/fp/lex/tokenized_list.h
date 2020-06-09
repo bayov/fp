@@ -39,6 +39,8 @@ using tokenized_list = std::vector<tokenized_token>;
 /// A reference to a section of lex::tokenized_list.
 using tokenized_view = util::vector_view<tokenized_token>;
 
+std::ostream& operator<<(std::ostream&, tokenized_view);
+
 /// Iterator to a tokenized token in a lex::tokenized_list.
 using token_iterator = tokenized_view::iterator;
 
