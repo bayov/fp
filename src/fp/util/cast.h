@@ -7,10 +7,8 @@ namespace fp::util {
 /// A simple functor that explicitly casts to `T`.
 template <class T>
 struct cast {
-    template <class Arg>
-    constexpr T operator()(Arg&& arg) const {
-        return T(std::forward<Arg>(arg));
-    }
+    template <class U>
+    constexpr T operator()(U&& v) const { return T(std::forward<U>(v)); }
 };
 
 } // namespace fp::util

@@ -1,110 +1,115 @@
 #pragma once
 
 #include <fp/util/table.h>
-#include <fp/lex/detail/tokenizer_state.h>
-#include <fp/lex/detail/tokenizers/tokenize_exclamation.h>
-#include <fp/lex/detail/tokenizers/tokenize_string.h>
-#include <fp/lex/detail/tokenizers/tokenize_comment.h>
-#include <fp/lex/detail/tokenizers/tokenize_binary_op.h>
-#include <fp/lex/detail/tokenizers/tokenize_colon.h>
-#include <fp/lex/detail/tokenizers/tokenize_period.h>
-#include <fp/lex/detail/tokenizers/tokenize_number.h>
-#include <fp/lex/detail/tokenizers/tokenize_keyword_or_identifier.h>
+#include <fp/lex/detail/tokenization_state.h>
+#include <fp/lex/detail/tokenizers/character_and_string.h>
+#include <fp/lex/detail/tokenizers/colon.h>
+#include <fp/lex/detail/tokenizers/comment.h>
+#include <fp/lex/detail/tokenizers/keyword_or_identifier.h>
+#include <fp/lex/detail/tokenizers/number.h>
+#include <fp/lex/detail/tokenizers/operations.h>
+#include <fp/lex/detail/tokenizers/period.h>
+#include <fp/lex/detail/tokenizers/stray_character.h>
+#include <fp/lex/detail/tokenizers/whitespace.h>
 
 namespace fp::lex::detail {
 
-/// A symbol handler function signature.
-using tokenizer_t = void (*)(tokenizer_state&);
+/**
+ * A "tokenizer" is a function that consumes a specific character that appears
+ * next in the source code (and possibly more) in order to create new tokens.
+ *
+ * Such functions are stored as part of a dispatch table of tokenizers from each
+ * possible ASCII character: detail::tokenizers_table.
+ */
+using tokenizer_t = void (*)(tokenization_state&);
 
-/// Maps a symbol (-128...127) to an index (0...255).
-struct symbol_to_index {
-    constexpr size_t operator()(symbol_t s) { return size_t((unsigned char)s); }
+/**
+ * Maps an ASCII character (-128...127) to an index (0...255) in the tokenizers
+ * dispatch table: detail::tokenizers_table.
+ */
+struct char_to_index {
+    constexpr size_t operator()(char c) const {
+        return size_t((unsigned char)c);
+    }
 };
 
-/// Tokenize the symbol as a token::ERROR, and report a diagnostic error.
-void error(tokenizer_state& s) {
-    s.tokenize_as<token::ERROR>();
-    s.error();
-}
-
-/// Skip over a symbol.
-inline void skip(tokenizer_state& s) { ++s.it; }
-
-/// Skip over a symbol and start a new line.
-inline void line_feed(tokenizer_state& s) {
-    ++s.it;
-    s.newline();
-}
-
-/// Like @ref line_feed, but skips over CRLF (`\r\n`) when encountered.
-inline void carriage_return(tokenizer_state& s) {
-    if (s.next_is<'\n'>()) { ++s.it; }
-    line_feed(s);
-}
-
-/// Tokenize the symbol as `TOKEN`.
+///// Tokenizes the symbol as `TOKEN`.
 template <token TOKEN>
-void as(tokenizer_state& s) { s.tokenize_as<TOKEN>(); }
+void consume_and_push(tokenization_state& s) { s.consume_and_push(TOKEN); }
 
-/// Tokenizer dispatch table (maps symbols to tokenizers).
-constexpr auto tokenizers_table = ([]() {
-    using table_t = util::table<symbol_t, tokenizer_t, 256, symbol_to_index>;
-    auto t = table_t::with_default(error);
+using tokenizers_table_t = util::table<
+    char,         // key
+    tokenizer_t,  // value
+    256,          // number of entries
+    char_to_index // maps key to table entry index
+>;
+
+/**
+ * Tokenizers dispatch table.
+ *
+ * This table maps an ASCII character acting as the next character in the source
+ * code to the tokenizer function (detail::tokenizer_t) that will be used to
+ * handle it.
+ */
+constexpr auto tokenizers_table = tokenizers_table_t([](auto& t) {
+    // Any ASCII character that is not handled by any of the tokenizers below
+    // will be treated as a stray character in the source code.
+    t.set_default(stray_character);
 
     // whitespace
-    t['\t'] = skip;               // (0x09) horizontal tab
-    t['\n'] = line_feed;          // (0x0a) line feed
-    t['\v'] = skip;               // (0x0b) vertical tab
-    t['\f'] = skip;               // (0x0c) form feed
-    t['\r'] = carriage_return;    // (0x0d) horizontal tab
-    t[' ' ] = skip;
+    t['\t'] = ignore;          // (0x09) horizontal tab
+    t['\n'] = line_feed;       // (0x0a) line feed
+    t['\v'] = ignore;          // (0x0b) vertical tab
+    t['\f'] = ignore;          // (0x0c) form feed
+    t['\r'] = carriage_return; // (0x0d) horizontal tab
+    t[' ' ] = ignore;          // (0x20) space
 
     // string
-    t['\''] = tokenize_char;
-    t['"' ] = tokenize_quote;
+    t['\''] = tokenize_character;
+    t['"' ] = tokenize_double_quote;
     t['{' ] = tokenize_left_brace;
     t['}' ] = tokenize_right_brace;
 
     // number
-    t['0' ] = tokenize_number;
-    t['1' ] = tokenize_number;
-    t['2' ] = tokenize_number;
-    t['3' ] = tokenize_number;
-    t['4' ] = tokenize_number;
-    t['5' ] = tokenize_number;
-    t['6' ] = tokenize_number;
-    t['7' ] = tokenize_number;
-    t['8' ] = tokenize_number;
-    t['9' ] = tokenize_number;
+    t['0' ] = tokenize_number_with_zero_prefix;
+    t['1' ] = tokenize_number_with_no_zero_prefix;
+    t['2' ] = tokenize_number_with_no_zero_prefix;
+    t['3' ] = tokenize_number_with_no_zero_prefix;
+    t['4' ] = tokenize_number_with_no_zero_prefix;
+    t['5' ] = tokenize_number_with_no_zero_prefix;
+    t['6' ] = tokenize_number_with_no_zero_prefix;
+    t['7' ] = tokenize_number_with_no_zero_prefix;
+    t['8' ] = tokenize_number_with_no_zero_prefix;
+    t['9' ] = tokenize_number_with_no_zero_prefix;
 
-    // identifiers and keywords
-    t['A' ] = tokenize_identifier;
-    t['B' ] = tokenize_identifier;
-    t['C' ] = tokenize_identifier;
-    t['D' ] = tokenize_identifier;
-    t['E' ] = tokenize_identifier;
-    t['F' ] = tokenize_identifier;
-    t['G' ] = tokenize_identifier;
-    t['H' ] = tokenize_identifier;
-    t['I' ] = tokenize_identifier;
-    t['J' ] = tokenize_identifier;
-    t['K' ] = tokenize_identifier;
-    t['L' ] = tokenize_identifier;
-    t['M' ] = tokenize_identifier;
-    t['N' ] = tokenize_identifier;
-    t['O' ] = tokenize_identifier;
-    t['P' ] = tokenize_identifier;
-    t['Q' ] = tokenize_identifier;
-    t['R' ] = tokenize_identifier;
-    t['S' ] = tokenize_identifier;
-    t['T' ] = tokenize_identifier;
-    t['U' ] = tokenize_identifier;
-    t['V' ] = tokenize_identifier;
-    t['W' ] = tokenize_identifier;
-    t['X' ] = tokenize_identifier;
-    t['Y' ] = tokenize_identifier;
-    t['Z' ] = tokenize_identifier;
-    t['_' ] = tokenize_identifier;
+//    // identifiers and keywords
+    t['A' ] = tokenize_keyword_or_identifier;
+    t['B' ] = tokenize_keyword_or_identifier;
+    t['C' ] = tokenize_keyword_or_identifier;
+    t['D' ] = tokenize_keyword_or_identifier;
+    t['E' ] = tokenize_keyword_or_identifier;
+    t['F' ] = tokenize_keyword_or_identifier;
+    t['G' ] = tokenize_keyword_or_identifier;
+    t['H' ] = tokenize_keyword_or_identifier;
+    t['I' ] = tokenize_keyword_or_identifier;
+    t['J' ] = tokenize_keyword_or_identifier;
+    t['K' ] = tokenize_keyword_or_identifier;
+    t['L' ] = tokenize_keyword_or_identifier;
+    t['M' ] = tokenize_keyword_or_identifier;
+    t['N' ] = tokenize_keyword_or_identifier;
+    t['O' ] = tokenize_keyword_or_identifier;
+    t['P' ] = tokenize_keyword_or_identifier;
+    t['Q' ] = tokenize_keyword_or_identifier;
+    t['R' ] = tokenize_keyword_or_identifier;
+    t['S' ] = tokenize_keyword_or_identifier;
+    t['T' ] = tokenize_keyword_or_identifier;
+    t['U' ] = tokenize_keyword_or_identifier;
+    t['V' ] = tokenize_keyword_or_identifier;
+    t['W' ] = tokenize_keyword_or_identifier;
+    t['X' ] = tokenize_keyword_or_identifier;
+    t['Y' ] = tokenize_keyword_or_identifier;
+    t['Z' ] = tokenize_keyword_or_identifier;
+    t['_' ] = tokenize_keyword_or_identifier;
     t['a' ] = tokenize_keyword_or_identifier;
     t['b' ] = tokenize_keyword_or_identifier;
     t['c' ] = tokenize_keyword_or_identifier;
@@ -132,37 +137,37 @@ constexpr auto tokenizers_table = ([]() {
     t['y' ] = tokenize_keyword_or_identifier;
     t['z' ] = tokenize_keyword_or_identifier;
 
-    // binary-operators
+//    // binary-operators
     t['+' ] = tokenize_plus;
-    t['-' ] = tokenize_minus;
-    t['*' ] = TOKENIZE_BINARY_OPS(MUL, '*', POW);
-    t['/' ] = TOKENIZE_BINARY_OP(DIV);
-    t['%' ] = TOKENIZE_BINARY_OP(MOD);
-    t['&' ] = TOKENIZE_BINARY_OP(BIT_AND);
-    t['|' ] = TOKENIZE_BINARY_OP(BIT_OR);
-    t['^' ] = TOKENIZE_BINARY_OP(XOR);
-    t['<' ] = TOKENIZE_COMPARISON_OR_BITSHIFT(LT, '<', LSHIFT);
-    t['>' ] = TOKENIZE_COMPARISON_OR_BITSHIFT(GT, '>', RSHIFT);
-    t['=' ] = tokenize_eq;
+    t['-' ] = tokenize_minus_or_type_arrow;
+    t['*' ] = tokenize_binary_op<token::MUL,     token::MUL_ASSIGN    >;
+    t['/' ] = tokenize_binary_op<token::DIV,     token::DIV_ASSIGN    >;
+    t['%' ] = tokenize_binary_op<token::MOD,     token::MOD_ASSIGN    >;
+    t['^' ] = tokenize_binary_op<token::POW,     token::POW_ASSIGN    >;
+    t['&' ] = tokenize_binary_op<token::BIT_AND, token::BIT_AND_ASSIGN>;
+    t['|' ] = tokenize_binary_op<token::BIT_OR,  token::BIT_OR_ASSIGN >;
+    t['<' ] = tokenize_lt_or_shl;
+    t['>' ] = tokenize_gt_or_shr;
+    t['=' ] = tokenize_eq_or_lambda_arrow;
+    t['!' ] = tokenize_not_eq;
 
-    // as-is
-    t['(' ] = as<token::L_PAREN>;
-    t[')' ] = as<token::R_PAREN>;
-    t['[' ] = as<token::L_BRACKET>;
-    t[']' ] = as<token::R_BRACKET>;
-    t[',' ] = as<token::COMMA>;
-    t[';' ] = as<token::SEMICOLON>;
-    t['?' ] = as<token::OPTIONAL>;
-    t['@' ] = as<token::DECORATOR>;
-    t['~' ] = as<token::BIT_NOT>;
+    // single-character simple tokens
+    t['(' ] = consume_and_push<token::L_PAREN>;
+    t[')' ] = consume_and_push<token::R_PAREN>;
+    t['[' ] = consume_and_push<token::L_BRACKET>;
+    t[']' ] = consume_and_push<token::R_BRACKET>;
+    t[',' ] = consume_and_push<token::COMMA>;
+    t[';' ] = consume_and_push<token::SEMICOLON>;
+    t['?' ] = consume_and_push<token::OPTIONAL>;
+    t['@' ] = consume_and_push<token::DECORATOR>;
+    t['~' ] = consume_and_push<token::BIT_NOT>;
 
     // misc
     t[':' ] = tokenize_colon;
-    t['!' ] = tokenize_exclamation;
     t['#' ] = tokenize_comment;
     t['.' ] = tokenize_period;
 
     return t;
-})();
+});
 
 } // namespace fp::lex::detail

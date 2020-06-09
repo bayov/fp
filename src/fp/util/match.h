@@ -9,43 +9,42 @@ namespace fp::util {
 namespace detail {
 
 template <class Variant>
-class matcher {
-public:
-
-    constexpr explicit matcher(const Variant& v) : m_variant(v) {}
+struct matcher {
+    constexpr explicit matcher(Variant v)
+        : variant_(std::forward<Variant>(v)) {}
 
     template <class... Fs>
-    constexpr auto operator()(Fs&&... fs) {
-        return std::visit(overloaded(std::forward<Fs>(fs)...), m_variant);
+    constexpr decltype(auto) operator()(Fs&&... fs) && {
+        return std::visit(
+            overloaded { std::forward<Fs>(fs)... },
+            std::forward<Variant>(variant_)
+        );
     }
 
 private:
-
-    const Variant& m_variant;
-
+    Variant variant_;
 };
 
 } // namespace detail
 
 /**
- * Syntax sugar over std::variant matching (std::visit).
+ * Syntax sugar over std::variant matching (std::visit and util::overloaded).
  *
- * @example
+ * ~~~{.cpp}
+ * std::variant<int, std::string> w("hello");
  *
- *      std::variant<int, std::string> w("hello");
+ * auto s = match(w)(
+ *     [](int) { return "int"; },
+ *     [](std::string) { return "string"; }
+ * );
+ * assert(s == "string");
+ * ~~~
  *
- *      auto s = match(w)(
- *          [](int) { return "int"; }
- *          [](std::string) { return "string"; }
- *      );
- *      assert(s == "string");
- *
- * @note
- *      Use `[](auto&&) { ... }` for an "otherwise-match-clause".
+ * Note: `[](auto&&) { ... }` can be used as a "default match clause".
  */
 template <class Variant>
-constexpr detail::matcher<Variant> match(const Variant& v) {
-    return detail::matcher<Variant>(v);
+constexpr detail::matcher<Variant> match(Variant&& v) {
+    return detail::matcher<Variant>(std::forward<Variant>(v));
 }
 
 } // namespace fp::util

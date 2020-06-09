@@ -1,71 +1,40 @@
 #pragma once
 
-#include <cstdint>
-#include <string>
 #include <variant>
 
-#include <fp/common/types.h>
-#include <fp/common/input.h>
+#include <fp/literal_types.h>
+#include <fp/source_code.h>
 #include <fp/lex/token.h>
 
 namespace fp::lex {
 
-/// Represents an empty attribute
-struct no_attribute {};
-
-/// The attribute attached to a token.
-template <token> struct attribute { using type = no_attribute; };
-template <token TOKEN> using attribute_t = typename attribute<TOKEN>::type;
-
-template <> struct attribute<token::COMMENT>    { using type = input_view; };
-template <> struct attribute<token::IDENTIFIER> { using type = input_view; };
-template <> struct attribute<token::INTEGER>    { using type = integer_type; };
-template <> struct attribute<token::FLOAT>      { using type = float_type; };
-template <> struct attribute<token::CHAR>       { using type = char_type; };
-template <> struct attribute<token::STRING>     { using type = std::string; };
-
 namespace detail {
 
-template<class... Ts>
-struct type_set {
-
-    template<class T>
-    static constexpr bool has() { return (... || std::is_same_v<Ts, T>); }
-
-    template<class T>
-    constexpr auto operator+(T) {
-        if constexpr (has<T>()) {
-            return type_set<Ts...>{};
-        } else {
-            return type_set<Ts..., T>{};
-        }
-    }
-
-    static constexpr auto dedupe() { return (type_set<>{} + ... + Ts{}); }
-
-    using variant_t = std::variant<Ts...>;
-
-};
-
-template <token... TOKENS>
-constexpr auto attribute_set(util::enumerator_sequence<token, TOKENS...>) {
-    return type_set<attribute_t<TOKENS>...>::dedupe();
-}
-
-using variant_attribute_t =
-    decltype(attribute_set(util::enum_class<token>::sequence{}))::variant_t;
+// IMPORTANT: Any new type added as an attribute here must also be added to the
+//            lex::attribute_t variant below.
+template <token> struct attr_helper               { using type = void       ; };
+template <> struct attr_helper<token::COMMENT   > { using type = source_view; };
+template <> struct attr_helper<token::IDENTIFIER> { using type = source_view; };
+template <> struct attr_helper<token::NUMBER    > { using type = source_view; };
+template <> struct attr_helper<token::CHAR      > { using type = char_t     ; };
+template <> struct attr_helper<token::STRING    > { using type = std::string; };
 
 } // namespace detail
 
-/// A variant over all possible @ref token @ref attribute types.
-struct token_attribute : detail::variant_attribute_t {
-    using detail::variant_attribute_t::variant;
+/**
+ * Represents a lex::token's attribute type.
+ *
+ * The tokenizer attaches an attribute to each parsed token (for example, a
+ * token::INTEGER is attached with an fp::integer_type attribute that holds the
+ * actual integer's value).
+ *
+ * Most tokens have no attributes to them, and so their attribute will be void.
+ */
+template <token TOKEN>
+using token_attribute_t = typename detail::attr_helper<TOKEN>::type;
 
-    /// @return `std::get<attribute<TOKEN>>(*this)`.
-    template <token TOKEN>
-    const attribute_t<TOKEN>& as() const {
-        return std::get<attribute_t<TOKEN>>(*this);
-    }
-};
+/// The attribute value of a lex::token (see lex::token_attribute_t).
+using attribute_t =
+    std::variant<std::monostate, source_view, char_t, std::string>;
 
-} // namespace namespace fp::lex
+} // namespace fp::lex

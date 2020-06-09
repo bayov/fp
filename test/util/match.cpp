@@ -1,12 +1,10 @@
+#include <gtest/gtest.h>
+
 #include <fp/util/match.h>
-
-#include <catergorized_test.h>
-
-#define TEST(what) CATEGORIZED_TEST(util, match, what)
 
 namespace fp::util {
 
-TEST(basic_usage) {
+TEST(util, match) {
     std::variant<int, std::string> w("hello");
     auto s = match(w)(
         [](int) { return "int"; },

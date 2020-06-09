@@ -1,132 +1,209 @@
 #pragma once
 
-#include <utility>
+#include <cstddef>
+#include <variant>
 
 namespace fp::util {
 
-namespace detail {
-
-template <class T, class TopScopeT>
-struct context_value_storage {
-
-    TopScopeT in_top_scope;
-    T* current;
-
-    explicit context_value_storage(TopScopeT&& v) :
-        in_top_scope(std::forward<TopScopeT>(v)),
-        current(&in_top_scope)
-    {}
-
-};
-
-template <class T>
-struct context_value_storage<T, void> { T* current; };
-
-} // namespace detail
-
 /**
- * A simple RAII context value holder.
+ * Represents value of type `T` that depends on a "context".
  *
- * It is recommended to use the WITH utility to introduce new context scopes
- * (see example).
+ * ~~~{.cpp}
+ * context_value<int> n(42);
+ * assert(n.get() == 42);
+ * FP_WITH(n = 11) {
+ *     assert(n.get() == 11);
+ *     FP_WITH(n = 5) { assert(n.get() == 5); }
+ *     assert(n.get() == 11); // 11 is restored
+ * }
+ * assert(n.get() == 42); // 42 is restored
+ * ~~~
  *
- * @example
+ * As can be seen in the example above, context_value enables a variable `n` to
+ * be assigned with a a new value for the duration of a scope. When it goes out
+ * of scope, the original value is restored.
  *
- *      context_value<int> n;
- *      // `n` is a context manager that stores an `int`
+ * TODO: Add a reference to an API that uses context_value, showing its usage
+ *       and usefulness.
  *
- *      // to retrieve the current value in context, use `.get()`:
- *      n.get();  <-- undefined behaviour, since no value is in context!
+ * Base Types
+ * ----------
+ * Note that there's no need to explicitly tell a context_value to store
+ * references, as it works by way of its implementation:
+ * ~~~{.cpp}
+ * context_value<std::ostream> output_stream(std::cout);
  *
- *      // use `.operator()` to introduce a RAII scoped value to the context
- *      WITH(n(42)) {
+ * // `output_stream` internally stores a pointer (`std::ostream*`), so anything
+ * // that can be implicitly converted as a pointer to it can be set in scope
+ * FP_WITH(output_stream = std::ofstream("/tmp/out.txt")) { ... }
+ * ~~~
  *
- *          std::cout << n.get() << std::endl; // prints 42
+ * Omitting Initial Value
+ * ----------------------
+ * The initial value can be omitted, but then accessing the context value
+ * without an explicit context is undefined-behaviour:
+ * ~~~{.cpp}
+ * context_value<int> n;
  *
- *          WITH(n(11)) {
+ * n.get(); // undefined-behaviour: `n` has no value in this context
+ * FP_WITH(n = 42) { ... } // good, `n` now has a value in context
+ * ~~~
  *
- *              std::cout << n.get() << std::endl; // prints 11
+ * Iterating Over All Contexts
+ * ---------------------------
+ * It is possible to iterate over all available contexts available, effectively
+ * turning the usage of the context-value into a "context-list":
+ * ~~~{.cpp}
+ * context_value<int> n;
  *
- *          } // `11` goes out of scope, previous context value is restored
- *
- *          std::cout << n.get() << std::endl; // prints 42
- *
- *          // a value can be captured by reference
- *          int x = 33;
- *          WITH(n(x)) {
- *              std::cout << n.get() << std::endl; // prints 33
- *              x = 333;
- *              std::cout << n.get() << std::endl; // prints 333
- *          }
- *
- *          std::cout << n.get() << std::endl; // prints 42
- *
- *      }
- *
- *      // to create a context value with a value in top scope, use `::with`
- *      auto n = context_value<int>::with(5); // 5 is captured by value
- *      auto n = context_value<int>::with(x); // x is captured by reference
- *
+ * auto print = [&]() {
+ *     for (int x : n) { std::cout << x << " "; }
+ * };
+
+ * FP_WITH(n = 42) {
+ *     FP_WITH(n = 11) {
+ *         FP_WITH(n = 5) {
+ *             print(); // prints "42 11 5 "
+ *         }
+ *         print(); // prints "42 11 "
+ *     }
+ *     print(); // prints "42 "
+ * }
+ * print(); // prints ""
+ * ~~~
  */
-template <class T, class TopScopeT = void>
-class context_value {
-
-    template <class U>
-    struct in_scope {
-
-        context_value& cv;
-        T* previous;
-        U value_in_scope;
-
-        in_scope(context_value& c, U&& v) :
-            cv(c),
-            previous(c.m_storage.current),
-            value_in_scope(std::forward<U>(v))
-        {
-            cv.m_storage.current = &value_in_scope;
-        }
-
-        ~in_scope() { cv.m_storage.current = previous; }
-
-    };
+template <class T>
+struct context_value {
+private:
+    struct node;
+    template <class> struct context;
 
 public:
-
     using value_type = T;
-
-    template <class U>
-    static context_value<T, U> with(U&& v) {
-        return context_value<T, U>(std::forward<U>(v));
-    }
+    struct iterator;
 
     context_value() = default;
 
-    context_value(const context_value&) = delete;
-    context_value(context_value&&) = delete;
-    context_value& operator=(const context_value&) = delete;
-    context_value& operator=(context_value&&) = delete;
-
-    /// @return A scoped RAII-value that sets `v` to the current context.
     template <class U>
-    in_scope<U> operator()(U&& v) { return { *this, std::forward<U>(v) }; }
+    explicit context_value(U&& initial_value) :
+        initial_context(
+            std::in_place_type<context<U>>,
+            *this,
+            std::forward<U>(initial_value)
+        )
+    {}
 
-    //@{
-    /// @return The current value in context.
-    T& get() { return *m_storage.current; }
-    const T& get() const { return *m_storage.current; }
-    //@}
+    context_value(const context_value&)     = delete;
+    context_value(context_value&&)          = delete;
+    context_value& operator=(context_value) = delete;
+
+    template <class ScopeT>
+    [[nodiscard]] context<ScopeT> operator=(ScopeT&& value) {
+        return {*this, std::forward<ScopeT>(value)};
+    }
+
+    T& get() const { return *current_value; }
+
+    iterator begin() { return iterator(first_context_node); }
+    iterator   end() { return iterator(nullptr           ); }
 
 private:
+    /**
+     * Points the value in the current context. This pointer is dereferenced
+     * whenever an access is made (through context_value::get).
+     *
+     * This pointer is the same as `current_context_node.value_pointer`, and so
+     * it might seem it should exist, but it is here so that the overhead of
+     * accessing a context_value is a single pointer-dereference, and not two.
+     */
+    T* current_value = nullptr;
 
-    detail::context_value_storage<T, TopScopeT> m_storage;
+    /// Points to the topmost context node, and null if there's none such.
+    node* first_context_node   = nullptr;
+    node* current_context_node = nullptr;
 
-    /// Construct the context value with `v` in the top context.
-    template <class U = TopScopeT, class = std::enable_if_t<!std::is_void_v<U>>>
-    explicit context_value(U&& v) : m_storage(std::forward<U>(v)) {}
+    //@{
+    /// Only used when context_value is constructed with an initial-value.
+    using non_const_type = std::remove_const_t<T>;
+    using initial_context_t = std::variant<
+        std::monostate,
+        context<non_const_type>,
+        context<non_const_type&>,
+        context<const non_const_type&>
+    >;
+    initial_context_t initial_context;
+    //@}
 
-    template <class, class>
-    friend class context_value;
+    struct node {
+        context_value& cv;
+        T* value;
+        node* prev;
+        node* next;
 
+        node(context_value& cv, T* v) :
+            cv(cv),
+            value(v),
+            prev(cv.current_context_node),
+            next(nullptr)
+        {
+            if (prev) { prev->next = this; }
+            cv.current_value = v;
+            cv.current_context_node = this;
+            if (!cv.first_context_node) { cv.first_context_node = this; }
+        }
+
+        ~node() {
+            if (prev) {
+                // it's guaranteed that context_nodes will be destructed from
+                // last to first, so we can safely assume our `next` pointer is
+                // null here
+                prev->next = nullptr;
+                cv.current_value = prev->value;
+                cv.current_context_node  = prev;
+            } else {
+                // this is the topmost context node
+                cv.current_value         = nullptr;
+                cv.first_context_node    = nullptr;
+                cv.current_context_node  = nullptr;
+            }
+        }
+
+        node(const node&)     = delete;
+        node(node&&)          = delete;
+        node& operator=(node) = delete;
+    };
+
+    template <class U>
+    struct context {
+        U    value;
+        node node_;
+
+        context(context_value& cv, U&& v) :
+            value(std::forward<U>(v)),
+            node_(cv, &value)
+        {}
+    };
+
+public:
+    struct iterator {
+        using iterator_category = std::input_iterator_tag;
+        using value_type        = T;
+        using difference_type   = std::ptrdiff_t;
+        using pointer           = T*;
+        using reference         = T&;
+
+        explicit iterator(node* n) : n(n) {}
+
+        T& operator*() { return *n->value; }
+
+        iterator& operator++() { n = n->next; return *this; }
+
+        bool operator==(const iterator& other) const { return n == other.n; }
+        bool operator!=(const iterator& other) const { return n != other.n; }
+
+    private:
+        node* n;
+    };
 };
 
 } // namespace fp::util

@@ -1,20 +1,16 @@
 #pragma once
 
 #include <cstdint>
-
-#include <fp/util/enum_class.h>
-#include <fp/lex/keywords.h>
+#include <ostream>
+#include <string_view>
+#include <unordered_set>
+#include <unordered_map>
 
 namespace fp::lex {
 
-#define FP_TOKEN_ENUMERATOR(enumerator, _) enumerator
-
-/// The actual type used to represent a @ref token.
-using token_type = uint8_t;
-
 /// Enumeration of all tokens in the language.
-ENUM_CLASS(token, token_type,
-    HEAD,           ///< Dummy token, placed at the front of a @see token_list.
+enum class token : uint8_t {
+    ERROR,          ///< Error token, representing a lexical analysis error.
 
     QUOTE,          ///< "
     COMMA,          ///< ,
@@ -37,38 +33,64 @@ ENUM_CLASS(token, token_type,
     R_BRACE,        ///< }
 
     // keywords
-    FP_KEYWORDS_ENUM(FP_TOKEN_ENUMERATOR),
+    AND,
+    AS,
+    BREAK,
+    CASE,
+    CATCH,
+    CLASS,
+    CONCEPT,
+    CONTINUE,
+    DEFAULT,
+    DO,
+    ELSE,
+    ENUM,
+    EXPORT,
+    FOR,
+    IF,
+    IMPLICIT,
+    IMPORT,
+    IN,
+    MUT,
+    NOT,
+    OF,
+    OR,
+    RETURN,
+    SWITCH,
+    THROW,
+    TRY,
+    WHILE,
 
     // arrows
     TYPE_ARROW,     ///< ->
     LAMBDA_ARROW,   ///< =>
 
     // arithmetic
-    PLUS,           ///< +
-    MINUS,          ///< -
+    ADD,            ///< +
+    SUB,            ///< -
     MUL,            ///< *
     DIV,            ///< /
     MOD,            ///< %
-    POW,            ///< **
+    POW,            ///< ^
     BIT_AND,        ///< &
     BIT_OR,         ///< |
-    XOR,            ///< ^
-    LSHIFT,         ///< <<
-    RSHIFT,         ///< >>
+    XOR,            ///< TBD: Maybe a keyword `xor`? But then we have `xor=`
+    SHL,            ///< <<
+    SHR,            ///< >>
 
     // assignments
     ASSIGN,         ///< =
-    PLUS_ASSIGN,    ///< +=
-    MINUS_ASSIGN,   ///< -=
+    ADD_ASSIGN,     ///< +=
+    SUB_ASSIGN,     ///< -=
     MUL_ASSIGN,     ///< *=
     DIV_ASSIGN,     ///< /=
     MOD_ASSIGN,     ///< %=
-    POW_ASSIGN,     ///< **=
+    POW_ASSIGN,     ///< ^=
     BIT_AND_ASSIGN, ///< &=
     BIT_OR_ASSIGN,  ///< |=
-    XOR_ASSIGN,     ///< ^=
-    LSHIFT_ASSIGN,  ///< <<=
-    RSHIFT_ASSIGN,  ///< >>=
+    XOR_ASSIGN,     ///< TBD...
+    SHL_ASSIGN,     ///< <<=
+    SHR_ASSIGN,     ///< >>=
 
     // comparisons
     EQ,             ///< ==
@@ -85,8 +107,7 @@ ENUM_CLASS(token, token_type,
     // containing attributes
     COMMENT,        ///< # some comment...
     IDENTIFIER,     ///< some_identifier, Can_Be_CAPITALIZED
-    INTEGER,        ///< 42, 0xFF, 0b11, 1`000`000, ...
-    FLOAT,          ///< 3.14, 1.23e-10, ...
+    NUMBER,         ///< 42, 0xFF, 0b11, 1'000'000, 3.14, 1.23e-10, ...
     CHAR,           ///< 'a'
 
     /**
@@ -98,13 +119,42 @@ ENUM_CLASS(token, token_type,
      *      "one plus one is {1 + 1}."
      *
      * will be tokenized as:
-     *      QUOTE STRING L_BRACE INTEGER PLUS INTEGER R_BRACE STRING QUOTE
-     *            ^~~~~~                                      ^~~~~~
-     *            "one plus one is "                          "."
+     *      QUOTE STRING L_BRACE NUMBER ADD NUMBER R_BRACE STRING QUOTE
+     *            ------                                   ------
+     *            |                                        |
+     *            "one plus one is "                       "."
      */
     STRING,
 
-    ERROR           ///< Error token
-);
+    /**
+     * This is not an actual token, but a placeholder used to store the number
+     * of available tokens. Use lex::n_tokens to access it.
+     *
+     * This must appear as the last token.
+     */
+    _n_tokens
+};
+
+/// The number of available tokens (in lex::token).
+constexpr size_t n_tokens = size_t(token::_n_tokens);
+
+/// The set of all keyword tokens.
+extern std::unordered_set<token> keywords;
+
+/// A mapping to all keyword tokens from their string representation.
+extern std::unordered_map<std::string_view, token> keywords_map;
+
+/// Returns `true` if the token is a keyword token.
+bool is_keyword(token);
+
+/**
+ * Returns a string representation for a lex::token.
+ *
+ * E.g., for token::ADD, "ADD" will be returned.
+ */
+std::string_view token_name(token);
+
+/// Prints a lex::token using lex::token_name.
+std::ostream& operator<<(std::ostream&, token);
 
 } // namespace fp::lex

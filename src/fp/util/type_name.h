@@ -1,18 +1,30 @@
 #pragma once
 
-#include <string>
+#include <string_view>
 
 namespace fp::util {
 
-/// @return A demangled C++ type name from the given mangled name.
-std::string demangle(const char* name);
+namespace detail {
 
-/// @return A demangled type name for type `T`.
 template <class T>
-std::string type_name() { return demangle(typeid(T).name()); }
+constexpr std::string_view type_name() {
+#if defined(__GNUC__) && __GNUC__ >= 9
+    std::string_view name(__PRETTY_FUNCTION__);
+    name = name.substr(sizeof(
+        "constexpr std::string_view fp::util::detail::type_name() [with T ="
+    ));
+    size_t i = 1;
+    while (name[i] != ';') { ++i; }
+    return name.substr(0, i);
+#else
+    static_assert(false, "Unsupported compiler");
+#endif
+}
 
-/// @return A demangled type name for value `v`.
+} // namespace detail
+
+/// The name of the given type `T`.
 template <class T>
-std::string type_name(const T& v) { return demangle(typeid(v).name()); }
+constexpr std::string_view type_name = detail::type_name<T>();
 
 } // namespace fp::util
