@@ -106,7 +106,7 @@ void report_missing_terminating_quote(
         QUOTE == '\'' ?
         "missing terminating ' character" :
         "missing terminating \" character";
-    s.report_error(opening_quote, opening_quote + 1, text)
+    s.report_error(text, opening_quote, opening_quote + 1)
         .add_supplement(s.current_token_location());
 }
 
