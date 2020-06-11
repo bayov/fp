@@ -43,6 +43,10 @@ source_view quoted_content(source_iterator begin, source_iterator end) {
  *
  * On error (invalid character), a std::nullopt will be returned instead.
  *
+ * At the moment, Unicode is not supported. When encountering a UTF-8 byte, it
+ * will the entire Unicode code point will be consumed (2 to 4 bytes), and
+ * std::nullopt will be returned to denote an error.
+ *
  * @tparam QUOTE
  *     When tokenizing a character literal, this should be a single-quote, and
  *     when tokenizing a string literal, this should be a double-quote. This
@@ -65,6 +69,17 @@ std::optional<char_t> consume_char(
     // skip the first char, regardless of whether it is a blackslash or not
     it = content.begin() + 1;
 
+    // UTF-8 not supported yet
+    if (content.front() & 0x80) {
+        for (; it != content.end() && *it & 0x80; ++it) {}
+        s.report_error("Unicode is not supported yet")
+            .add_primary(
+                s.location(content.begin(), it),
+                "Unicode literals are not supported yet, sorry!"
+            );
+        return std::nullopt;
+    }
+
     // if it is not a backslash, just return it as is
     if (content.front() != '\\') { return content.front(); }
 
@@ -83,12 +98,11 @@ std::optional<char_t> consume_char(
         case '0':   return '\0';
     }
 
-//    fp::source_location
-//    s.report_error("invalid escape sequence")
-//        .add_primary(s.location(source_view(content.begin(), it)))
-//        .add_supplement(s.current_token_location());
-    s.report_error("invalid escape sequence", content.begin(), it)
-        .add_supplement(s.current_token_location());
+    s.report_error("invalid escape sequence")
+        .add_primary(
+            s.location(content.begin(), it),
+            "invalid escape sequence"
+        );
     return std::nullopt;
 }
 
@@ -110,7 +124,8 @@ void report_missing_terminating_quote(
         QUOTE == '\'' ?
         "missing terminating ' character" :
         "missing terminating \" character";
-    s.report_error(text, opening_quote, opening_quote + 1)
+    s.report_error(text)
+        .add_primary(s.location(opening_quote, opening_quote + 1), text)
         .add_supplement(s.current_token_location());
 }
 
@@ -153,18 +168,17 @@ void tokenize_character(tokenization_state& s) {
         return;
     }
 
-    if (*char_value > 127) {
-        s.report_error(
-            quoted_content.begin(), quoted_content.begin() + 1,
-            "unicode character literals are not supported yet"
-        );
-        s.push_dummy(token::CHAR);
-        return;
-    }
-
     // a character literal must contain exactly one character!
     if (consume_end != quoted_content.end()) {
-        s.report_error("character literal contains more than one character");
+        s.report_error("character literal contains more than one character")
+            .add_supplement(
+                s.location(quoted_content),
+                "more than one character in literal"
+            )
+            .add_primary(
+                s.location(opening_quote, opening_quote + 1),
+                "use \" quotes if you meant to use a string"
+            );
         s.push_dummy(token::CHAR);
         return;
     }
@@ -217,15 +231,6 @@ static void tokenize_string(tokenization_state& s) {
         if (!char_value) {
             // detail::consume_char already reported an error, so just push
             // token::STRING with the dummy error value and return
-            s.push_dummy(token::STRING);
-            return;
-        }
-
-        if (*char_value > 127) {
-            s.report_error(
-                quoted_content.begin() - 1, quoted_content.begin(),
-                "unicode string literals are not supported yet"
-            );
             s.push_dummy(token::STRING);
             return;
         }

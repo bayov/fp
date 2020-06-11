@@ -58,6 +58,8 @@ consume_number_characters(tokenization_state& s) {
             if (s.next_is('+') || s.next_is('-')) { ++s.next; }
             // make sure we haven't reached the end
             if (s.next == s.end) { break; }
+            // stop if next character is not part of the number
+            if (!number_characters::contain(*s.next)) { break; }
             continue;
         }
         if (number_characters::contain(*s.next)) { continue; }
@@ -236,20 +238,22 @@ void tokenize_number(tokenization_state& s, std::string_view base_name) {
         validate_no_underscores(number, exponent);
         validate_digits<Digits>(number, base_name);
     } catch (number_error& e) {
-        s.report_error(std::move(e.text), e.source_section)
+        s.report_error("invalid number literal")
+            .add_primary(s.location(e.source_section), std::move(e.text))
             .add_supplement(s.current_token_location());
-        s.push_dummy(token::NUMBER);
+        s.push_dummy(token::NUMBER, source_view("0"));
         return;
     }
 
     if (!SUPPORT_FLOAT) {
         bool is_float = !exponent.empty() || number.find('.') != number.npos;
         if (is_float) {
-            s.report_error(
+            s.report_error("unsupported floating-number base")
+                .add_primary(s.current_token_location(),\
                 "floating-point literal in " + std::string(base_name) + " base "
-                "is not supported"
+                "is not supported, sorry"
             );
-            s.push_dummy(token::NUMBER);
+            s.push_dummy(token::NUMBER, source_view("0"));
             return;
         }
     }

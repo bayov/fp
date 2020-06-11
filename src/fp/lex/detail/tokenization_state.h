@@ -37,20 +37,6 @@ struct tokenization_state {
          return report_.errors().back();
     }
 
-    //@{
-    /// Reports a diagnostic::error for the given source code section.
-    diagnostic::problem& report_error(std::string text, source_view section) {
-        return report_error(std::move(text)).add_primary(location(section));
-    }
-    diagnostic::problem& report_error(
-        std::string text,
-        source_iterator from,
-        source_iterator to
-    ) {
-        return report_error(std::move(text), source_view(from, to));
-    }
-    //@}
-
     /// Reports the given diagnostic::problem.
     diagnostic::problem& report_problem(diagnostic::problem p) {
         return report_.add(std::move(p));
@@ -125,10 +111,11 @@ struct tokenization_state {
     }
 
     /// Push a dummy error `TOKEN`.
-    void push_dummy(token t) {
+    void push_dummy(token t, lex::attribute_t attribute = {}) {
         tokens_.push_back({
             .token = t,
             .dummy = true,
+            .attribute = std::move(attribute),
             .source_location = current_token_location()
         });
     }
