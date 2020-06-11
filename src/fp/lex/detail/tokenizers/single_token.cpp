@@ -65,8 +65,8 @@ consume_number_characters(tokenization_state& s) {
     }
     if (exp_begin == s.end) { exp_begin = s.next; }
     return {
-        make_source_view(number_begin, exp_begin),
-        make_source_view(exp_begin, s.next)
+        source_view(number_begin, exp_begin),
+        source_view(exp_begin, s.next)
     };
 }
 

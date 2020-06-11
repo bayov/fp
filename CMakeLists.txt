@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 project(fp)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
 set(WARNING_FLAGS "-Wall -Werror -Wno-variadic-macros -fmax-errors=1 -static-libstdc++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS}")

@@ -31,7 +31,7 @@ source_view quoted_content(source_iterator begin, source_iterator end) {
             ++it;
         }
     }
-    return make_source_view(begin, it);
+    return {begin, it};
 }
 
 /**
@@ -83,6 +83,10 @@ std::optional<char_t> consume_char(
         case '0':   return '\0';
     }
 
+//    fp::source_location
+//    s.report_error("invalid escape sequence")
+//        .add_primary(s.location(source_view(content.begin(), it)))
+//        .add_supplement(s.current_token_location());
     s.report_error("invalid escape sequence", content.begin(), it)
         .add_supplement(s.current_token_location());
     return std::nullopt;
@@ -208,7 +212,7 @@ static void tokenize_string(tokenization_state& s) {
         source_iterator consume_end;
         std::optional<char_t> char_value =
             consume_char<'"'>(s, quoted_content, consume_end);
-        quoted_content = make_source_view(consume_end, quoted_content.end());
+        quoted_content = source_view(consume_end, quoted_content.end());
 
         if (!char_value) {
             // detail::consume_char already reported an error, so just push

@@ -177,7 +177,7 @@ private:
         }
         lines.push_back(labeled_code::line {
             .number                    = line_number,
-            .content                   = make_source_view(line_start, line_end),
+            .content                   = source_view(line_start, line_end),
             .first_non_whitespace_char = first_non_whitespace_char,
             .last_non_whitespace_char  = last_non_whitespace_char
         });

@@ -12,6 +12,7 @@ using source_view = std::string_view;
 struct source_file {
     /// The name of the source code (usually the name of the source file).
     std::string name;
+
     /// The contents of the source code.
     source_view content;
 
@@ -33,17 +34,9 @@ private:
 /// Iterator pointing to a character in a source code.
 using source_iterator = source_view::iterator;
 
-/// Construct a fp::source_view from the characters in range `[from, to)`.
-constexpr source_view make_source_view(
-    source_iterator from,
-    source_iterator to
-) {
-    return source_view(from, to - from);
-}
-
 /// Returns a merged source code section. `first` must appear before `second`.
 constexpr source_view merge(source_view first, source_view second) {
-    return make_source_view(first.begin(), second.end());
+    return {first.begin(), second.end()};
 }
 
 /**

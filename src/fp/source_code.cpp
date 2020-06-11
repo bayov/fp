@@ -38,7 +38,7 @@ source_location source_location::slice(
             ++result.line_number;
         }
     }
-    result.chars = make_source_view(first, last);
+    result.chars = source_view(first, last);
     return result;
 }
 

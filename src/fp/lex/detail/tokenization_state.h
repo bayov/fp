@@ -47,7 +47,7 @@ struct tokenization_state {
         source_iterator from,
         source_iterator to
     ) {
-        return report_error(std::move(text), make_source_view(from, to));
+        return report_error(std::move(text), source_view(from, to));
     }
     //@}
 
@@ -70,13 +70,13 @@ struct tokenization_state {
         };
     }
     source_location location(source_iterator from, source_iterator to) {
-        return location(make_source_view(from, to));
+        return location(source_view(from, to));
     }
     //}
 
     /// Returns the source section of the current token.
     source_view current_token_characters() {
-        return make_source_view(token_begin_, next);
+        return {token_begin_, next};
     }
 
     /// Returns the source location of the current token.
@@ -101,7 +101,7 @@ struct tokenization_state {
 
     /// Returns `true` if the the next characters in the source are `chars`.
     bool next_is(source_view chars) const {
-        return make_source_view(next, end).starts_with(chars);
+        return source_view(next, end).starts_with(chars);
     }
 
     /// Push the token to the output list (token_attribute_t must be void).
