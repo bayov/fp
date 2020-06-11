@@ -35,8 +35,7 @@ struct parsing_state {
     /// Reports the given diagnostic::problem.
     diagnostic::problem& report_problem(diagnostic::problem p) {
         if (ignore_diagnostics.get()) { return dummy_problem; }
-        report.add(std::move(p));
-        return report.errors().back();
+        return report.add(std::move(p));
     }
 
     /// Ignores all reported diagnostics in scope.

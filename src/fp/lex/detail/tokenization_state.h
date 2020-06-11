@@ -52,7 +52,9 @@ struct tokenization_state {
     //@}
 
     /// Reports the given diagnostic::problem.
-    void report_problem(diagnostic::problem p) { report_.add(std::move(p)); }
+    diagnostic::problem& report_problem(diagnostic::problem p) {
+        return report_.add(std::move(p));
+    }
 
     //@{
     /**

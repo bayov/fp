@@ -34,12 +34,15 @@ struct report {
     /**
      * Append a new diagnostic::problem to the report.
      *
+     * @returns
+     *     The added diagnostic::problem.
+     *
      * @throws fp::compilation_error
      *     When the problem has severity::ERROR, and the current error count had
      *     reached the maximum number of errors allowed (as set by
      *     report::set_max_errors).
      */
-    void add(problem);
+    problem& add(problem);
 
 private:
     size_t max_errors_ = std::numeric_limits<size_t>::max();
