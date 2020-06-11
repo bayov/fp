@@ -46,10 +46,13 @@ constexpr source_view merge(source_view first, source_view second) {
 struct source_location {
     /// The range of characters that make up the element.
     source_view chars;
+
     /// The relevant source code file.
     const source_file& file;
+
     /// Iterator to the beginning of the location's line.
     source_iterator line;
+
     /// The line number of the location relative to `file`.
     size_t line_number;
 
