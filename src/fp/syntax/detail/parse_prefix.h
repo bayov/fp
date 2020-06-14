@@ -22,6 +22,7 @@ constexpr auto prefix_parser_table = token_table_t<prefix_parser_t>([](auto& t) 
     // identifiers and literals
     t[lex::token::IDENTIFIER] = parse_single_token<ast::identifier>;
     t[lex::token::NUMBER] = parse_single_token<ast::number>;
+    t[lex::token::CHAR] = parse_single_token<ast::char_>;
 
     // flow control
     t[lex::token::IF] = parse_if;

@@ -15,6 +15,11 @@ void to_terminal(std::ostream& os, const tokenized_token& t) {
         case token::NUMBER:
             color = blue;
             break;
+        case token::QUOTE:
+        case token::STRING:
+        case token::CHAR:
+            color = green;
+            break;
         case token::ERROR:
             color = red;
             break;

@@ -27,6 +27,10 @@ struct Visitor {
         print_children(binary_op.lhs, binary_op.rhs);
     }
 
+    void print(const ast::char_& char_) {
+        print_node_line(char_, green, char_.source_location().chars);
+    }
+
     void print(const ast::empty& error) {
         os << default_color << "ast::empty";
     }

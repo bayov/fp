@@ -93,6 +93,7 @@ private:
 // all node types must be included here to ensure that detail::variant_node
 // becomes a complete type
 #include <fp/syntax/ast/types/binary_op.inl>
+#include <fp/syntax/ast/types/char.inl>
 #include <fp/syntax/ast/types/empty.inl>
 #include <fp/syntax/ast/types/error.inl>
 #include <fp/syntax/ast/types/identifier.inl>
