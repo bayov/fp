@@ -12,11 +12,11 @@ namespace fp::lex {
 enum class token : uint8_t {
     ERROR,          ///< Error token, representing a lexical analysis error.
 
-    QUOTE,          ///< "
+    SEMICOLON,      ///< ;
     COMMA,          ///< ,
+    QUOTE,          ///< "
     ANNOTATION,     ///< :
     SCOPE,          ///< ::
-    SEMICOLON,      ///< ;
     OPTIONAL,       ///< ?
     DECORATOR,      ///< @
     BIT_NOT,        ///< ~

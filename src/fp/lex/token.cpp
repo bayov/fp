@@ -53,11 +53,11 @@ std::string_view token_name(token t) {
     switch (t) {
         case token::ERROR:          return "ERROR";
 
-        case token::QUOTE:          return "QUOTE";
+        case token::SEMICOLON:      return "SEMICOLON";
         case token::COMMA:          return "COMMA";
+        case token::QUOTE:          return "QUOTE";
         case token::ANNOTATION:     return "ANNOTATION";
         case token::SCOPE:          return "SCOPE";
-        case token::SEMICOLON:      return "SEMICOLON";
         case token::OPTIONAL:       return "OPTIONAL";
         case token::DECORATOR:      return "DECORATOR";
         case token::BIT_NOT:        return "BIT_NOT";

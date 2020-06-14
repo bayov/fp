@@ -42,10 +42,10 @@ void assert_single_token(std::string_view source_str) {
 }
 
 TEST(lex, single_tokens) {
+    assert_single_token<token::SEMICOLON>(";");
     assert_single_token<token::COMMA>(",");
     assert_single_token<token::ANNOTATION>(":");
     assert_single_token<token::SCOPE>("::");
-    assert_single_token<token::SEMICOLON>(";");
     assert_single_token<token::OPTIONAL>("?");
     assert_single_token<token::DECORATOR>("@");
     assert_single_token<token::BIT_NOT>("~");
