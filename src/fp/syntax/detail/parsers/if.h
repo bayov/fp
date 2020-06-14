@@ -9,9 +9,17 @@ namespace fp::syntax::detail {
 ast::node parse_if(parsing_state& s) {
     lex::token_iterator if_token = s.next++;
     ast::node condition = s.parse(0);
-    bool missing_opening_brace = s.next->token != lex::token::L_BRACE;
+    if (condition.is<ast::empty>()) {
+        s.report_error("missing `if` condition")
+            .add_primary(
+                if_token->source_location.slice_end(),
+                "missing condition here"
+            )
+            .add_contextual(if_token->source_location);
+    }
     // even when missing {, we'll parse the next node as the body of the
     // ast::if_ node, to try to recover from the error
+    bool missing_opening_brace = !s.next_is(lex::token::L_BRACE);
     ast::node body = s.parse(0);
     if (missing_opening_brace) {
         fp::source_location missing_brace_location =

@@ -5,6 +5,7 @@
 #include <fp/syntax/detail/parse_prefix.h>
 #include <fp/syntax/detail/parsers/binary_op.h>
 #include <fp/syntax/detail/parsers/postfix_op.h>
+#include <fp/syntax/detail/parsers/sequence.h>
 
 namespace fp::syntax::detail {
 
@@ -23,10 +24,10 @@ constexpr auto infix_parser_table = token_table_t<infix_parser_t>([](auto& t) {
      t.set_default(parse_infix_error);
 
     // binary-operators
-    t[lex::token::COMMA]          = parse_binary_op;
+    t[lex::token::COMMA]          = parse_sequence;
     t[lex::token::ANNOTATION]     = parse_binary_op;
     t[lex::token::SCOPE]          = parse_binary_op;
-    t[lex::token::SEMICOLON]      = parse_binary_op;
+    t[lex::token::SEMICOLON]      = parse_sequence;
     t[lex::token::MEMBER_ACCESS]  = parse_binary_op;
     t[lex::token::RANGE]          = parse_binary_op;
     t[lex::token::CLOSED_RANGE]   = parse_binary_op;

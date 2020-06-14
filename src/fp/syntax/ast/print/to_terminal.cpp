@@ -85,6 +85,13 @@ struct Visitor {
         print_children(prefix_op.rhs);
     }
 
+    void print(const ast::sequence& sequence) {
+        std::string_view separator =
+            sequence.separators.front()->source_location.chars;
+        print_node_line(sequence, default_color, separator);
+        print_children_range(sequence.nodes);
+    }
+
 private:
     enum class child_context {
         YET_TO_BE_PRINTED,
@@ -154,6 +161,20 @@ private:
             }
         }
         if constexpr (sizeof...(children) > 0) { print_children(children...); }
+    }
+
+    void print_children_range(const std::vector<ast::node>& children) {
+        for (const auto& child : children) {
+            FP_WITH(
+                child_contexts =
+                    &child == &children.back() ?
+                    child_context::LAST_AND_YET_TO_BE_PRINTED :
+                    child_context::YET_TO_BE_PRINTED
+            ) {
+                print_prefixes();
+                child.visit(*this);
+            }
+        }
     }
 };
 

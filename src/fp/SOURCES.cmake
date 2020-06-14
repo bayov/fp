@@ -47,6 +47,7 @@ set(
     syntax/detail/parsers/if.h
     syntax/detail/parsers/postfix_op.h
     syntax/detail/parsers/prefix_op.h
+    syntax/detail/parsers/sequence.h
     syntax/detail/parsers/single_token.h
     syntax/detail/parsing_state.h
     syntax/detail/precedence.h

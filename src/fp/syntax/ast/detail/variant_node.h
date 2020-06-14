@@ -23,6 +23,7 @@ struct infix_error;
 struct number;
 struct postfix_op;
 struct prefix_op;
+struct sequence;
 
 } // namespace fp::syntax::ast
 
@@ -38,7 +39,8 @@ using variant_node = std::variant<
     infix_error,
     number,
     postfix_op,
-    prefix_op
+    prefix_op,
+    sequence
 >;
 
 } // namespace fp::syntax::ast::detail
