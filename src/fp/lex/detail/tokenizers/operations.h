@@ -81,7 +81,7 @@ void tokenize_not_eq(tokenization_state& s) {
         s.report_error(&error::E0009_stray_exclamation_mark)
             .add_primary(
                 s.current_token_location(),
-                "Did you mean `not` or `!=`?"
+                "did you mean `not` or `!=`?"
             );
         s.push_dummy(token::ERROR);
     }

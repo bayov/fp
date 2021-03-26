@@ -72,10 +72,10 @@ std::optional<char_t> consume_char(
     // UTF-8 not supported yet
     if (content.front() & 0x80) {
         for (; it != content.end() && *it & 0x80; ++it) {}
-        s.report_error("Unicode is not supported yet")
+        s.report_error("unicode is not supported yet")
             .add_primary(
                 s.location(content.begin(), it),
-                "Unicode literals are not supported yet, sorry!"
+                "unicode literals are not supported yet, sorry!"
             );
         return std::nullopt;
     }

@@ -3,6 +3,7 @@ set(
     SOURCES
     include/test-util/assert_macro_eq.h
     include/test-util/assert_type_eq.h
+    lex/character_literal.cpp
     lex/single_tokens.cpp
     lex/stray_characters.cpp
     lex/unicode_characters.cpp

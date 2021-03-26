@@ -16,7 +16,7 @@ void assert_stray_character(std::string_view source_str) {
         diagnostic::print::to_terminal(std::cout, report);
         ASSERT_EQ(1u, tokens.size()) << "\n"
             << "Expected error token for stray character: "
-            <<  << "\n"
+            << "\\" << std::oct << value << "\n"
             << "But received " << tokens.size() << " tokens:\n"
             << tokens;
     }
@@ -26,7 +26,10 @@ void assert_stray_character(std::string_view source_str) {
         FAIL() << "failed to locate stray character: \\" << std::oct << value;
     }
 
-    ASSERT_EQ(report.errors()[0].error_code(), &error::E0001_stray_character);
+    ASSERT_EQ(
+        report.errors().front().error_code(),
+        &error::E0001_stray_character
+    );
 }
 
 TEST(lex, stray_characters) {
