@@ -27,7 +27,12 @@ void to_terminal(std::ostream& os, const tokenized_token& t) {
             color = default_color;
     }
     if (is_keyword(t.token)) { color = yellow; }
-    os << color << t.source_location.chars << reset;
+    char c = t.source_location.chars[0];
+    if ((0 <= c && c < ' ') || c == 127) { // unprintable
+        os << color << "\\" << std::oct << int16_t(c) << std::dec << reset;
+    } else {
+        os << color << t.source_location.chars << reset;
+    }
     os << grey << " (token::" << token_name(t.token) << ')';
     if (t.dummy && t.token != token::ERROR) { os << red << " [dummy]"; }
     os << reset;

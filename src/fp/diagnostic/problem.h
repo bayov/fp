@@ -1,8 +1,10 @@
 #pragma once
 
+#include <optional>
 #include <string>
 #include <vector>
 
+#include <fp/error_codes.h>
 #include <fp/source_code.h>
 
 namespace fp::diagnostic {
@@ -37,10 +39,19 @@ struct problem {
     diagnostic::severity severity() const { return severity_; }
 
     /// Returns a textual description of the problem.
-    const std::string& text() const { return text_; }
+    std::string_view text() const {
+        return error_code_ ? error_code_->brief : text_;
+    }
 
     /// Returns a list of relevant source locations.
     const std::vector<location>& locations() const { return locations_; }
+
+    /**
+     * Returns the relevant error::code of the problem if available.
+     *
+     * If no error::code is available, returns `null`.
+     */
+     const error::code* error_code() const { return error_code_; }
 
     /// Add a primary source location.
     problem& add_primary(fp::source_location, std::string text = "");
@@ -53,19 +64,29 @@ struct problem {
 
 private:
     diagnostic::severity  severity_;
+    const error::code*    error_code_ = nullptr;
     std::string           text_;
     std::vector<location> locations_;
 
+    problem(diagnostic::severity, const error::code*);
     problem(diagnostic::severity, std::string text);
 
     friend problem warning(std::string text);
-    friend problem error  (std::string text);
+    friend problem error(const error::code*);
+    friend problem error(std::string text);
 };
 
 /// Construct a diagnostic::error with severity::WARNING.
 problem warning(std::string text);
 
-/// Construct a diagnostic::error with severity::ERROR.
+/// Construct a diagnostic::error with severity::ERROR from an error::code.
+problem error(const error::code*);
+
+/**
+ * Construct a diagnostic::error with severity::ERROR.
+ *
+ * Avoid constructing errors without an error::code if possible.
+ */
 problem error(std::string text);
 
 } // namespace fp::diagnostic

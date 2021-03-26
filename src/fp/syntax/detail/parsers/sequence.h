@@ -4,41 +4,42 @@
 
 namespace fp::syntax::detail {
 
+struct parsed_sequence {
+    std::vector<ast::node> nodes;
+    std::vector<lex::token_iterator> separators;
+};
+
 /**
  * Parses the next token as an ast::sequence.
  *
  * Assumes that the next token is a valid sequence-separator (i.e.
- * lex::token::COMMA or lex::token::SEMICOLON).
+ * token::COMMA or token::SEMICOLON).
  */
-ast::node parse_sequence(parsing_state& s, ast::node lhs) {
-    std::vector<ast::node> nodes;
-    std::vector<lex::token_iterator> separators;
+parsed_sequence parse_sequence(
+    parsing_state& s,
+    ast::node lhs
+) {
+    parsed_sequence result;
+    result.nodes.push_back(std::move(lhs));
+    result.separators.push_back(s.next++);
 
-    nodes.push_back(std::move(lhs));
-    separators.push_back(s.next++);
-
-    lex::token separator_token = separators.back()->token;
+    lex::token separator_token = result.separators.front()->token;
     precedence_t separator_precedence = precedence_table[separator_token];
 
     while (s.next != s.end) {
-        // if the next token cannot be parsed as a prefix-token, we'll consider
-        // the previous separator to be trailing, and finish the sequence
-        if (prefix_parser_table[s.next->token] == parse_prefix_error) {
+        if (s.next_is(separator_token)) {
+            result.separators.push_back(s.next++);
+        } else {
             break;
         }
-        nodes.push_back(s.parse(separator_precedence));
+        result.nodes.push_back(s.parse(separator_precedence));
         if (s.next_is(separator_token)) {
-            separators.push_back(s.next++);
             continue;
         } else {
             break;
         }
     }
-    return ast::sequence(
-        separator_token,
-        std::move(nodes),
-        std::move(separators)
-    );
+    return result;
 }
 
 } // namespace fp::syntax::detail

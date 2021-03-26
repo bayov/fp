@@ -14,6 +14,7 @@ namespace fp::syntax::ast {
  * Please keep the 3 lists lexicographically ordered.
  */
 struct binary_op;
+struct block;
 struct char_;
 struct empty;
 struct error;
@@ -23,7 +24,7 @@ struct infix_error;
 struct number;
 struct postfix_op;
 struct prefix_op;
-struct sequence;
+struct top_level_block;
 
 } // namespace fp::syntax::ast
 
@@ -31,6 +32,7 @@ namespace fp::syntax::ast::detail {
 
 using variant_node = std::variant<
     binary_op,
+    block,
     char_,
     empty,
     error,
@@ -40,7 +42,7 @@ using variant_node = std::variant<
     number,
     postfix_op,
     prefix_op,
-    sequence
+    top_level_block
 >;
 
 } // namespace fp::syntax::ast::detail

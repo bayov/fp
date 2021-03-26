@@ -28,7 +28,7 @@ namespace fp::util {
  *
  * my_dispatch_table['c'](42); // == 42  (uses `as_is`)
  * my_dispatch_table['1'](42); // == 43  (uses `plus_one`)
- * my_dispatch_table['*'](42); // == 84  (uses `times_two`)
+ * my_dispatch_table['2'](42); // == 84  (uses `times_two`)
  * ~~~
  *
  * In the example above, `my_dispatch_table` is stored in the data section of
@@ -36,9 +36,9 @@ namespace fp::util {
  * used to access those values directly (by `t[size_t(key)]`). Basically, a
  * dispatch table with no overhead at all.
  *
- * Note that in the example above, the size of `my_dispatch_table` is 100 (the
- * ASCII value of 'c'), which means that 'd' cannot be given as a key. Doing so
- * will result in undefined behaviour.
+ * Note that in the example above, the size of `my_dispatch_table` is 100, and
+ * the ASCII value of 'c' is 99, which means that 'd' cannot be given as a key.
+ * Doing so will result in undefined behaviour.
  *
  * @tparam KeyIndex
  *      An optional function that takes a `Key` and returns `size_t` index for

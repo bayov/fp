@@ -109,7 +109,7 @@ public:
 
 private:
     /**
-     * Points the value in the current context. This pointer is dereferenced
+     * Points to the value in the current context. This pointer is dereferenced
      * whenever an access is made (through context_value::get).
      *
      * This pointer is the same as `current_context_node.value_pointer`, and so

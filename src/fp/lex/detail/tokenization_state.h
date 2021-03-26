@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fp/literal_types.h>
+#include <fp/error_codes.h>
 #include <fp/source_code.h>
 #include <fp/diagnostic/report.h>
 #include <fp/lex/tokenized_list.h>
@@ -30,6 +31,12 @@ struct tokenization_state {
         token_begin_(next),
         line_begin_(next)
     {}
+
+    /// Reports a diagnostic::error with the given error::code.
+    diagnostic::problem& report_error(const error::code* error_code) {
+         report_problem(diagnostic::error(error_code));
+         return report_.errors().back();
+    }
 
     /// Reports a diagnostic::error with the given `text`.
     diagnostic::problem& report_error(std::string text) {

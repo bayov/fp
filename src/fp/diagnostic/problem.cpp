@@ -31,11 +31,18 @@ problem& problem::add_contextual(fp::source_location location) {
     return *this;
 }
 
+problem::problem(diagnostic::severity severity, const error::code* e) :
+    severity_(severity), error_code_(e) {}
+
 problem::problem(diagnostic::severity severity, std::string text) :
     severity_(severity), text_(std::move(text)) {}
 
 problem warning(std::string text) {
     return {severity::WARNING, std::move(text)};
+}
+
+problem error(const error::code* e) {
+    return {severity::ERROR, e};
 }
 
 problem error(std::string text) {

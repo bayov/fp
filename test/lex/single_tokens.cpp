@@ -9,7 +9,7 @@ template <token EXPECTED_TOKEN>
 void assert_single_token(std::string_view source_str) {
     std::string_view name = token_name(EXPECTED_TOKEN);
     diagnostic::report report;
-    fp::source_file file("single-token-test.fp", source_str);
+    fp::source_file file("", source_str);
 
     tokenized_list tokens = tokenize(file, report);
     if (!report.errors().empty() || !report.warnings().empty()) {

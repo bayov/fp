@@ -4,7 +4,7 @@
  * Just a bit of nice syntax-sugar over RAII-style mechanisms.
  *
  * ~~~{.cpp}
- * WITH(std::lock_guard<std::mutex>(my_mutex)) {
+ * FP_WITH(std::lock_guard<std::mutex>(my_mutex)) {
  *     // ...
  * } // lock_guard destructed here, unlocking mutex
  * ~~~

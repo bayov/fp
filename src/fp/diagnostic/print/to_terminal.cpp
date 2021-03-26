@@ -343,7 +343,9 @@ static void print_file_locations(
     sorted_source_locations::locations_in_file& file_locations
 ) {
     const auto& [file, locations_by_line, line_number_width] = file_locations;
-    os << blue << italic << file.name << italic_off << '\n';
+    if (!file.name.empty()) {
+        os << blue << italic << file.name << italic_off << '\n';
+    }
     thread_local labeled_code lc;
     lc.set(file_locations);
 
@@ -364,11 +366,15 @@ static void print_file_locations(
 
 void to_terminal(std::ostream& os, const diagnostic::problem& problem) {
     if (problem.severity() == severity::ERROR) {
-        os << bold << red << "error: " << reset;
+        os << bold << red << "error";
+        if (problem.error_code()) {
+            os << reset << red << " (" << problem.error_code()->code << ")";
+        }
+        os << bold << ": " << reset;
     } else {
         os << bold << yellow << "warning: " << reset;
     }
-    os << problem.text() << "\n";
+    os << problem.text() << '\n';
 
     thread_local sorted_source_locations sorted_locations;
     sorted_locations.set(problem);

@@ -8,6 +8,7 @@ set(
     diagnostic/problem.h
     diagnostic/report.cpp
     diagnostic/report.h
+    error_codes.h
     lex/attribute.h
     lex/detail/characters_range.h
     lex/detail/string_interpolation_stack.h
@@ -22,6 +23,7 @@ set(
     lex/detail/tokenizers/operations.h
     lex/detail/tokenizers/period.h
     lex/detail/tokenizers/stray_character.h
+    lex/detail/tokenizers/unicode_character.h
     lex/detail/tokenizers/whitespace.h
     lex/detail/tokenizers_table.h
     lex/print/to_terminal.cpp
@@ -36,6 +38,7 @@ set(
     source_code.cpp
     source_code.h
     syntax/ast/detail/base_node.h
+    syntax/ast/detail/base_sequence.h
     syntax/ast/detail/variant_node.h
     syntax/ast/node.cpp
     syntax/ast/node.h
@@ -44,6 +47,7 @@ set(
     syntax/detail/parse_infix.h
     syntax/detail/parse_prefix.h
     syntax/detail/parsers/binary_op.h
+    syntax/detail/parsers/brackets.h
     syntax/detail/parsers/if.h
     syntax/detail/parsers/postfix_op.h
     syntax/detail/parsers/prefix_op.h
@@ -57,6 +61,8 @@ set(
     util/ansi/codes.h
     util/ansi/support.cpp
     util/ansi/support.h
+    util/assert.cpp
+    util/assert.h
     util/cast.h
     util/context_value.h
     util/match.h

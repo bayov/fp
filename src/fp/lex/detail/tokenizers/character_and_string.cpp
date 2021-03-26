@@ -9,8 +9,8 @@ namespace fp::lex::detail {
  *
  * The terminator of a quoted section is any of the following:
  *
- *  - end of input (`end`)
- *  - new-lines (\n) and carriage-returns (\r)
+ *  - end of input
+ *  - new-lines (`\n`) and carriage-returns (`\r`)
  *  - unescaped terminator character: ' for characters and " or { for strings
  *
  * @param begin
@@ -43,9 +43,9 @@ source_view quoted_content(source_iterator begin, source_iterator end) {
  *
  * On error (invalid character), a std::nullopt will be returned instead.
  *
- * At the moment, Unicode is not supported. When encountering a UTF-8 byte, it
- * will the entire Unicode code point will be consumed (2 to 4 bytes), and
- * std::nullopt will be returned to denote an error.
+ * At the moment, Unicode is not supported. When encountering a UTF-8 byte, the
+ * entire Unicode code point will be consumed (1 to 4 bytes), and std::nullopt
+ * will be returned to denote an error.
  *
  * @tparam QUOTE
  *     When tokenizing a character literal, this should be a single-quote, and
@@ -98,7 +98,7 @@ std::optional<char_t> consume_char(
         case '0':   return '\0';
     }
 
-    s.report_error("invalid escape sequence")
+    s.report_error(&error::E0005_invalid_escape_sequence)
         .add_primary(
             s.location(content.begin(), it),
             "invalid escape sequence"
@@ -120,12 +120,15 @@ void report_missing_terminating_quote(
     tokenization_state& s,
     source_iterator opening_quote
 ) {
-    const char* text =
+    const error::code* error_code =
         QUOTE == '\'' ?
-        "missing terminating ' character" :
-        "missing terminating \" character";
-    s.report_error(text)
-        .add_primary(s.location(opening_quote, opening_quote + 1), text)
+        &error::E0002_missing_terminating_single_quote :
+        &error::E0003_missing_terminating_double_quote;
+    s.report_error(error_code)
+        .add_primary(
+            s.location(opening_quote, opening_quote + 1),
+            std::string(error_code->brief)
+        )
         .add_supplement(s.current_token_location());
 }
 
@@ -151,7 +154,8 @@ void tokenize_character(tokenization_state& s) {
 
     // a character literal cannot be empty!
     if (quoted_content.empty()) {
-        s.report_error("empty character literal");
+        s.report_error(&error::E0004_empty_character_literal)
+            .add_primary(s.current_token_location(), "empty character literal");
         s.push_dummy(token::CHAR);
         return;
     }
@@ -170,12 +174,12 @@ void tokenize_character(tokenization_state& s) {
 
     // a character literal must contain exactly one character!
     if (consume_end != quoted_content.end()) {
-        s.report_error("character literal contains more than one character")
-            .add_supplement(
+        s.report_error(&error::E0006_character_literal_with_more_than_one)
+            .add_primary(
                 s.location(quoted_content),
                 "more than one character in literal"
             )
-            .add_primary(
+            .add_supplement(
                 s.location(opening_quote, opening_quote + 1),
                 "use \" quotes if you meant to use a string"
             );

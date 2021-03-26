@@ -4,6 +4,8 @@ set(
     include/test-util/assert_macro_eq.h
     include/test-util/assert_type_eq.h
     lex/single_tokens.cpp
+    lex/stray_characters.cpp
+    lex/unicode_characters.cpp
     util/context_value.cpp
     util/match.cpp
     util/table.cpp

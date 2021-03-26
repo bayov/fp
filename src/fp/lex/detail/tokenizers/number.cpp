@@ -34,10 +34,10 @@ using binary_exponent = composite_characters_range<>;
  * A `+` or `-` character will also be consumed (once) if it appears right after
  * the exponent character.
  *
- * This function actually consumes all valid identifier characters, so that
- * in cases such as `123z34`, only one erroneous token will be produced instead
- * of being separated into two tokens: A number `123` and identifier `z34`.
- * This makes error reporting prettier.
+ * In order to reduce compilation error noise, this function will also consume
+ * any valid identifier characters linked to the number. For example, when
+ * `123z34` is given, only one dummy number token will be produced instead of
+ * a number `123` and identifier `z34`.
  */
 template <class ExponentChars>
 std::pair<source_view, source_view>
@@ -238,7 +238,7 @@ void tokenize_number(tokenization_state& s, std::string_view base_name) {
         validate_no_underscores(number, exponent);
         validate_digits<Digits>(number, base_name);
     } catch (number_error& e) {
-        s.report_error("invalid number literal")
+        s.report_error(&error::E0007_invalid_number_literal)
             .add_primary(s.location(e.source_section), std::move(e.text))
             .add_supplement(s.current_token_location());
         s.push_dummy(token::NUMBER, source_view("0"));
@@ -248,10 +248,10 @@ void tokenize_number(tokenization_state& s, std::string_view base_name) {
     if (!SUPPORT_FLOAT) {
         bool is_float = !exponent.empty() || number.find('.') != number.npos;
         if (is_float) {
-            s.report_error("unsupported floating-number base")
+            s.report_error(&error::E0008_unsupported_float_base)
                 .add_primary(s.current_token_location(),\
                 "floating-point literal in " + std::string(base_name) + " base "
-                "is not supported, sorry"
+                "is not supported"
             );
             s.push_dummy(token::NUMBER, source_view("0"));
             return;

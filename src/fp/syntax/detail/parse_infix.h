@@ -24,8 +24,6 @@ constexpr auto infix_parser_table = token_table_t<infix_parser_t>([](auto& t) {
      t.set_default(parse_infix_error);
 
     // binary-operators
-    t[lex::token::SEMICOLON]      = parse_sequence;
-    t[lex::token::COMMA]          = parse_sequence;
     t[lex::token::ANNOTATION]     = parse_binary_op;
     t[lex::token::SCOPE]          = parse_binary_op;
     t[lex::token::MEMBER_ACCESS]  = parse_binary_op;

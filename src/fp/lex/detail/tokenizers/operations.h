@@ -78,8 +78,11 @@ void tokenize_not_eq(tokenization_state& s) {
     if (s.next_is('=')) {
         s.consume_and_push(token::NE);
     } else {
-        s.report_error("invalid character. Did you mean `not` or `!=`?")
-            .add_primary(s.current_token_location());;
+        s.report_error(&error::E0009_stray_exclamation_mark)
+            .add_primary(
+                s.current_token_location(),
+                "Did you mean `not` or `!=`?"
+            );
         s.push_dummy(token::ERROR);
     }
 }

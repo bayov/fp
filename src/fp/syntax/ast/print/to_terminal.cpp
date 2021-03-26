@@ -27,6 +27,11 @@ struct Visitor {
         print_children(binary_op.lhs, binary_op.rhs);
     }
 
+    void print(const ast::block& block) {
+        print_node_line(block, default_color, "{ ... }");
+        print_children_range(block.nodes);
+    }
+
     void print(const ast::char_& char_) {
         print_node_line(char_, green, char_.source_location().chars);
     }
@@ -85,11 +90,11 @@ struct Visitor {
         print_children(prefix_op.rhs);
     }
 
-    void print(const ast::sequence& sequence) {
+    void print(const ast::top_level_block& tlb) {
         std::string_view separator =
-            sequence.separators.front()->source_location.chars;
-        print_node_line(sequence, default_color, separator);
-        print_children_range(sequence.nodes);
+            tlb.separators.front()->source_location.chars;
+        print_node_line(tlb, default_color, separator);
+        print_children_range(tlb.nodes);
     }
 
 private:

@@ -4,7 +4,7 @@
 
 namespace fp::util {
 
-template <class T> struct foo {};
+template <class> struct foo {};
 
 TEST(util, type_name) {
     ASSERT_EQ("int", type_name<int>);

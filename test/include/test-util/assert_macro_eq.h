@@ -5,7 +5,7 @@
 
 /**
  * A Google Test assertion: Verifies that the result of a preprocessor macro
- * expands to the expected string
+ * expands to the expected string.
  */
 #define ASSERT_MACRO_EQ(expected_string, macro_result...)\
     ASSERT_EQ(expected_string, STRINGIFY_VA_ARGS(macro_result))

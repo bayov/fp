@@ -18,7 +18,7 @@ boost_package(preprocessor)
 #    config assert concept_check utility type_traits mpl iterator optional
 #    throw_exception move
 #)
-finalize_boost_packages(boost-1.64.0)
+finalize_boost_packages(boost-1.73.0)
 
 include_directories(src)
 

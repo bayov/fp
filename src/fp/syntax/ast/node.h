@@ -93,6 +93,7 @@ private:
 // all node types must be included here to ensure that detail::variant_node
 // becomes a complete type
 #include <fp/syntax/ast/types/binary_op.inl>
+#include <fp/syntax/ast/types/block.inl>
 #include <fp/syntax/ast/types/char.inl>
 #include <fp/syntax/ast/types/empty.inl>
 #include <fp/syntax/ast/types/error.inl>
@@ -100,9 +101,10 @@ private:
 #include <fp/syntax/ast/types/if.inl>
 #include <fp/syntax/ast/types/infix_error.inl>
 #include <fp/syntax/ast/types/number.inl>
+#include <fp/syntax/ast/types/bracketed.inl>
 #include <fp/syntax/ast/types/postfix_op.inl>
 #include <fp/syntax/ast/types/prefix_op.inl>
-#include <fp/syntax/ast/types/sequence.inl>
+#include <fp/syntax/ast/types/top_level_block.inl>
 
 static_assert(
     sizeof(fp::syntax::ast::detail::variant_node) > 0,

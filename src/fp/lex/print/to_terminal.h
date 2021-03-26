@@ -8,7 +8,7 @@ namespace fp::lex::print {
 
 //@{
 /**
- * Prints the given token/s to the given output-stream in a textual form.
+ * Prints the given token(s) to the given output-stream in a textual form.
  *
  * If ansi::is_enabled() is true then the token/s will be augmented with ANSI
  * escape codes.
