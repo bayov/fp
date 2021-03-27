@@ -70,7 +70,6 @@ set(
     util/table.h
     util/to_string.h
     util/type_name.h
-    util/vector_view.h
     util/with.h
     PARENT_SCOPE
 )
