@@ -8,7 +8,7 @@ namespace fp::diagnostic {
 diagnostic::problem& report::add(problem d) {
     auto& list = d.severity() == severity::ERROR ? errors_ : warnings_;
     list.push_back(std::move(d));
-    if (errors_.size() >= max_errors_) { throw compilation_error(); }
+    if (errors_.size() >= max_errors) { throw compilation_error(); }
     return list.back();
 }
 

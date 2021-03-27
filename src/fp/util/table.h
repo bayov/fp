@@ -62,19 +62,19 @@ struct table {
      * before any assignments to the table.
      */
     constexpr void set_default(Value default_value) {
-        for (auto& v : values_) { v = default_value; }
+        for (auto& v : values) { v = default_value; }
     }
 
     constexpr value_type& operator[](Key key) {
-        return values_[key_index(key)];
+        return values[key_index(key)];
     }
 
     constexpr const value_type& operator[](Key key) const {
-        return values_[key_index(key)];
+        return values[key_index(key)];
     }
 
 private:
-    std::array<Value, SIZE> values_ = {};
+    std::array<Value, SIZE> values = {};
 };
 
 } // namespace fp::util

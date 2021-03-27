@@ -27,6 +27,12 @@ struct parsing_state {
         report(report)
     {}
 
+    /// Reports a diagnostic::error with the given error::code.
+    diagnostic::problem& report_error(const error::code* error_code) {
+         report_problem(diagnostic::error(error_code));
+         return report.errors().back();
+    }
+
     /// Reports a diagnostic::error with the given `text`.
     diagnostic::problem& report_error(std::string text) {
          return report_problem(diagnostic::error(std::move(text)));

@@ -26,27 +26,27 @@ struct tokenization_state {
         file(file),
         next(file.content.begin()),
         end(file.content.end()),
-        tokens_(output_tokens_list),
-        report_(report),
-        token_begin_(next),
-        line_begin_(next)
+        tokens(output_tokens_list),
+        report(report),
+        token_begin(next),
+        line_begin(next)
     {}
 
     /// Reports a diagnostic::error with the given error::code.
     diagnostic::problem& report_error(const error::code* error_code) {
          report_problem(diagnostic::error(error_code));
-         return report_.errors().back();
+         return report.errors().back();
     }
 
     /// Reports a diagnostic::error with the given `text`.
     diagnostic::problem& report_error(std::string text) {
          report_problem(diagnostic::error(std::move(text)));
-         return report_.errors().back();
+         return report.errors().back();
     }
 
     /// Reports the given diagnostic::problem.
     diagnostic::problem& report_problem(diagnostic::problem p) {
-        return report_.add(std::move(p));
+        return report.add(std::move(p));
     }
 
     //@{
@@ -58,8 +58,8 @@ struct tokenization_state {
         return source_location {
             .chars = source_section,
             .file = file,
-            .line = line_begin_,
-            .line_number = line_number_
+            .line = line_begin,
+            .line_number = line_number
         };
     }
     source_location location(source_iterator from, source_iterator to) {
@@ -69,7 +69,7 @@ struct tokenization_state {
 
     /// Returns the source section of the current token.
     source_view current_token_characters() {
-        return {token_begin_, next};
+        return { token_begin, next};
     }
 
     /// Returns the source location of the current token.
@@ -81,12 +81,12 @@ struct tokenization_state {
      * Indicates that the next character is the beginning of the next token that
      * will be tokenized.
      */
-    void begin_next_token() { token_begin_ = next; }
+    void begin_next_token() { token_begin = next; }
 
     /// Indicates that the next character is the beginning of a new line.
     void begin_new_line() {
-        line_begin_ = next;
-        ++line_number_;
+        line_begin = next;
+        ++line_number;
     }
 
     /// Returns `true` if the the next character in the source is `c`.
@@ -99,7 +99,7 @@ struct tokenization_state {
 
     /// Push the token to the output list (token_attribute_t must be void).
     void push(token t) {
-        tokens_.push_back({
+        tokens.push_back({
             .token = t,
             .dummy = false,
             .source_location = current_token_location()
@@ -109,7 +109,7 @@ struct tokenization_state {
     /// Push `TOKEN` to the output list with the given `attribute` attached.
     template <token TOKEN>
     void push(token_attribute_t<TOKEN> attribute) {
-        tokens_.push_back({
+        tokens.push_back({
             .token = TOKEN,
             .dummy = false,
             .attribute = std::move(attribute),
@@ -119,7 +119,7 @@ struct tokenization_state {
 
     /// Push a dummy error `TOKEN`.
     void push_dummy(token t, lex::attribute_t attribute = {}) {
-        tokens_.push_back({
+        tokens.push_back({
             .token = t,
             .dummy = true,
             .attribute = std::move(attribute),
@@ -134,10 +134,10 @@ struct tokenization_state {
     }
 
 private:
-    tokenized_list& tokens_; ///< The list of tokens produced so far.
+    tokenized_list& tokens; ///< The list of tokens produced so far.
 
     /// Any problems encountered during tokenization is reported here.
-    diagnostic::report& report_;
+    diagnostic::report& report;
 
     /**
      * Points to the beginning of the current token.
@@ -146,7 +146,7 @@ private:
      * new token, tokenization_state::begin_next_token() should be called to
      * update this variable.
      */
-    source_iterator token_begin_;
+    source_iterator token_begin;
 
     /**
      * Points to the beginning of the current line.
@@ -154,9 +154,9 @@ private:
      * After consuming a newline character, this iterator needs to be updated by
      * calling tokenization_state::begin_new_line().
      */
-    source_iterator line_begin_;
+    source_iterator line_begin;
 
-    size_t line_number_ = 1; ///< Holds the current line's number.
+    size_t line_number = 1; ///< Holds the current line's number.
 };
 
 } // namespace fp::lex::detail

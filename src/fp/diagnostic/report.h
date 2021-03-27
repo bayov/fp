@@ -17,7 +17,7 @@ struct report {
      * By default, there's no limit on the maximum amount of errors allowed,
      * and errors will keep accumulating without exceptions being thrown.
      */
-    void set_max_errors(size_t n) { max_errors_ = n; }
+    void set_max_errors(size_t n) { max_errors = n; }
 
     //@{
     /// Returns the list of accumulated warnings.
@@ -45,7 +45,7 @@ struct report {
     problem& add(problem);
 
 private:
-    size_t max_errors_ = std::numeric_limits<size_t>::max();
+    size_t max_errors = std::numeric_limits<size_t>::max();
     std::list<problem> errors_;
     std::list<problem> warnings_;
 };
